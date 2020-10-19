@@ -1,16 +1,28 @@
 import React from "react"
+import { graphql, useStaticQuery } from "gatsby";
 import '../styles/tailwind.css'
 
 export default function Home() {
+
+  const data = useStaticQuery(graphql`
+    query{
+      site{
+        siteMetadata{
+          title
+          author
+        }
+      }
+    }`
+  )
+
   return (
     <div>
-      <h1>Homepage</h1>
       <div className="bg-gray-50">
   <div className="max-w-screen-xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
     <h2 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10">
-      Ready to dive in?
+    {data.site.siteMetadata.title}
       <br></br>
-      <span className="text-indigo-600">Start your free trial today.</span>
+      <span className="text-indigo-600">{data.site.siteMetadata.author}</span>
     </h2>
     <div className="mt-8 flex lg:flex-shrink-0 lg:mt-0">
       <div className="inline-flex rounded-md shadow">
