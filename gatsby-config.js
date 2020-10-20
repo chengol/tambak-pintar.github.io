@@ -11,6 +11,19 @@ module.exports = {
     author: 'Jala Tech, Pte. Ltd.'
   },
   plugins: [
+    {
+      resolve: 'gatsby-source-airtable',
+      options: {
+        apiKey: 'keym2E3xKv1CV3xJo',
+        concurrency: 5,
+        tables: [
+          {
+            baseId: 'appr1brQDGlqRbIOB',
+            tableName: 'Jawa_Tengah',
+          },
+        ]
+      }
+    },
     'gatsby-plugin-postcss',
     'gatsby-plugin-playground',
     {
