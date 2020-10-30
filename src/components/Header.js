@@ -8,7 +8,6 @@ import {
     Button,
     Spacer
 } from '@chakra-ui/core'
-import VirusIcon from '../assets/virus.svg'
 
 const MenuItems = ({children}) => (
     <Text mt={{
@@ -100,7 +99,10 @@ export default function Header() {
                     <Link to="/">Home</Link>
                 </MenuItems>
                 <MenuItems>
-                    <Link to="/app-cluster">Peta pake clustering (not yet)</Link>
+                    <Link to="/app-cluster">Peta clustering (airtable grapQL)</Link>
+                </MenuItems>
+                <MenuItems>
+                    <Link to="/app-dynamic-data">Peta clustering (dynamic update)</Link>
                 </MenuItems>
             </Box>
 

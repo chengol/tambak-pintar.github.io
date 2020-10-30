@@ -1,10 +1,12 @@
-import React, {useState, useRef } from 'react'
-import { graphql, useStaticQuery } from 'gatsby'
-import ReactMapGL, { Marker, Layer, Source, Popup } from 'react-map-gl'
-import { Header } from '../components'
-import { SimpleGrid, Box } from '@chakra-ui/core'
-import useSupercluster from 'use-supercluster'
-import '../styles/app.css'
+import React, {useState, useRef, useEffect } from 'react';
+import { graphql, useStaticQuery } from 'gatsby';
+import useSwr from "swr";
+import axios from 'axios';
+import ReactMapGL, { Marker, Layer, Source, Popup } from 'react-map-gl';
+import { Header } from '../components';
+import { SimpleGrid, Box } from '@chakra-ui/core';
+import useSupercluster from 'use-supercluster';
+import '../styles/app.css';
 
 export const data = graphql `
 query appCluster {
@@ -86,7 +88,19 @@ query appCluster {
 
       console.log(geojson);*/
 
-export default function AppPage({data, dataGoogle}) {
+     
+      
+export default function AppPage ({data, dataGoogle}) {
+  
+
+  const state ={
+    loading: true,
+    error: false,
+    fecthedData: []
+  }
+
+
+
     const [viewport,
         setViewport] = useState({latitude: -5.26601, longitude: 110.25879, zoom: 5, width: '100vw', height: '100vh'});
 
@@ -97,10 +111,10 @@ export default function AppPage({data, dataGoogle}) {
 
     const res = data.allRecord;
     
- 
 
 
     const points = res.nodes.map(node => ({
+      
         "type": "Feature",
     "properties": {
       "cluster": false,
@@ -121,11 +135,11 @@ export default function AppPage({data, dataGoogle}) {
       });
 
     //console.log('c ', clusters);
-    console.log('points ', points);
+    // console.log('points ', points);
 
-    res.nodes.map((node)=>{
-        console.log('cluster ', node);
-    })
+    // res.nodes.map((node)=>{
+    //     console.log('cluster ', node);
+    // })
     
 
 
