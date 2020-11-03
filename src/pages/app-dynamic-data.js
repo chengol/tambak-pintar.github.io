@@ -16,17 +16,25 @@ import {
     useToast,
     Button,
     Select,
-    Heading
+    Heading,
+    Flex
 } from '@chakra-ui/core';
 import '../styles/app.css';
 import {clusterLayer, clusterCountLayer, unclusteredPointLayer} from '../layers/layers';
+import DatePicker from "react-datepicker";
+import {formatISO, isAfter} from 'date-fns';
+
+import "react-datepicker/dist/react-datepicker.css";
 
 //
 
+
 export default function AppDynamicData() {
+    
     return (
         <div>
             <Header/>
+            
             <DiseaseProvider>
                 <AppContent/>
             </DiseaseProvider>
@@ -42,7 +50,6 @@ function AppContent() {
             }}>
                 <SimpleGrid columns={2}>
                     <Box bg="white" height="100%">
-                        
                         <DiseaseData/>
                     </Box>
                     <Box bg="white" height="100%"></Box>
@@ -56,27 +63,25 @@ function AppContent() {
 const DiseaseContext = createContext();
 
 function DiseaseProvider({children}) {
+    const [startDate, setStartDate] = useState(new Date());
     const [disease,
         setDisease] = useState("Semua Sampel");
-    const sourceRef = createRef();
     const [district, setDistrict] = useState("Semua");
-    const [listDistrict, setListDistrict] = useState({});
+    const toast = useToast();
+    
     const [selectedDistrict,
         setSelectedDistrict] = useState(null);
-    const [viewport,
-        setViewport] = useState({latitude: -5.26601, longitude: 110.25879, zoom: 6, width: '100vw', height: '100vh'});
+    
     return (
         <DiseaseContext.Provider
             value={{
             disease,
             setDisease,
-            viewport,
-            setViewport,
-            sourceRef,
             district,
             setDistrict,
-            listDistrict,
-            setListDistrict
+            startDate,
+            setStartDate,
+            toast
         }}>
             {children}
         </DiseaseContext.Provider>
@@ -89,8 +94,7 @@ const url = `https://api.airtable.com/v0/appr1brQDGlqRbIOB/allRecord?api_key=${p
 
 
 function DiseaseData() {
-    const toast = useToast();
-    const {setListDistrict} = useContext(DiseaseContext);
+    const {toast} = useContext(DiseaseContext);
 
     const {data, error} = useSWR(url);
     if (error) 
@@ -98,13 +102,10 @@ function DiseaseData() {
     if (!data) {
         return <div><Skeleton height='100vh'/></div>
     }
-
-    // setListDistrict([...new Set(data.records.map(d => d.fields.Kecamatan).sort())]);
     
     return (
         <div>
             <DiseasePicker kecamatan={[...new Set(data.records.map(d => d.fields.Kecamatan).sort())]} />
-            {/* <DistrictPicker  /> */}
             <FilterData data={data} />
         </div>
     )
@@ -120,27 +121,29 @@ function DistrictPicker({kecamatan}){
 }
 
 function FilterData(data) {
-    const {disease, district} = useContext(DiseaseContext);
-    console.log('samples', data.data.records);
-    console.log('district', district);
+    const {disease, district, startDate} = useContext(DiseaseContext);
+    
+    const tanggal = formatISO(startDate, { representation: 'date' });
 
     const samples = data.data.records;
+    // console.log(`samples `, isValid(new Date(samples[0].fields.Tanggal)));
+    const tanggalA = new Date(samples[0].fields.Tanggal);
 
     const diseaseData = samples.filter(d => {
         if (disease === "Semua Sampel" && district === "Semua"){
-          return data;
+          return data && isAfter(startDate, new Date(d.fields.Tanggal));
         }
         if (disease === "Semua Sampel" && d.fields.Kecamatan === district){
-            return data && d.fields.Kecamatan === district;
+            return data && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
         }
         if (disease === "Semua Positif" && district === "Semua" ) 
-            return d.fields.Status > 0;
+            return d.fields.Status > 0 && isAfter(startDate, new Date(d.fields.Tanggal));
         if (disease === "Semua Positif" && d.fields.Kecamatan === district ) 
-            return d.fields.Status > 0 && d.fields.Kecamatan === district;
+            return d.fields.Status > 0 && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
         if (disease === disease && district === "Semua" ) 
-            return d.fields.Status > 0 && d.fields.Penyakit === disease;
+            return d.fields.Status > 0 && d.fields.Penyakit === disease && isAfter(startDate, new Date(d.fields.Tanggal));
         else {
-            return d.fields.Status > 0 && d.fields.Penyakit === disease && d.fields.Kecamatan === district;
+            return d.fields.Status > 0 && d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
         }
     })
 
@@ -164,15 +167,19 @@ function FilterData(data) {
 
     console.log('points', points);
 
-    return (
-        <div>
-            <DisplayMap points={points}/> 
-        </div>
-    )
+        return (
+            <div>
+                <DisplayMap points={points}/> 
+            </div>
+        )
 }
 
 function DisplayMap({points}) {
-    const {viewport, setViewport, sourceRef} = useContext(DiseaseContext);
+    const [viewport,
+        setViewport] = useState({latitude: -5.26601, longitude: 110.25879, zoom: 6, width: '100vw', height: '100vh'});
+        const sourceRef = createRef();
+        const {toast} = useContext(DiseaseContext);
+        
 
     return (<div><ReactMapGL
         {...viewport}
@@ -213,13 +220,22 @@ function DisplayMap({points}) {
             <Layer {...unclusteredPointLayer}/>
         </Source>
 
-    </ReactMapGL></div>
+    </ReactMapGL>
+    {
+    !points.features[0] && (
+        <div>
+        {toast({title: "Data tidak ditemukan.", description: "Tidak ada data untuk pilihan tanggal tersebut.", status: "warning", duration: 9000, isClosable: true})}
+    </div>
+    )
+}
+    </div>
         
     )
 }
 
 function DiseasePicker({kecamatan}) {
-    const {disease, setDisease, district, setDistrict} = useContext(DiseaseContext);
+    const {disease, setDisease, district, setDistrict, startDate, setStartDate} = useContext(DiseaseContext);
+    
     return (
         <SimpleGrid columns={3}>
             <Box>
@@ -248,7 +264,13 @@ function DiseasePicker({kecamatan}) {
                     {kecamatan.map(d => <option value={d} key={d}>{d}</option> )}
                 </Select>
             </Box>
-            <Box></Box>
+            <Box>
+            <DatePicker
+            closeOnScroll={true}
+      selected={startDate}
+      onChange={date => setStartDate(date)}
+    />
+            </Box>
         </SimpleGrid>
 
     )
