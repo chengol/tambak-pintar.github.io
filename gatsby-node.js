@@ -1,5 +1,4 @@
 const path = require('path');
-const axios = require("axios");
 
 module.exports.onCreateNode = ({ node, actions }) => {
     const { createNodeField} = actions
@@ -51,3 +50,4 @@ module.exports.createPages = async ({ graphql, actions }) => {
 
 
 }
+

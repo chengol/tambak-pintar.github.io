@@ -156,7 +156,8 @@ export default function AppPage({data, dataGoogle}) {
           <Header />
             <ReactMapGL {...viewport} 
             mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-            onViewportChange={(viewport)=> {setViewport(viewport)}}>
+            onViewportChange={(viewport)=> {setViewport(viewport)}}
+            onHover={(e)=>{console.log('hover', e)}}>
               {data.allPositive.nodes.map((node) => {
                     return(
                       
