@@ -30,6 +30,7 @@ import DatePicker from "react-datepicker";
 import {isAfter} from 'date-fns';
 import Sidepanel from '../components/Sidepanel';
 import {graphql, useStaticQuery} from 'gatsby';
+import Peta from '../components/Peta';
  
 
 import style from "react-datepicker/dist/react-datepicker.css";
@@ -108,8 +109,8 @@ function DiseaseData() {
       }
     }
   }`);
-  console.log('airtable api', airtableApi);
-  console.log('airtable base', airtableApi.airtable.siteMetadata.airtableBase);
+  // console.log('airtable api', airtableApi);
+  // console.log('airtable base', airtableApi.airtable.siteMetadata.airtableBase);
 
   const url = `https://api.airtable.com/v0/${airtableApi.airtable.siteMetadata.airtableBase}/allRecord?api_key=${airtableApi.airtable.siteMetadata.airtableApi}`;
   const {toast} = useContext(DiseaseContext);
@@ -183,7 +184,9 @@ console.log('points', points);
         <Flex bg="white">
 <Box bg="white" w="360px"><Sidepanel points={points} /></Box>
               <Box bg="white" flex="1" height="100%">
-              <DisplayMap points={points} samples={samples} />
+              {/* <DisplayMap points={points} samples={samples} /> */}
+
+              <Peta points={points} samples={samples} />
                   </Box>
 </Flex>
           
