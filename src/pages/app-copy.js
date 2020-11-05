@@ -3,7 +3,6 @@ import { graphql, useStaticQuery } from 'gatsby'
 import ReactMapGL, {Marker, Layer, Source, Popup} from 'react-map-gl'
 import {Header} from '../components'
 import '../styles/app.css'
-import '../styles/tailwind.css'
 
 export const data = graphql`
 query MyQuery {
