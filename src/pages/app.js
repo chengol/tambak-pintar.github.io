@@ -28,10 +28,12 @@ import '../styles/app.css';
 import {clusterLayer, clusterCountLayer, unclusteredPointLayer} from '../layers/layers';
 import DatePicker from "react-datepicker";
 import {isAfter} from 'date-fns';
-import Sidepanel from '../components/Sidepanel'
+import Sidepanel from '../components/Sidepanel';
+import {graphql, useStaticQuery} from 'gatsby';
  
 
 import style from "react-datepicker/dist/react-datepicker.css";
+
 
 
 export default function AppDynamicData() {
@@ -92,9 +94,24 @@ export function DiseaseProvider({children}) {
 }
 
 const fetcher = (...args) => fetch(...args).then(response => response.json());
-const url = `https://api.airtable.com/v0/appr1brQDGlqRbIOB/allRecord?api_key=${process.env.AIRTABLE_API_KEY}`;
+
+
 
 function DiseaseData() {
+  const airtableApi = useStaticQuery(graphql`
+  query airtableApi {
+    airtable: site {
+      siteMetadata {
+        airtableApi
+        airtableBase
+        mapboxApi
+      }
+    }
+  }`);
+  console.log('airtable api', airtableApi);
+  console.log('airtable base', airtableApi.airtable.siteMetadata.airtableBase);
+
+  const url = `https://api.airtable.com/v0/${airtableApi.airtable.siteMetadata.airtableBase}/allRecord?api_key=${airtableApi.airtable.siteMetadata.airtableApi}`;
   const {toast} = useContext(DiseaseContext);
 
   const {data, error} = useSWR(url);
