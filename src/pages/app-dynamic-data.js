@@ -30,7 +30,10 @@ import {
   StatNumber,
   StatHelpText,
   StatGroup,
-  Spinner
+  Spinner,
+  Text,
+  Square,
+  Center
 } from '@chakra-ui/core';
 import '../styles/app.css';
 import {clusterLayer, clusterCountLayer, unclusteredPointLayer} from '../layers/layers';
@@ -62,12 +65,14 @@ function AppContent() {
                 fetcher,
                 revalidateOnFocus: false
             }}>
-                <SimpleGrid columns={2}>
-                    <Box bg="white" height="100%">
+                <Flex color="white">
+  <Box bg="white" w="360px">Sidepanel</Box>
+                <Box bg="white" flex="1" height="100%">
                         <DiseaseData/>
                     </Box>
-                    <Box bg="white" height="100%"></Box>
-                </SimpleGrid>
+</Flex>
+                
+                    
             </SWRConfig>
 
         </div>
@@ -162,14 +167,21 @@ function FilterData(data) {
     )
 }
 
+function Sidepanel(){
+    return(
+        <div>
+            
+        </div>
+    )
+}
+
 function DisplayMap({diseaseData, samples}) {
     const [viewport,
         setViewport] = useState({
         latitude: -5.26601,
         longitude: 110.25879,
         zoom: 6,
-        width: '100vw',
-        height: '100vh',
+        height: "100vh",
         bearing: 0,
         pitch: 0
     });
@@ -259,8 +271,8 @@ function DisplayMap({diseaseData, samples}) {
     }
 
     return (
-        <div>
-            <ReactMapGL {...viewport} mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN} onViewportChange={(viewport) => {
+        <div id="map" >
+            <ReactMapGL {...viewport} width="100%" height="100%" mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN} onViewportChange={(viewport) => {
                 setViewport(viewport)
             }} interactiveLayerIds={[clusterLayer.id]} 
             // onClick={_getClusterLeaves}} 
@@ -290,6 +302,7 @@ function DisplayMap({diseaseData, samples}) {
                 </div>
             )
 } */}
+            
         </div>
 
     )
@@ -389,12 +402,18 @@ function DiseaseTracker({points}) {
                         <StatHelpText>
                             dari {tracker.total_s} sampel
                         </StatHelpText>
+                        <StatHelpText>
+                            {((tracker.total_p.length / tracker.total_s)*100).toFixed(2)}% Positive rate
+                        </StatHelpText>
                     </Stat>
                     <Stat>
                         <StatLabel>AHPND</StatLabel>
                         <StatNumber>{tracker.AHPND_p.length}</StatNumber>
                         <StatHelpText>
                             dari {tracker.AHPND_s.length} sampel
+                        </StatHelpText>
+                        <StatHelpText>
+                            {((tracker.total_p.length / tracker.total_s)*100).toFixed(2)}% Positive rate
                         </StatHelpText>
                     </Stat>
                     <Stat>
@@ -403,6 +422,9 @@ function DiseaseTracker({points}) {
                         <StatHelpText>
                             dari {tracker.EHP_s.length} sampel
                         </StatHelpText>
+                        <StatHelpText>
+                            {((tracker.EHP_p.length / tracker.EHP_s.length)*100).toFixed(2)}% Positive rate
+                        </StatHelpText>
                     </Stat>
                     <Stat>
                         <StatLabel>IMNV</StatLabel>
@@ -410,12 +432,18 @@ function DiseaseTracker({points}) {
                         <StatHelpText>
                             dari {tracker.IMNV_s.length} sampel
                         </StatHelpText>
+                        <StatHelpText>
+                            {((tracker.IMNV_p.length / tracker.IMNV_s.length)*100).toFixed(2)}% Positive rate
+                        </StatHelpText>
                     </Stat>
                     <Stat>
                         <StatLabel>WSSV</StatLabel>
                         <StatNumber>{tracker.WSSV_p.length}</StatNumber>
                         <StatHelpText>
                             dari {tracker.WSSV_s.length} sampel
+                        </StatHelpText>
+                        <StatHelpText>
+                            {((tracker.WSSV_p.length / tracker.WSSV_s.length)*100).toFixed(2)}% Positive rate
                         </StatHelpText>
                     </Stat>
                 </StatGroup></div>}

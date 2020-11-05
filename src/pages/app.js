@@ -1,232 +1,505 @@
-import React, {useState} from 'react'
-import { graphql, useStaticQuery } from 'gatsby'
-import ReactMapGL, {Marker, Layer, Source, Popup} from 'react-map-gl'
-import {Header} from '../components'
-import '../styles/app.css'
-import '../styles/tailwind.css'
+import React, {
+  useState,
+  useRef,
+  createContext,
+  useContext,
+} from 'react';
+import useSWR, {SWRConfig} from "swr";
+import ReactMapGL, {Layer, Source, NavigationControl} from 'react-map-gl';
+import {Header} from '../components';
+import {
+  SimpleGrid,
+  Box,
+  Skeleton,
+  useToast,
+  Button,
+  Select,
+  Heading,
+  Flex,
+  Stat,
+StatLabel,
+StatNumber,
+StatHelpText,
+StatGroup,
+Spinner,
+Divider
+} from '@chakra-ui/core';
+import '../styles/app.css';
+import {clusterLayer, clusterCountLayer, unclusteredPointLayer} from '../layers/layers';
+import DatePicker from "react-datepicker";
+import {isAfter} from 'date-fns';
+import Sidepanel from '../components/Sidepanel'
+ 
 
-export const data = graphql`
-query MyQuery {
-  allSamples: allAirtable(filter: {table: {eq: "testData"}}) {
-    nodes {
-      data {
-        AHPND_p
-        AHPND_s
-        EHP_p
-        EHP_s
-        IMNV_p
-        IMNV_s
-        Total_p
-        Total_s
-        WSSV_p
-        WSSV_s
-        district
-        Lat
-        Long
-      }
-      id
-    }
-  }
-  allPositive: allAirtable(filter: {data: {Total_p: {gt: 0}}table: {eq: "testData"}}) {
-    nodes {
-      data {
-        AHPND_p
-        AHPND_s
-        EHP_p
-        EHP_s
-        IMNV_p
-        IMNV_s
-        Total_p
-        Total_s
-        WSSV_p
-        WSSV_s
-        district
-        Lat
-        Long
-      }
-      id
-    }
-  }
-  allRecord: allAirtable(filter: {table: {eq: "allRecord"}}) {
-    nodes {
-      data {
-        Provinsi
-        Kabupaten
-        Kecamatan
-        Penyakit
-        Status
-        Lat
-        Long
-      }
-      id
-    }
-  }
+import style from "react-datepicker/dist/react-datepicker.css";
+
+
+export default function AppDynamicData() {
+  return (
+      <div>
+          {/* <Header/> */}
+
+          <DiseaseProvider>
+              <AppContent/>
+          </DiseaseProvider>
+      </div>
+  )
 }
-`
 
+function AppContent() {
+  return (
+      <div>
+          <SWRConfig
+              value={{
+              fetcher,
+              revalidateOnFocus: false
+          }}>
+<DiseaseData/>     
+          </SWRConfig>
 
+      </div>
+  )
+}
 
-/*const virusLayer = {
-    id: 'heatmap',
-    type: 'heatmap',
-    source: 'geojson',
-  paint: {
-    // increase weight as diameter breast height increases
-    'heatmap-weight': {
-      property: 'dbh',
-      type: 'exponential',
-      stops: [
-        [1, 0],
-        [62, 1]
-      ]
-    },
-    // increase intensity as zoom level increases
-    'heatmap-intensity': {
-      stops: [
-        [11, 1],
-        [15, 3]
-      ]
-    },
-    // assign color values be applied to points depending on their density
-    'heatmap-color': [
-      'interpolate',
-      ['linear'],
-      ['heatmap-density'],
-      0, 'rgba(236,222,239,0)',
-      0.2, 'rgb(208,209,230)',
-      0.4, 'rgb(166,189,219)',
-      0.6, 'rgb(103,169,207)',
-      0.8, 'rgb(28,144,153)'
-    ],
-    // increase radius as zoom increases
-    'heatmap-radius': {
-      stops: [
-        [11, 15],
-        [15, 20]
-      ]
-    },
-    // decrease opacity to transition into the circle layer
-    'heatmap-opacity': {
-      default: 1,
-      stops: [
-        [14, 1],
-        [15, 0]
-      ]
-    },
+export const DiseaseContext = createContext();
+
+export function DiseaseProvider({children}) {
+  const [startDate,
+      setStartDate] = useState(new Date());
+  const [disease,
+      setDisease] = useState("Semua Sampel");
+  const [district,
+      setDistrict] = useState("Semua");
+  const toast = useToast();
+
+  const [selectedDistrict,
+      setSelectedDistrict] = useState(null);
+
+  return (
+      <DiseaseContext.Provider
+          value={{
+          disease,
+          setDisease,
+          district,
+          setDistrict,
+          startDate,
+          setStartDate,
+          toast
+      }}>
+          {children}
+      </DiseaseContext.Provider>
+  )
+}
+
+const fetcher = (...args) => fetch(...args).then(response => response.json());
+const url = `https://api.airtable.com/v0/appr1brQDGlqRbIOB/allRecord?api_key=${process.env.AIRTABLE_API_KEY}`;
+
+function DiseaseData() {
+  const {toast} = useContext(DiseaseContext);
+
+  const {data, error} = useSWR(url);
+  if (error) 
+      return <div>{toast({title: "An error occurred.", description: "Unable to get the data.", status: "error", duration: 9000, isClosable: true})}</div>
+  if (!data) {
+      return <div><Flex align="center" justify="center"><Spinner
+      thickness="4px"
+      speed="0.65s"
+      emptyColor="gray.200"
+      color="blue.500"
+      size="xl"
+    /></Flex></div>
   }
 
-}*/
+  return (
+      <div>
+          <FilterData data={data}/>
+      </div>
+  )
+}
 
-/*const geojson = {
-        type: 'FeatureCollection',
-        features: data.allAirtable.nodes.map((node)=>{
-            const lat = node.data.Lat;
-            const lng = node.data.Long;
-            //console.log('lat and long $lat $lng', lat, lng);
-            return{
-                type: 'Feature',
-              properties: {
-                ...node,
-              },
-              geometry: {
+function FilterData(data) {
+  const {disease, district, startDate} = useContext(DiseaseContext);
+  console.log('distrik', district);
+
+  const samples = data.data.records;
+
+  const diseaseData = samples.filter(d => {
+      if (disease === "Semua Sampel" && district === "Semua") {
+          return data && isAfter(startDate, new Date(d.fields.Tanggal));
+      }
+      if (disease === "Semua Sampel" && d.fields.Kecamatan === district) {
+          return data && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
+      }
+      if (disease === "Semua Positif" && district === "Semua") 
+          return d.fields.Status > 0 && isAfter(startDate, new Date(d.fields.Tanggal));
+      if (disease === "Semua Positif" && d.fields.Kecamatan === district) 
+          return d.fields.Status > 0 && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
+      if (disease === disease && district === "Semua") 
+          return d.fields.Status > 0 && d.fields.Penyakit === disease && isAfter(startDate, new Date(d.fields.Tanggal));
+      else {
+          return d.fields.Status > 0 && d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
+      }
+  });
+
+  const points = {
+    type: "FeatureCollection",
+    features: diseaseData.map((point = {}) => {
+        const lat = point.fields.Lat;
+        const lng = point.fields.Long;
+        return {
+            type: 'Feature',
+            properties: {
+                ...point
+            },
+            geometry: {
                 type: 'Point',
                 coordinates: [lng, lat]
-              }
             }
-        })
-      };
-    
-      console.log(geojson);*/
+        }
+    })
+};
+
+console.log('points', points);
+
+  return (
+      <div>
+        <Flex bg="white">
+<Box bg="white" w="360px"><Sidepanel points={points} /></Box>
+              <Box bg="white" flex="1" height="100%">
+              <DisplayMap points={points} samples={samples} />
+                  </Box>
+</Flex>
+          
+      </div>
+  )
+}
+
+function DisplayMap({points, samples}) {
+  const [viewport,
+      setViewport] = useState({
+      latitude: -5.26601,
+      longitude: 110.25879,
+      zoom: 6,
+      height: "100vh",
+      bearing: 0,
+      pitch: 0
+  });
+
+  const {toast} = useContext(DiseaseContext);
+  const sourceRef = useRef();
+
+  console.log(`point peta`, points);
+
+  
+
+  function _getClusterLeaves(e) {
+      console.log('event', e.target.className)
+      if (e.target.className === "overlays") {
+          const feature = e.features[0];
+          if (feature === undefined) {
+              console.log('feature ', feature);
+              // const fields = feature.properties.fields;
+              console.log("not a cluster ");
+          } else {
+              const clusterId = feature.properties.cluster_id;
+              const mapboxSource = sourceRef
+                  .current
+                  .getSource();
+              mapboxSource.getClusterLeaves(clusterId, 100, 0, (error, features) => {
+                  if (error) {
+                      console.log('error', error);
+                      return;
+                  }
+                  console.log('feature', features);
+              });
+          }
+      } else {
+          console.log('bukan cluster ', e.target.className);
+      }
+  }
+
+  function _onViewportChange(viewport) {
+      setViewport(viewport);
+  }
+
+  function _getZoomExpansion(e) {
+      if (e.features !== undefined) {
+          const feature = e.features[0];
+          if (feature === undefined) {
+              console.log('feature ', feature);
+              // const fields = feature.properties.fields;
+              console.log("not a cluster 2");
+          } else {
+              const clusterId = feature.properties.cluster_id;
+              const mapboxSource = sourceRef
+                  .current
+                  .getSource();
+              mapboxSource.getClusterExpansionZoom(clusterId, (error, zoom) => {
+                  if (error) {
+                      return;
+                  }
+                  _onViewportChange({
+                      ...viewport,
+                      longitude: feature.geometry.coordinates[0],
+                      latitude: feature.geometry.coordinates[1],
+                      zoom,
+                      transitionDuration: 500
+                  })
+              });
+          }
+      } else {
+          console.log("not a cluster 1");
+      }
+  }
+
+  console.log('titik peta', points);
+
+  return (
+      <div id="map" >
+          <ReactMapGL {...viewport} width="100%" height="100%" mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN} onViewportChange={(viewport) => {
+              setViewport(viewport)
+          }} interactiveLayerIds={[clusterLayer.id]} 
+          // onClick={_getClusterLeaves}} 
+           onClick={_getZoomExpansion} 
+          // onDblClick={_getZoomExpansion}}
+          >
+              <DiseasePicker
+                  kecamatan={[...new Set(samples.map(d => d.fields.Kecamatan).sort())]}/>
+              <Source
+                  type="geojson"
+                  data={points}
+                  cluster={true}
+                  clusterMaxZoom={14}
+                  clusterRadius={50}
+                  ref={sourceRef}>
+
+                  <Layer {...clusterLayer}/>
+                  <Layer {...clusterCountLayer}/>
+                  <Layer {...unclusteredPointLayer}/>
+              </Source>
+
+              <div style={{position: 'absolute', right: 0, top:72, padding:'10px'}}>
+          <NavigationControl />
+        </div>
+          </ReactMapGL>
+          {/* {!points.features[0] && (
+              <div>
+                  {toast({title: "Data tidak ditemukan.", description: "Tidak ada data untuk pilihan tanggal tersebut.", status: "warning", duration: 1000, isClosable: true})}
+              </div>
+          )
+} */}
+          
+      </div>
+
+  )
+}
+
+// function DiseaseTracker({points}) {
+//   const {disease, district} = useContext(DiseaseContext);
+
+//   let kec = "";
+//   let kab ="";
+//   let prov = "";
+
+//   let tracker = {};
+
+//   if (!points.features[0]) {
+//       console.log('titik tracker 1', points);
+//   } else {
+//       console.log('titik tracker 2', points.features);
+//       tracker = {
+//           total_s: points.features.length,
+//           total_p: points
+//               .features
+//               .filter(d => {
+//                   return d.properties.fields.Status === 1
+//               }),
+//           AHPND_p: points
+//               .features
+//               .filter(d => {
+//                   return d.properties.fields.Penyakit === "AHPND" && d.properties.fields.Status === 1
+//               }),
+//           AHPND_s: points
+//               .features
+//               .filter(d => {
+//                   return d.properties.fields.Penyakit === "AHPND"
+//               }),
+//           EHP_p: points
+//               .features
+//               .filter(d => {
+//                   return d.properties.fields.Penyakit === "EHP" && d.properties.fields.Status === 1
+//               }),
+//           EHP_s: points
+//               .features
+//               .filter(d => {
+//                   return d.properties.fields.Penyakit === "EHP"
+//               }),
+//           IMNV_p: points
+//               .features
+//               .filter(d => {
+//                   return d.properties.fields.Penyakit === "IMNV" && d.properties.fields.Status === 1
+//               }),
+//           IMNV_s: points
+//               .features
+//               .filter(d => {
+//                   return d.properties.fields.Penyakit === "IMNV"
+//               }),
+//           WSSV_p: points
+//               .features
+//               .filter(d => {
+//                   return d.properties.fields.Penyakit === "WSSV" && d.properties.fields.Status === 1
+//               }),
+//           WSSV_s: points
+//               .features
+//               .filter(d => {
+//                   return d.properties.fields.Penyakit === "WSSV"
+//               })
+//       }
+  
+//       console.log('statistik ', tracker);
+  
+//       kec = points.features[0].properties.fields.Kecamatan;
+//       kab = points.features[0].properties.fields.Kabupaten;
+//       prov = points.features[0].properties.fields.Provinsi;
+//   }
+
+//   let location = "";
+
+//   if(district === "Semua"){
+//       location = "Indonesia";
+//   }
+//   else{
+//       location = `${prov}, ${kab}, ${kec}`;
+//   }
+
+  
+
+//   return (
+//       <div>
+//           <SimpleGrid className="tracker-panel">
+//               <Heading as="h1" size="md">Disease Tracker</Heading>
+              
+//               {points.features[0] && <div>
+//                   <Heading as="h5" size="sm" mb={2}>{location}</Heading>
+//               <StatGroup>
+//                   <Stat>
+//                       <StatLabel>Total</StatLabel>
+//                       <StatNumber>{tracker.total_p.length}</StatNumber>
+//                       <StatHelpText>
+//                           dari {tracker.total_s} sampel
+//                       </StatHelpText>
+//                       <StatHelpText>
+//                           {((tracker.total_p.length / tracker.total_s)*100).toFixed(2)}% Positive rate
+//                       </StatHelpText>
+//                   </Stat>
+//                   <Stat>
+//                       <StatLabel>AHPND</StatLabel>
+//                       <StatNumber>{tracker.AHPND_p.length}</StatNumber>
+//                       <StatHelpText>
+//                           dari {tracker.AHPND_s.length} sampel
+//                       </StatHelpText>
+//                       <StatHelpText>
+//                           {((tracker.total_p.length / tracker.total_s)*100).toFixed(2)}% Positive rate
+//                       </StatHelpText>
+//                   </Stat>
+//                   <Stat>
+//                       <StatLabel>EHP</StatLabel>
+//                       <StatNumber>{tracker.EHP_p.length}</StatNumber>
+//                       <StatHelpText>
+//                           dari {tracker.EHP_s.length} sampel
+//                       </StatHelpText>
+//                       <StatHelpText>
+//                           {((tracker.EHP_p.length / tracker.EHP_s.length)*100).toFixed(2)}% Positive rate
+//                       </StatHelpText>
+//                   </Stat>
+//                   <Stat>
+//                       <StatLabel>IMNV</StatLabel>
+//                       <StatNumber>{tracker.IMNV_p.length}</StatNumber>
+//                       <StatHelpText>
+//                           dari {tracker.IMNV_s.length} sampel
+//                       </StatHelpText>
+//                       <StatHelpText>
+//                           {((tracker.IMNV_p.length / tracker.IMNV_s.length)*100).toFixed(2)}% Positive rate
+//                       </StatHelpText>
+//                   </Stat>
+//                   <Stat>
+//                       <StatLabel>WSSV</StatLabel>
+//                       <StatNumber>{tracker.WSSV_p.length}</StatNumber>
+//                       <StatHelpText>
+//                           dari {tracker.WSSV_s.length} sampel
+//                       </StatHelpText>
+//                       <StatHelpText>
+//                           {((tracker.WSSV_p.length / tracker.WSSV_s.length)*100).toFixed(2)}% Positive rate
+//                       </StatHelpText>
+//                   </Stat>
+//               </StatGroup></div>}
+//               {!points.features[0] && <Heading as="h5" size="sm" mb={2}>Tidak ada data penyakit {disease} di daerah {district} 😞</Heading>}
+//           </SimpleGrid>
+//       </div>
+//   );
+
+// }
 
 
+function DiseasePicker({kecamatan}) {
+  const {
+      disease,
+      setDisease,
+      district,
+      setDistrict,
+      startDate,
+      setStartDate
+  } = useContext(DiseaseContext);
 
-export default function AppPage({data, dataGoogle}) {
-    const [viewport, setViewport] = useState({
-        latitude: -5.26601,
-        longitude: 110.25879,
-        zoom: 5,
-        width: '100vw',
-        height: '100vh'
-    });
+  const mystyle = {
+    color: "white",
+    backgroundColor: "DodgerBlue",
+    padding: "10px",
+    fontFamily: "Arial"
+  };
 
-    const [selectedDistrict, setSelectedDistrict] = useState(null);
-
-    return (
-        <div>
-          <Header />
-            <ReactMapGL {...viewport} 
-            mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-            onViewportChange={(viewport)=> {setViewport(viewport)}}
-            onHover={(e)=>{console.log('hover', e)}}>
-              {data.allPositive.nodes.map((node) => {
-                    return(
-                      
-                      <Marker key={node.data.district} latitude={node.data.Lat}
-                      longitude={node.data.Long}>
-                          <div className="marker-btn" onClick={(e)=> {
-                            e.preventDefault();
-                            setSelectedDistrict(node)
-                          }
-                          }>
-                            <span className="icon-marker">{node.data.Total_p}
-                            </span>
-                            </div>
-                      </Marker>
-                      
-                    )
-                    
-                })}
-
-                {selectedDistrict ? (
-                  <div>
-                    <Popup latitude={selectedDistrict.data.Lat} longitude={selectedDistrict.data.Long}
-                  onClose={()=>{
-                    setSelectedDistrict(null);
+  return (
+      <div className="control-panel">
+          <SimpleGrid p={5}>
+              <Box mb={2}>
+                  <Heading as="h4" size="sm" mb={2}>Pilih Penyakit</Heading>
+                  <Select
+                      size="md"
+                      value={disease}
+                      onChange={(e) => {
+                      setDisease(e.target.value)
                   }}>
-                    <div>
-                    <h1>{selectedDistrict.data.district}</h1>
-                        <p>Total sampel: {selectedDistrict.data.Total_s}</p>
-                        <p>AHPND: {selectedDistrict.data.AHPND_p}</p>
-                        <p>EHP: {selectedDistrict.data.EHP_p}</p>
-                        <p>IMNV: {selectedDistrict.data.IMNV_p}</p>
-                        <p>WSSV: {selectedDistrict.data.WSSV_p}</p>
-                    </div>
-                  </Popup>
-                  </div>
-                  ) : null}
+                      <option value='Semua Sampel'>Semua Sampel</option>
+                      <option value='Semua Positif'>Semua Positif</option>
+                      <option value='AHPND'>AHPND</option>
+                      <option value='EHP'>EHP</option>
+                      <option value='IMNV'>IMNV</option>
+                      <option value='WSSV'>WSSV</option>
+                  </Select>
+              </Box>
+              <Box mb={2}>
+                  <Heading as="h4" size="sm" mb={2}>Pilih Daerah</Heading>
+                  <Select
+                      size="md"
+                      value={district}
+                      onChange={(e) => {
+                      setDistrict(e.target.value)
+                  }}>
+                      <option value='Semua'>Semua</option>
+                      {kecamatan.map(d => <option value={d} key={d}>{d}</option>)}
+                  </Select>
+              </Box>
+              <Box mb={2}>
+                  <Heading as="h4" size="sm" mb={2}>Pilih Tanggal</Heading>
+                  <DatePicker
+                      closeOnScroll={true}
+                      selected={startDate}
+                      onChange={date => setStartDate(date)}
+                      style={mystyle} />
+              </Box>
+          </SimpleGrid>
+      </div>
 
-{selectedDistrict ? (
-                  <div className="control-panel">
-                  <h1>{selectedDistrict.data.district}</h1>
-                        <p>Total sampel: {selectedDistrict.data.Total_s}</p>
-                        <p>AHPND: {selectedDistrict.data.AHPND_p}</p>
-                        <p>EHP: {selectedDistrict.data.EHP_p}</p>
-                        <p>IMNV: {selectedDistrict.data.IMNV_p}</p>
-                        <p>WSSV: {selectedDistrict.data.WSSV_p}</p>
-                        </div>
-                  ) : null}
-                
-            </ReactMapGL>
-            <ol>
-                {data.allSamples.nodes.map((node) => {
-                    return(
-                        <div key={node.id}>
-                            <p>{node.id}</p>
-                        <h2>{node.data.district}</h2>
-                        <p>AHPND positif{node.data.AHPND_p}</p>
-                        <p>AHPND sampel{node.data.AHPND_s}</p>
-                        <p>Lokasi</p>
-                        <p>{node.data.Lat}</p>
-                        <p>{node.data.Long}</p>
-                        <br></br>
+  )
 
-                        </div>
-                        
-                        
-            
-                    )
-                })}
-            </ol>
-      </div>     
-    )
 }

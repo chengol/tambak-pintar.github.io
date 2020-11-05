@@ -3,6 +3,7 @@
  *
  * See: https://www.gatsbyjs.com/docs/gatsby-config/
  */
+const path = require(`path`)
 
 require("dotenv").config({
   path: `.env.${process.env.NODE_ENV}`,
@@ -38,8 +39,16 @@ module.exports = {
       options: {
         name: 'src',
         path: `${__dirname}/src/`
-      } 
+      }
     },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'images',
+        path: `${__dirname}/src/images`,
+      }
+    },
+    `gatsby-transformer-sharp`, `gatsby-plugin-sharp`,
     {
       resolve: `gatsby-transformer-remark`,
       options: {
@@ -56,13 +65,14 @@ module.exports = {
       },
     },
     {
-      resolve: "gatsby-plugin-react-svg",
+      resolve: `gatsby-plugin-react-svg`,
       options: {
         rule: {
           include: /assets/
         }
       }
     },
-      "gatsby-plugin-chakra-ui"
+      `gatsby-plugin-chakra-ui`,
+      
   ]
 }
