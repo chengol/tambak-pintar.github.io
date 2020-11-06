@@ -26,7 +26,7 @@ export default function Peta({points, samples}) {
     });
 
     const query = useStaticQuery(graphql `
-  query mapboxApi {
+  query peta2 {
     site {
         siteMetadata {
           airtableApi
@@ -37,7 +37,7 @@ export default function Peta({points, samples}) {
   logo: file(relativePath: {eq: "assets/tambakpintar.png"}) {
       id
       childImageSharp {
-        fixed(width: 60, height: 60) {
+        fixed(width: 70, height: 70) {
           ...GatsbyImageSharpFixed
         }
       }
@@ -49,13 +49,16 @@ export default function Peta({points, samples}) {
         setViewport(viewport);
     }
 
-    // console.log(`point peta`, points);
+    console.log(`point peta`, points);
+
+    let clusterFeatures = {};
 
     function _getClusterLeaves(e) {
         console.log('event', e.target.className)
         if (e.target.className === "overlays") {
             const feature = e.features[0];
             if (feature === undefined) {
+                console.log('feature ', feature);
                 console.log('e ', e);
                 // const fields = feature.properties.fields;
                 console.log("not a cluster ");
@@ -69,7 +72,8 @@ export default function Peta({points, samples}) {
                         console.log('error', error);
                         return;
                     }
-                    console.log('feature', features);
+                    clusterFeatures = features;
+                    console.log('feature', clusterFeatures);
                 });
                 mapboxSource.getClusterExpansionZoom(clusterId, (error, zoom) => {
                     if (error) {
@@ -84,18 +88,51 @@ export default function Peta({points, samples}) {
                         transitionDuration: 500
                     })
                 });
+
             }
-        } 
+        } else {
+            console.log('bukan cluster ', e.target.className);
+        }
     }
 
+    function _getZoomExpansion(e) {
+        console.log('event', e)
+        if (e.features !== undefined) {
+            const feature = e.features[0];
+            if (feature === undefined) {
+                console.log('feature ', feature);
+                // const fields = feature.properties.fields;
+                console.log("not a cluster 2");
+            } else {
+                const clusterId = feature.properties.cluster_id;
+                const mapboxSource = sourceRef
+                    .current
+                    .getSource();
+                mapboxSource.getClusterExpansionZoom(clusterId, (error, zoom) => {
+                    if (error) {
+                        return;
+                    }
+                    _onViewportChange({
+                        ...viewport,
+                        longitude: feature.geometry.coordinates[0],
+                        latitude: feature.geometry.coordinates[1],
+                        zoom,
+                        transitionDuration: 500
+                    })
+                });
+            }
+        } else {
+            console.log("not a cluster 1");
+        }
+    }
     return (
         <Box>
             <Box display={{lg:"none"}}>
             <Flex columns={2}>
-            <Box p={2} m={2} pb={0} mb={0} w="60px">
+            <Box p={2} m={2} pb={0} w="60px">
           <Img fixed={query.logo.childImageSharp.fixed} />
         </Box>
-        <Box m={2} p={2} pb={2} mb={0} flex="1">
+        <Box m={2} p={2} pb={2} flex="1">
         <Heading as="h3" size="md" mb={0}>Peta Distribusi</Heading>
                     <Heading as="h4" size="md" mb={2}>Penyakit Udang</Heading>
         </Box>
@@ -208,7 +245,7 @@ export default function Peta({points, samples}) {
                         <Heading as="h6" size="xs" mb={2}>Penyakit</Heading>
                         <Select
                         p={1}
-
+                        // variant="unstyled"
                             size="md"
                             value={disease}
                             onChange={(e) => {
@@ -226,7 +263,7 @@ export default function Peta({points, samples}) {
                         <Heading as="h6" size="xs" mb={2}>Daerah</Heading>
                         <Select
                         p={1}
-
+                        // variant="unstyled"
                             size="md"
                             value={district}
                             onChange={(e) => {

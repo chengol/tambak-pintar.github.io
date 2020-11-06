@@ -20,6 +20,18 @@ export const clusterLayer = {
       'text-size': 12
     }
   };
+
+  export const unclusterCountLayer = {
+    id: 'unclustered-count',
+    type: 'symbol',
+    source: 'earthquake',
+    filter: ['!',  ['has', 'point_count']],
+    layout: {
+      'text-field': '{point_count_abbreviated}',
+      'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+      'text-size': 12
+    }
+  };
   
   export const unclusteredPointLayer = {
     id: 'unclustered-point',
@@ -28,7 +40,7 @@ export const clusterLayer = {
     filter: ['!', ['has', 'point_count']],
     paint: {
       'circle-color': '#ffcdd8',
-      'circle-radius': 4,
+      'circle-radius': 8,
       'circle-stroke-width': 1,
       'circle-stroke-color': '#fff'
     }

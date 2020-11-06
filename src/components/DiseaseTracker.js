@@ -3,14 +3,12 @@ import {
     SimpleGrid,
     Heading,
     Stat,
-    StatLabel,
-    StatNumber,
-    StatHelpText,
     StatGroup,
     Box,
     Alert,
     AlertIcon,
-    Text
+    Text,
+    Divider
 } from '@chakra-ui/core';
 
 import {DiseaseContext} from '../pages/app'
@@ -23,14 +21,14 @@ export default function DiseaseTracker({points}) {
     let kab = "";
     let prov = "";
 
-    console.log(`point statistik`, points);
+    // console.log(`point statistik`, points);
 
     let tracker = {};
 
     if (!points.features[0]) {
-        console.log('titik tracker 1', points);
+        // console.log('titik tracker 1', points);
     } else {
-        console.log('titik tracker 2', points.features);
+        // console.log('titik tracker 2', points.features);
         tracker = {
             total_s: points.features.length,
             total_p: points
@@ -80,30 +78,24 @@ export default function DiseaseTracker({points}) {
                 })
         }
 
-        console.log('statistik ', tracker);
+        // console.log('statistik ', tracker);
 
         kec = points.features[0].properties.fields.Kecamatan;
         kab = points.features[0].properties.fields.Kabupaten;
         prov = points.features[0].properties.fields.Provinsi;
     }
 
-    console.log("district", district);
-
-    let location = "";
-
-    if (district === "Semua") {
-        location = "Indonesia";
-    } else {
-        location = `${prov}, ${kab}, ${kec}`;
-    }
+    // console.log("district", district);
 
     return (
         <div >
-            <SimpleGrid mt={1} pt={1} className="tracker-panel">
+            <SimpleGrid mt={{xl: 1, sm:5, md: 1, xs: 5}} pt={1} p={{xs: 0, base: 5}} className="tracker-panel">
                 {points.features[0] && <div>
                     <Heading as="h3" size="xl" mb={0}>{(district === "Semua")? "Indonesia" : `${kec}`}</Heading>
                     <Heading as="h4" size="md" mb={2}>{(district === "Semua") ? "" : `${kab}, ${prov}`}</Heading>
-                    
+                    <Box display={{lg:"none"}}>
+                        <Divider />
+                    </Box>
                     <SimpleGrid columns={2} spacing={3} style={{overflow:"auto"}}>
                         <Box>
                             <Text fontSize="md" color="grey.500">Total</Text>

@@ -3,7 +3,7 @@ body {
 }
 #map {
   /* width: 100vw; */
-  height: 100vh;
+  /* height: 100vh; */
 }
 
 .icon-marker {
@@ -42,6 +42,17 @@ body {
     color: #6b6b76;
     outline: none;
     border-radius: 15px;
+  }
+
+  .disease-filter-res {
+    background: #fff;
+    /* max-width: 500px; */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    padding: 12px 12px;
+    margin: 0px;
+    line-height: 2;
+    color: #6b6b76;
+    outline: none;
   }
 
   .tracker-panel {

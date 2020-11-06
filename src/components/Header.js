@@ -6,7 +6,6 @@ import {
     Heading,
     Text,
     Button,
-    Spacer
 } from '@chakra-ui/core'
 
 const MenuItems = props => {
