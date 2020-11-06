@@ -203,7 +203,7 @@ export default function Peta({points, samples}) {
                 </SimpleGrid>
             </Box>
             <Box display={{ lg:"none"}}>
-            <SimpleGrid columns={2} spacing={2} className="disease-filter-res">
+            <SimpleGrid columns={2} spacing={2} pr={{xs:4}} pl={{xs:4}} className="disease-filter-res">
             <Box mb={2} w="100%">
                         <Heading as="h6" size="xs" mb={2}>Penyakit</Heading>
                         <Select

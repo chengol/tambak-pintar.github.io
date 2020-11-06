@@ -89,7 +89,7 @@ export default function DiseaseTracker({points}) {
 
     return (
         <div >
-            <SimpleGrid mt={{xl: 1, sm:5, md: 1, xs: 5}} pt={1} p={{xs: 0, base: 5}} className="tracker-panel">
+            <SimpleGrid mt={{xl: 1}} pt={1} m={{sm:5, xs:5, md:3}} p={{xs: 0, base: 5}} className="tracker-panel">
                 {points.features[0] && <div>
                     <Heading as="h3" size="xl" mb={0}>{(district === "Semua")? "Indonesia" : `${kec}`}</Heading>
                     <Heading as="h4" size="md" mb={2}>{(district === "Semua") ? "" : `${kab}, ${prov}`}</Heading>

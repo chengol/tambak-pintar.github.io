@@ -171,7 +171,7 @@ function FilterData(data) {
                     <Peta points={points} samples={samples}/>
                 </Box>
             </Flex>
-            <Box
+            <Box id="headbottom"
                 bg="white"
                 display={{
                 xs: "block",

@@ -4,10 +4,8 @@ import DiseaseTracker from './DiseaseTracker';
 
 export default function Bottompanel({points}) {
     return (
-        <div>
-        <Box m={{sm:5}}>
+        <Box id="bottompanel">
         <DiseaseTracker  points={points}/>
         </Box>       
-      </div>
     )
 }
