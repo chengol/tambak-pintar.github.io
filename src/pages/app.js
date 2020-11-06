@@ -6,6 +6,7 @@ import {
     useToast,
     Flex,
     Spinner,
+    Heading
 } from '@chakra-ui/core';
 import '../styles/app.css';
 import {isAfter} from 'date-fns';
@@ -95,7 +96,8 @@ function DiseaseData() {
         return <div>{toast({title: "An error occurred.", description: "Unable to get the data.", status: "error", duration: 9000, isClosable: true})}</div>
     if (!data) {
         return <div>
-            <Flex align="center" justify="center"><Spinner
+            <Flex position="absolute" style={{top:"50%",left:"50%" }}>
+                <Spinner 
                 thickness="4px"
                 speed="0.65s"
                 emptyColor="gray.200"
