@@ -159,9 +159,8 @@ function FilterData(data) {
 
     return (
         <div>
-            <Flex bg="white" wrap="wrap">
+            <Flex wrap="wrap">
                 <Box
-                    bg="white"
                     w="360px"
                     display={{
                     xs: "none",
@@ -169,12 +168,11 @@ function FilterData(data) {
                     md: "none",
                     lg: "block"
                 }}><Sidepanel points={points}/></Box>
-                <Box bg="white" flex="1">
+                <Box flex="1">
                     <Peta points={points} samples={samples}/>
                 </Box>
             </Flex>
             <Box id="headbottom"
-                bg="white"
                 display={{
                 xs: "block",
                 sm: "block",

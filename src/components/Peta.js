@@ -6,6 +6,7 @@ import {
     Select,
     Heading,
     Flex,
+    useColorMode, Input
 } from '@chakra-ui/core';
 import {clusterLayer, clusterCountLayer, unclusteredPointLayer, unclusterCountLayer} from '../layers/layers';
 import '../styles/app.css';
@@ -160,10 +161,15 @@ export default function Peta({points, samples}) {
             fontFamily: "Arial"
         };
 
+        const { colorMode } = useColorMode();
+        const CustomInput = ({ value, onClick }) => (
+          <Input sz="md" value={value} onClick={onClick}/>
+        )
+
         return (
             <Box>
                 <Box display={{sm:"none", xs:"none", lg:"block"}}>
-                <SimpleGrid p={5} className="control-panel">
+                <SimpleGrid p={5} className="control-panel" bg={colorMode === 'dark' ? 'gray.800' : 'white'}>
                     <Box mb={2}>
                         <Heading as="h4" size="sm" mb={2}>Pilih Penyakit</Heading>
                         <Select
@@ -198,7 +204,7 @@ export default function Peta({points, samples}) {
                             closeOnScroll={true}
                             selected={startDate}
                             onChange={date => setStartDate(date)}
-                            style={mystyle}/>
+                            customInput={<CustomInput/>}/>
                     </Box>
                 </SimpleGrid>
             </Box>
