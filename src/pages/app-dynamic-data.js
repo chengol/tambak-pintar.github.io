@@ -4,7 +4,8 @@ import React, {
     useEffect,
     createContext,
     useContext,
-    createRef
+    createRef,
+    PureComponent
 } from 'react';
 import useSWR, {SWRConfig} from "swr";
 import ReactMapGL, {Marker, Layer, Source, Popup, FlyToInterpolator} from 'react-map-gl';
@@ -17,7 +18,22 @@ import {
     Button,
     Select,
     Heading,
-    Flex
+    Flex,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    MenuOptionGroup,
+    MenuItemOption,
+    Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
+  StatGroup,
+  Spinner,
+  Text,
+  Square,
+  Center
 } from '@chakra-ui/core';
 import '../styles/app.css';
 import {clusterLayer, clusterCountLayer, unclusteredPointLayer} from '../layers/layers';
@@ -28,13 +44,12 @@ import "react-datepicker/dist/react-datepicker.css";
 
 //
 
-
 export default function AppDynamicData() {
-    
+
     return (
         <div>
             <Header/>
-            
+
             <DiseaseProvider>
                 <AppContent/>
             </DiseaseProvider>
@@ -45,15 +60,19 @@ export default function AppDynamicData() {
 function AppContent() {
     return (
         <div>
-            <SWRConfig value={{
-                fetcher
+            <SWRConfig
+                value={{
+                fetcher,
+                revalidateOnFocus: false
             }}>
-                <SimpleGrid columns={2}>
-                    <Box bg="white" height="100%">
+                <Flex color="white">
+  <Box bg="white" w="360px">Sidepanel</Box>
+                <Box bg="white" flex="1" height="100%">
                         <DiseaseData/>
                     </Box>
-                    <Box bg="white" height="100%"></Box>
-                </SimpleGrid>
+</Flex>
+                
+                    
             </SWRConfig>
 
         </div>
@@ -63,15 +82,17 @@ function AppContent() {
 const DiseaseContext = createContext();
 
 function DiseaseProvider({children}) {
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate,
+        setStartDate] = useState(new Date());
     const [disease,
         setDisease] = useState("Semua Sampel");
-    const [district, setDistrict] = useState("Semua");
+    const [district,
+        setDistrict] = useState("Semua");
     const toast = useToast();
-    
+
     const [selectedDistrict,
         setSelectedDistrict] = useState(null);
-    
+
     return (
         <DiseaseContext.Provider
             value={{
@@ -91,8 +112,6 @@ function DiseaseProvider({children}) {
 const fetcher = (...args) => fetch(...args).then(response => response.json());
 const url = `https://api.airtable.com/v0/appr1brQDGlqRbIOB/allRecord?api_key=${process.env.AIRTABLE_API_KEY}`;
 
-
-
 function DiseaseData() {
     const {toast} = useContext(DiseaseContext);
 
@@ -100,52 +119,75 @@ function DiseaseData() {
     if (error) 
         return <div>{toast({title: "An error occurred.", description: "Unable to get the data.", status: "error", duration: 9000, isClosable: true})}</div>
     if (!data) {
-        return <div><Skeleton height='100vh'/></div>
+        return <div><Flex align="center" justify="center"><Spinner
+        thickness="4px"
+        speed="0.65s"
+        emptyColor="gray.200"
+        color="blue.500"
+        size="xl"
+      /></Flex></div>
     }
-    
-    return (
-        <div>
-            <DiseasePicker kecamatan={[...new Set(data.records.map(d => d.fields.Kecamatan).sort())]} />
-            <FilterData data={data} />
-        </div>
-    )
-}
 
-function DistrictPicker({kecamatan}){
-    console.log('data kecamatan',kecamatan);
     return (
         <div>
-            
+
+            <FilterData data={data}/>
         </div>
     )
 }
 
 function FilterData(data) {
     const {disease, district, startDate} = useContext(DiseaseContext);
-    
-    const tanggal = formatISO(startDate, { representation: 'date' });
+    console.log('distrik', district);
 
     const samples = data.data.records;
-    // console.log(`samples `, isValid(new Date(samples[0].fields.Tanggal)));
-    const tanggalA = new Date(samples[0].fields.Tanggal);
 
     const diseaseData = samples.filter(d => {
-        if (disease === "Semua Sampel" && district === "Semua"){
-          return data && isAfter(startDate, new Date(d.fields.Tanggal));
+        if (disease === "Semua Sampel" && district === "Semua") {
+            return data && isAfter(startDate, new Date(d.fields.Tanggal));
         }
-        if (disease === "Semua Sampel" && d.fields.Kecamatan === district){
+        if (disease === "Semua Sampel" && d.fields.Kecamatan === district) {
             return data && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
         }
-        if (disease === "Semua Positif" && district === "Semua" ) 
+        if (disease === "Semua Positif" && district === "Semua") 
             return d.fields.Status > 0 && isAfter(startDate, new Date(d.fields.Tanggal));
-        if (disease === "Semua Positif" && d.fields.Kecamatan === district ) 
+        if (disease === "Semua Positif" && d.fields.Kecamatan === district) 
             return d.fields.Status > 0 && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
-        if (disease === disease && district === "Semua" ) 
+        if (disease === disease && district === "Semua") 
             return d.fields.Status > 0 && d.fields.Penyakit === disease && isAfter(startDate, new Date(d.fields.Tanggal));
         else {
             return d.fields.Status > 0 && d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
         }
     })
+
+    return (
+        <div>
+            <DisplayMap diseaseData={diseaseData} samples={samples}/>
+        </div>
+    )
+}
+
+function Sidepanel(){
+    return(
+        <div>
+            
+        </div>
+    )
+}
+
+function DisplayMap({diseaseData, samples}) {
+    const [viewport,
+        setViewport] = useState({
+        latitude: -5.26601,
+        longitude: 110.25879,
+        zoom: 6,
+        height: "100vh",
+        bearing: 0,
+        pitch: 0
+    });
+
+    const {toast} = useContext(DiseaseContext);
+    const sourceRef = useRef();
 
     const points = {
         type: "FeatureCollection",
@@ -167,111 +209,301 @@ function FilterData(data) {
 
     console.log('points', points);
 
-        return (
-            <div>
-                <DisplayMap points={points}/> 
-            </div>
-        )
-}
-
-function DisplayMap({points}) {
-    const [viewport,
-        setViewport] = useState({latitude: -5.26601, longitude: 110.25879, zoom: 6, width: '100vw', height: '100vh'});
-        const sourceRef = createRef();
-        const {toast} = useContext(DiseaseContext);
-        
-
-    return (<div><ReactMapGL
-        {...viewport}
-        mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-        onViewportChange={(viewport) => {
-        setViewport(viewport)
-    }}
-        interactiveLayerIds={[clusterLayer.id, unclusteredPointLayer.id]}
-        onClick={(e) => {
-        console.log('event', e)
-        const feature = e.features[0];
-        if (!feature.properties.cluster_id) {
-            const fields = feature.properties.fields;
-            console.log("not a cluster ", fields);
+    function _getClusterLeaves(e) {
+        console.log('event', e.target.className)
+        if (e.target.className === "overlays") {
+            const feature = e.features[0];
+            if (feature === undefined) {
+                console.log('feature ', feature);
+                // const fields = feature.properties.fields;
+                console.log("not a cluster ");
+            } else {
+                const clusterId = feature.properties.cluster_id;
+                const mapboxSource = sourceRef
+                    .current
+                    .getSource();
+                mapboxSource.getClusterLeaves(clusterId, 100, 0, (error, features) => {
+                    if (error) {
+                        console.log('error', error);
+                        return;
+                    }
+                    console.log('feature', features);
+                });
+            }
         } else {
-            const clusterId = feature.properties.cluster_id;
-            const mapboxSource = sourceRef
-                .current
-                .getSource();
-            mapboxSource.getClusterLeaves(clusterId, 100, 0, (error, features) => {
-                if (error) {
-                    console.log('error', error);
-                    return;
-                }
-                console.log('feature', features);
-            });
+            console.log('bukan cluster ', e.target.className);
         }
-    }}>
-        <Source
-            type="geojson"
-            data={points}
-            cluster={true}
-            clusterMaxZoom={20}
-            clusterRadius={50}
-            ref={sourceRef}>
-            <Layer {...clusterLayer}/>
-            <Layer {...clusterCountLayer}/>
-            <Layer {...unclusteredPointLayer}/>
-        </Source>
+    }
 
-    </ReactMapGL>
-    {
-    !points.features[0] && (
-        <div>
-        {toast({title: "Data tidak ditemukan.", description: "Tidak ada data untuk pilihan tanggal tersebut.", status: "warning", duration: 9000, isClosable: true})}
-    </div>
+    function _onViewportChange(viewport) {
+        setViewport(viewport);
+    }
+
+    function _getZoomExpansion(e) {
+        if (e.features !== undefined) {
+            const feature = e.features[0];
+            if (feature === undefined) {
+                console.log('feature ', feature);
+                // const fields = feature.properties.fields;
+                console.log("not a cluster 2");
+            } else {
+                const clusterId = feature.properties.cluster_id;
+                const mapboxSource = sourceRef
+                    .current
+                    .getSource();
+                mapboxSource.getClusterExpansionZoom(clusterId, (error, zoom) => {
+                    if (error) {
+                        return;
+                    }
+                    _onViewportChange({
+                        ...viewport,
+                        longitude: feature.geometry.coordinates[0],
+                        latitude: feature.geometry.coordinates[1],
+                        zoom,
+                        transitionDuration: 500
+                    })
+                });
+            }
+        } else {
+            console.log("not a cluster 1");
+        }
+
+    }
+
+    return (
+        <div id="map" >
+            <ReactMapGL {...viewport} width="100%" height="100%" mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN} onViewportChange={(viewport) => {
+                setViewport(viewport)
+            }} interactiveLayerIds={[clusterLayer.id]} 
+            // onClick={_getClusterLeaves}} 
+            // onClick={_getZoomExpansion}} 
+            // onDblClick={_getZoomExpansion}}
+            >
+                <DiseasePicker
+                    kecamatan={[...new Set(samples.map(d => d.fields.Kecamatan).sort())]}/>
+                <DiseaseTracker points={points}/>
+
+                <Source
+                    type="geojson"
+                    data={points}
+                    cluster={true}
+                    clusterMaxZoom={14}
+                    clusterRadius={50}
+                    ref={sourceRef}>
+
+                    <Layer {...clusterLayer}/>
+                    <Layer {...clusterCountLayer}/>
+                    <Layer {...unclusteredPointLayer}/>
+                </Source>
+            </ReactMapGL>
+            {/* {!points.features[0] && (
+                <div>
+                    {toast({title: "Data tidak ditemukan.", description: "Tidak ada data untuk pilihan tanggal tersebut.", status: "warning", duration: 1000, isClosable: true})}
+                </div>
+            )
+} */}
+            
+        </div>
+
     )
 }
-    </div>
-        
-    )
+
+function DiseaseTracker({points}) {
+    const {disease, district} = useContext(DiseaseContext);
+
+    let kec = "";
+    let kab ="";
+    let prov = "";
+
+    let tracker = {};
+
+    if (!points.features[0]) {
+        console.log('titik tracker 1', points);
+    } else {
+        console.log('titik tracker 2', points.features);
+        tracker = {
+            total_s: points.features.length,
+            total_p: points
+                .features
+                .filter(d => {
+                    return d.properties.fields.Status === 1
+                }),
+            AHPND_p: points
+                .features
+                .filter(d => {
+                    return d.properties.fields.Penyakit === "AHPND" && d.properties.fields.Status === 1
+                }),
+            AHPND_s: points
+                .features
+                .filter(d => {
+                    return d.properties.fields.Penyakit === "AHPND"
+                }),
+            EHP_p: points
+                .features
+                .filter(d => {
+                    return d.properties.fields.Penyakit === "EHP" && d.properties.fields.Status === 1
+                }),
+            EHP_s: points
+                .features
+                .filter(d => {
+                    return d.properties.fields.Penyakit === "EHP"
+                }),
+            IMNV_p: points
+                .features
+                .filter(d => {
+                    return d.properties.fields.Penyakit === "IMNV" && d.properties.fields.Status === 1
+                }),
+            IMNV_s: points
+                .features
+                .filter(d => {
+                    return d.properties.fields.Penyakit === "IMNV"
+                }),
+            WSSV_p: points
+                .features
+                .filter(d => {
+                    return d.properties.fields.Penyakit === "WSSV" && d.properties.fields.Status === 1
+                }),
+            WSSV_s: points
+                .features
+                .filter(d => {
+                    return d.properties.fields.Penyakit === "WSSV"
+                })
+        }
+    
+        console.log('statistik ', tracker);
+    
+        kec = points.features[0].properties.fields.Kecamatan;
+        kab = points.features[0].properties.fields.Kabupaten;
+        prov = points.features[0].properties.fields.Provinsi;
+    }
+
+    let location = "";
+
+    if(district === "Semua"){
+        location = "Indonesia";
+    }
+    else{
+        location = `${prov}, ${kab}, ${kec}`;
+    }
+
+    
+
+    return (
+        <div>
+            <SimpleGrid className="tracker-panel">
+                <Heading as="h1" size="md">Disease Tracker</Heading>
+                
+                {points.features[0] && <div>
+                    <Heading as="h5" size="sm" mb={2}>{location}</Heading>
+                <StatGroup>
+                    <Stat>
+                        <StatLabel>Total</StatLabel>
+                        <StatNumber>{tracker.total_p.length}</StatNumber>
+                        <StatHelpText>
+                            dari {tracker.total_s} sampel
+                        </StatHelpText>
+                        <StatHelpText>
+                            {((tracker.total_p.length / tracker.total_s)*100).toFixed(2)}% Positive rate
+                        </StatHelpText>
+                    </Stat>
+                    <Stat>
+                        <StatLabel>AHPND</StatLabel>
+                        <StatNumber>{tracker.AHPND_p.length}</StatNumber>
+                        <StatHelpText>
+                            dari {tracker.AHPND_s.length} sampel
+                        </StatHelpText>
+                        <StatHelpText>
+                            {((tracker.total_p.length / tracker.total_s)*100).toFixed(2)}% Positive rate
+                        </StatHelpText>
+                    </Stat>
+                    <Stat>
+                        <StatLabel>EHP</StatLabel>
+                        <StatNumber>{tracker.EHP_p.length}</StatNumber>
+                        <StatHelpText>
+                            dari {tracker.EHP_s.length} sampel
+                        </StatHelpText>
+                        <StatHelpText>
+                            {((tracker.EHP_p.length / tracker.EHP_s.length)*100).toFixed(2)}% Positive rate
+                        </StatHelpText>
+                    </Stat>
+                    <Stat>
+                        <StatLabel>IMNV</StatLabel>
+                        <StatNumber>{tracker.IMNV_p.length}</StatNumber>
+                        <StatHelpText>
+                            dari {tracker.IMNV_s.length} sampel
+                        </StatHelpText>
+                        <StatHelpText>
+                            {((tracker.IMNV_p.length / tracker.IMNV_s.length)*100).toFixed(2)}% Positive rate
+                        </StatHelpText>
+                    </Stat>
+                    <Stat>
+                        <StatLabel>WSSV</StatLabel>
+                        <StatNumber>{tracker.WSSV_p.length}</StatNumber>
+                        <StatHelpText>
+                            dari {tracker.WSSV_s.length} sampel
+                        </StatHelpText>
+                        <StatHelpText>
+                            {((tracker.WSSV_p.length / tracker.WSSV_s.length)*100).toFixed(2)}% Positive rate
+                        </StatHelpText>
+                    </Stat>
+                </StatGroup></div>}
+                {!points.features[0] && <Heading as="h5" size="sm" mb={2}>Tidak ada data penyakit {disease} di daerah {district} 😞</Heading>}
+            </SimpleGrid>
+        </div>
+    );
+
 }
 
 function DiseasePicker({kecamatan}) {
-    const {disease, setDisease, district, setDistrict, startDate, setStartDate} = useContext(DiseaseContext);
-    
+    const {
+        disease,
+        setDisease,
+        district,
+        setDistrict,
+        startDate,
+        setStartDate
+    } = useContext(DiseaseContext);
+
     return (
-        <SimpleGrid columns={3}>
-            <Box>
-                <Select
-                    size="md"
-                    value={disease}
-                    onChange={(e) => {
-                    setDisease(e.target.value)
-                }}>
-                    <option value='Semua Sampel'>Semua Sampel</option>
-                    <option value='Semua Positif'>Semua Positif</option>
-                    <option value='AHPND'>AHPND</option>
-                    <option value='EHP'>EHP</option>
-                    <option value='IMNV'>IMNV</option>
-                    <option value='WSSV'>WSSV</option>
-                </Select>
-            </Box>
-            <Box>
-            <Select
-                    size="md"
-                    value={district}
-                    onChange={(e) => {
-                    setDistrict(e.target.value)
-                }}>
-                    <option value='Semua'>Semua</option>
-                    {kecamatan.map(d => <option value={d} key={d}>{d}</option> )}
-                </Select>
-            </Box>
-            <Box>
-            <DatePicker
-            closeOnScroll={true}
-      selected={startDate}
-      onChange={date => setStartDate(date)}
-    />
-            </Box>
-        </SimpleGrid>
+        <div className="control-panel">
+            <SimpleGrid p={5}>
+                <Box mb={2}>
+                    <Heading as="h4" size="sm" mb={2}>Pilih Penyakit</Heading>
+                    <Select
+                        size="md"
+                        value={disease}
+                        onChange={(e) => {
+                        setDisease(e.target.value)
+                    }}>
+                        <option value='Semua Sampel'>Semua Sampel</option>
+                        <option value='Semua Positif'>Semua Positif</option>
+                        <option value='AHPND'>AHPND</option>
+                        <option value='EHP'>EHP</option>
+                        <option value='IMNV'>IMNV</option>
+                        <option value='WSSV'>WSSV</option>
+                    </Select>
+                </Box>
+                <Box mb={2}>
+                    <Heading as="h4" size="sm" mb={2}>Pilih Daerah</Heading>
+                    <Select
+                        size="md"
+                        value={district}
+                        onChange={(e) => {
+                        setDistrict(e.target.value)
+                    }}>
+                        <option value='Semua'>Semua</option>
+                        {kecamatan.map(d => <option value={d} key={d}>{d}</option>)}
+                    </Select>
+                </Box>
+                <Box mb={2}>
+                    <Heading as="h4" size="sm" mb={2}>Pilih Tanggal</Heading>
+                    <DatePicker
+                        closeOnScroll={true}
+                        selected={startDate}
+                        onChange={date => setStartDate(date)}/>
+                </Box>
+            </SimpleGrid>
+        </div>
 
     )
 
