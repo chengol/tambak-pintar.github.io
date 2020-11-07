@@ -1,19 +1,19 @@
 import React, {useState, createContext, useContext} from 'react';
 import useSWR, {SWRConfig} from "swr";
-import {Header} from '../components';
+// import {Header} from '../components';
 import {
     Box,
     useToast,
     Flex,
     Spinner,
-    Heading
+    // Heading
 } from '@chakra-ui/core';
 import '../styles/app.css';
 import {isAfter} from 'date-fns';
 import Sidepanel from '../components/Sidepanel';
 import {graphql, useStaticQuery} from 'gatsby';
 import Peta from '../components/Peta';
-import Peta2 from '../components/Peta2';
+// import Peta2 from '../components/Peta2';
 import Bottompanel from '../components/Bottompanel';
 
 export default function AppDynamicData() {
@@ -53,8 +53,8 @@ export function DiseaseProvider({children}) {
         setDistrict] = useState("Semua");
     const toast = useToast();
 
-    const [selectedDistrict,
-        setSelectedDistrict] = useState(null);
+    // const [selectedDistrict,
+    //     setSelectedDistrict] = useState(null);
 
     return (
         <DiseaseContext.Provider
@@ -132,7 +132,7 @@ function FilterData(data) {
             return d.fields.Status > 0 && isAfter(startDate, new Date(d.fields.Tanggal));
         if (disease === "Semua Positif" && d.fields.Kecamatan === district) 
             return d.fields.Status > 0 && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
-        if (disease === disease && district === "Semua") 
+        if (district === "Semua") 
             return d.fields.Status > 0 && d.fields.Penyakit === disease && isAfter(startDate, new Date(d.fields.Tanggal));
         else {
             return d.fields.Status > 0 && d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));

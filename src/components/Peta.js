@@ -125,10 +125,10 @@ export default function Peta({points, samples}) {
         onClick={_getClusterLeaves} // onDblClick={_getZoomExpansion}}}
         >
             <Box style={{position:"absolute", bottom:"0", left:"100px"}} p={0} mb={1} ml={1}>
-                <Link to="https://jala.tech" target="_blank">
+                <a href="https://jala.tech" target="_blank">
                 <Text color="white" fontSize="xs">powered by</Text>
                 <Img fixed={query.jala.childImageSharp.fixed} />
-                </Link>
+                </a>
         </Box>
 
            
@@ -175,17 +175,12 @@ export default function Peta({points, samples}) {
             setStartDate
         } = useContext(DiseaseContext);
 
-        const mystyle = {
-            color: "white",
-            backgroundColor: "DodgerBlue",
-            padding: "10px",
-            fontFamily: "Arial"
-        };
-
         const { colorMode } = useColorMode();
-        const CustomInput = ({ value, onClick }) => (
-          <Input sz="md" value={value} onClick={onClick}/>
-        )
+        const CustomInput = React.forwardRef(({ value, onClick }, ref) => {
+            return (
+                <Input sz="md" value={value} onClick={onClick} readOnly={true} ref={ref}/>
+            )
+        });
 
         return (
             <Box>
