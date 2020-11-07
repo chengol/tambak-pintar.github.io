@@ -6,11 +6,12 @@ import {
     Select,
     Heading,
     Flex,
+    Text,
     useColorMode, Input
 } from '@chakra-ui/core';
 import {clusterLayer, clusterCountLayer, unclusteredPointLayer, unclusterCountLayer} from '../layers/layers';
 import '../styles/app.css';
-import {graphql, useStaticQuery} from 'gatsby';
+import {graphql, useStaticQuery, Link} from 'gatsby';
 import DatePicker from "react-datepicker";
 import {DiseaseContext} from '../pages/app';
 import Img from 'gatsby-image';
@@ -20,7 +21,7 @@ export default function Peta({points, samples}) {
         setViewport] = useState({
         latitude: -5.26601,
         longitude: 110.25879,
-        zoom: 6,
+        zoom: 5,
         height: "100vh",
         bearing: 0,
         pitch: 0
@@ -35,14 +36,22 @@ export default function Peta({points, samples}) {
           mapboxApi
         }
       }
-  logo: file(relativePath: {eq: "assets/tambakpintar.png"}) {
+  logo: file(relativePath: {eq: "assets/tp-logo-landscape.png"}) {
       id
       childImageSharp {
-        fixed(width: 60, height: 60) {
+        fixed(width: 80, height: 30) {
           ...GatsbyImageSharpFixed
         }
       }
     }
+    jala: file(relativePath: {eq: "assets/jala-white.png"}) {
+        id
+        childImageSharp {
+          fixed(width: 75, height: 20) {
+            ...GatsbyImageSharpFixed
+          }
+        }
+      }
   }`);
 
     const sourceRef = useRef();
@@ -92,15 +101,15 @@ export default function Peta({points, samples}) {
     return (
         <Box>
             <Box display={{lg:"none"}}>
-            <Flex columns={2}>
-            <Box p={2} m={2} pb={0} mb={0} w="60px">
+            <Flex align="center" justify="center">
+            <Box p={2} m={0} w="100px">
           <Img fixed={query.logo.childImageSharp.fixed} />
         </Box>
-        <Box m={2} p={2} pb={2} mb={0} flex="1">
-        <Heading as="h3" size="md" mb={0}>Peta Distribusi</Heading>
-                    <Heading as="h4" size="md" mb={2}>Penyakit Udang</Heading>
-        </Box>
+        
             </Flex>
+            {/* <Box m={0} p={2} pb={2} m={0} flex="1">
+        <Heading as="h3" size="md" mb={0}>Peta Penyakit Udang</Heading>
+        </Box> */}
             </Box>
             <Box
                 id="map"
@@ -115,6 +124,14 @@ export default function Peta({points, samples}) {
                 }} interactiveLayerIds={[clusterLayer.id]} // onClick={_getClusterLeaves}}} 
         onClick={_getClusterLeaves} // onDblClick={_getZoomExpansion}}}
         >
+            <Box style={{position:"absolute", bottom:"0", left:"100px"}} p={0} mb={1} ml={1}>
+                <Link to="https://jala.tech" target="_blank">
+                <Text color="white" fontSize="xs">powered by</Text>
+                <Img fixed={query.jala.childImageSharp.fixed} />
+                </Link>
+        </Box>
+
+           
                     <DiseasePicker
                         kecamatan={[...new Set(samples.map(d => d.fields.Kecamatan).sort())]}/>
                     <Source
@@ -140,12 +157,16 @@ export default function Peta({points, samples}) {
                     }}>
                         <NavigationControl/>
                     </div>
+
+                    
                 </ReactMapGL>
 
             </Box>
         </Box>
 
-        ) } function DiseasePicker({kecamatan}) {const {
+        ) } 
+        
+        function DiseasePicker({kecamatan}) {const {
             disease,
             setDisease,
             district,
@@ -209,13 +230,13 @@ export default function Peta({points, samples}) {
                 </SimpleGrid>
             </Box>
             <Box display={{ lg:"none"}}>
-            <SimpleGrid columns={2} spacing={2} pr={{xs:4}} pl={{xs:4}} className="disease-filter-res" bg={colorMode === 'dark' ? 'gray.800' : 'white'}>
+            <SimpleGrid columns={2} spacing={2} pr={{xs:4}} pl={{xs:4}} pt={{xs:0}} pb={{xs:2}}  className="disease-filter-res" bg={colorMode === 'dark' ? 'gray.800' : 'white'}>
             <Box mb={2} w="100%">
-                        <Heading as="h6" size="xs" mb={2}>Penyakit</Heading>
+                        <Heading as="h6" size="xs" mb={1}>Penyakit</Heading>
                         <Select
                         p={1}
 
-                            size="md"
+                            size="sm"
                             value={disease}
                             onChange={(e) => {
                             setDisease(e.target.value)
@@ -229,11 +250,11 @@ export default function Peta({points, samples}) {
                         </Select>
                     </Box>
                     <Box mb={2} w="100%">
-                        <Heading as="h6" size="xs" mb={2}>Daerah</Heading>
+                        <Heading as="h6" size="xs" mb={1}>Daerah</Heading>
                         <Select
                         p={1}
 
-                            size="md"
+                            size="sm"
                             value={district}
                             onChange={(e) => {
                             setDistrict(e.target.value)

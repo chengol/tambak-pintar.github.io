@@ -95,15 +95,17 @@ function DiseaseData() {
     if (error) 
         return <div>{toast({title: "An error occurred.", description: "Unable to get the data.", status: "error", duration: 9000, isClosable: true})}</div>
     if (!data) {
-        return <div>
-            <Flex position="absolute" style={{top:"50%",left:"50%" }}>
+        return (
+            <Flex  style={{top:"50%",left:"50%",width: "100%",
+  height: "100%", position:"fixed" }}>
                 <Spinner 
                 thickness="4px"
                 speed="0.65s"
                 emptyColor="gray.200"
                 color="blue.500"
                 size="xl"/></Flex>
-        </div>
+        )
+            
     }
 
     return (
