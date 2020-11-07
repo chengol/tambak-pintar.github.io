@@ -98,59 +98,59 @@ export default function DiseaseTracker({points}) {
                     </Box>
                     <SimpleGrid columns={2} spacing={3} style={{overflow:"auto"}}>
                         <Box>
-                            <Text fontSize="md" color="grey.500">Total</Text>
-                            <Heading as="h3" size="xl" color="black"><strong>{tracker.total_p.length}</strong></Heading>
-                            <Text fontSize="sm" color="grey.500">
+                            <Text fontSize="md" color="gray.500">Total</Text>
+                            <Heading as="h3" size="xl"><strong>{tracker.total_p.length}</strong></Heading>
+                            <Text fontSize="sm" color="gray.500">
                                 dari {tracker.total_s} sampel
                             </Text>
-                            <Text fontSize="sm" color="grey.500">
+                            <Text fontSize="sm" color="gray.500">
                                 {(tracker.total_p.length === 0) ? 0 : ((tracker.total_p.length / tracker.total_s) * 100).toFixed(2)}% Positive
                             </Text>
                         </Box>
                         <Box>
                             <Stat>
-                                <Text fontSize="md" color="grey.500">AHPND</Text>
-                                <Heading as="h3" size="xl" color="black">{tracker.AHPND_p.length}</Heading>
-                                <Text fontSize="sm" color="grey.500">
+                                <Text fontSize="md" color="gray.500">AHPND</Text>
+                                <Heading as="h3" size="xl">{tracker.AHPND_p.length}</Heading>
+                                <Text fontSize="sm" color="gray.500">
                                     dari {tracker.AHPND_s.length} sampel
                                 </Text>
-                                <Text fontSize="sm" color="grey.500">
+                                <Text fontSize="sm" color="gray.500">
                                     {(tracker.AHPND_p.length === 0) ? 0 : ((tracker.AHPND_p.length / tracker.AHPND_s.length) * 100).toFixed(2)}% Positive
                                 </Text>
                             </Stat>
                         </Box>
                         <Box>
                             <Stat>
-                                <Text fontSize="md" color="grey.500">EHP</Text>
-                                <Heading as="h3" size="xl" color="black">{tracker.EHP_p.length}</Heading>
-                                <Text fontSize="sm" color="grey.500">
+                                <Text fontSize="md" color="gray.500">EHP</Text>
+                                <Heading as="h3" size="xl">{tracker.EHP_p.length}</Heading>
+                                <Text fontSize="sm" color="gray.500">
                                     dari {tracker.EHP_s.length} sampel
                                 </Text>
-                                <Text fontSize="sm" color="grey.500">
+                                <Text fontSize="sm" color="gray.500">
                                     {(tracker.EHP_p.length === 0) ? 0 : ((tracker.EHP_p.length / tracker.EHP_s.length) * 100).toFixed(2)}% Positive
                                 </Text>
                             </Stat>
                         </Box>
                         <Box>
                             <Stat>
-                                <Text fontSize="md" color="grey.500">IMNV</Text>
-                                <Heading as="h3" size="xl" color="black">{tracker.IMNV_p.length}</Heading>
-                                <Text fontSize="sm" color="grey.500">
+                                <Text fontSize="md" color="gray.500">IMNV</Text>
+                                <Heading as="h3" size="xl">{tracker.IMNV_p.length}</Heading>
+                                <Text fontSize="sm" color="gray.500">
                                     dari {tracker.IMNV_s.length} sampel
                                 </Text>
-                                <Text fontSize="sm" color="grey.500">
+                                <Text fontSize="sm" color="gray.500">
                                     {(tracker.IMNV_p.length === 0) ? 0 : ((tracker.IMNV_p.length / tracker.IMNV_s.length) * 100).toFixed(2)}% Positive
                                 </Text>
                             </Stat>
                         </Box>
                         <Box>
                             <Stat>
-                                <Text fontSize="md" color="grey.500">WSSV</Text>
-                                <Heading as="h3" size="xl" color="black">{tracker.WSSV_p.length}</Heading>
-                                <Text fontSize="sm" color="grey.500">
+                                <Text fontSize="md" color="gray.500">WSSV</Text>
+                                <Heading as="h3" size="xl">{tracker.WSSV_p.length}</Heading>
+                                <Text fontSize="sm" color="gray.500">
                                     dari {tracker.WSSV_s.length} sampel
                                 </Text>
-                                <Text fontSize="sm" color="grey.500">
+                                <Text fontSize="sm" color="gray.500">
                                     {(tracker.WSSV_p.length === 0) ? 0 : ((tracker.WSSV_p.length / tracker.WSSV_s.length) * 100).toFixed(2)}% Positive
                                 </Text>
                             </Stat>
