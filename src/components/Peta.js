@@ -15,6 +15,7 @@ import {graphql, useStaticQuery, Link} from 'gatsby';
 import DatePicker from "react-datepicker";
 import {DiseaseContext} from '../pages/app';
 import Img from 'gatsby-image';
+import "react-datepicker/dist/react-datepicker.css"; 
 
 export default function Peta({points, samples}) {
     const [viewport,
