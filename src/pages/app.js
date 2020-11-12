@@ -15,6 +15,7 @@ import {graphql, useStaticQuery} from 'gatsby';
 import Peta from '../components/Peta';
 // import Peta2 from '../components/Peta2';
 import Bottompanel from '../components/Bottompanel';
+import {Helmet} from 'react-helmet';
 
 export default function AppDynamicData() {
     return (
@@ -30,6 +31,11 @@ export default function AppDynamicData() {
 function AppContent() {
     return (
         <div>
+            <Helmet>
+          <meta charSet="utf-8" />
+          <title>Peta Penyakit Udang | Tambak Pintar | Jala</title>
+          <link rel="canonical" href="https://jala.tech" />
+        </Helmet>
             <SWRConfig
                 value={{
                 fetcher,

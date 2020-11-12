@@ -21,7 +21,7 @@ require("dotenv").config({
 module.exports = {
   /* Your site config here */
   siteMetadata: {
-    title: 'Smart Farming',
+    title: 'Smart Farming Disease Monitoring Dashboard',
     author: 'Jala Tech, Pte. Ltd.',
     name: 'Syauqy',
     airtableApi : process.env.AIRTABLE_API_KEY,
@@ -46,6 +46,7 @@ module.exports = {
         ]
       }
     },
+    `gatsby-plugin-react-helmet`,
     {
       resolve: 'gatsby-source-filesystem',
       options: {
