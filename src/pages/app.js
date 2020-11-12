@@ -139,6 +139,24 @@ function FilterData(data) {
         }
     });
 
+    const samplesData = samples.filter(d => {
+        if (disease === "Semua Sampel" && district === "Semua") {
+            return data && isAfter(startDate, new Date(d.fields.Tanggal));
+        }
+        if (disease === "Semua Sampel" && d.fields.Kecamatan === district) {
+            return data && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
+        }
+        if (disease === "Semua Positif" && district === "Semua") 
+            return isAfter(startDate, new Date(d.fields.Tanggal));
+        if (disease === "Semua Positif" && d.fields.Kecamatan === district) 
+            return  d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
+        if (district === "Semua") 
+            return  d.fields.Penyakit === disease && isAfter(startDate, new Date(d.fields.Tanggal));
+        else {
+            return d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
+        }
+    });
+
     const points = {
         type: "FeatureCollection",
         features: diseaseData.map((point = {}) => {
@@ -169,7 +187,7 @@ function FilterData(data) {
                     sm: "none",
                     md: "none",
                     lg: "block"
-                }}><Sidepanel points={points}/></Box>
+                }}><Sidepanel points={points} samples={samplesData}/></Box>
                 <Box flex="1">
                     <Peta points={points} samples={samples}/>
                 </Box>
@@ -180,7 +198,7 @@ function FilterData(data) {
                 sm: "block",
                 md: "block",
                 lg: "none"
-            }}><Bottompanel points={points}/></Box>
+            }}><Bottompanel points={points} samples={samplesData}/></Box>
 
         </div>
     )
