@@ -9,7 +9,7 @@ import {
     // Heading
 } from '@chakra-ui/core';
 import '../styles/app.css';
-import {isAfter} from 'date-fns';
+import {isAfter, isBefore} from 'date-fns';
 import Sidepanel from '../components/Sidepanel';
 import {graphql, useStaticQuery} from 'gatsby';
 import Peta from '../components/Peta';
@@ -33,7 +33,7 @@ function AppContent() {
         <div>
             <Helmet>
           <meta charSet="utf-8" />
-          <title>Peta Penyakit Udang | Tambak Pintar | Jala</title>
+          <title>Peta Persebaran Penyakit Udang | Tambak Pintar | Jala</title>
           <link rel="canonical" href="https://jala.tech" />
         </Helmet>
             <SWRConfig
@@ -52,7 +52,9 @@ export const DiseaseContext = createContext();
 
 export function DiseaseProvider({children}) {
     const [startDate,
-        setStartDate] = useState(new Date());
+        setStartDate] = useState(new Date("2020/01/01"));
+    const [endDate,
+    setEndDate] = useState(new Date());
     const [disease,
         setDisease] = useState("Semua Sampel");
     const [district,
@@ -71,7 +73,9 @@ export function DiseaseProvider({children}) {
             setDistrict,
             startDate,
             setStartDate,
-            toast
+            toast,
+            endDate,
+            setEndDate
         }}>
             {children}
         </DiseaseContext.Provider>
@@ -122,44 +126,44 @@ function DiseaseData() {
 }
 
 function FilterData(data) {
-    const {disease, district, startDate} = useContext(DiseaseContext);
+    const {disease, district, startDate, endDate} = useContext(DiseaseContext);
     // console.log('distrik', district);
 
     const samples = data.data.records;
 
     const diseaseData = samples.filter(d => {
         if (disease === "Semua Sampel" && district === "Semua") {
-            return data && isAfter(startDate, new Date(d.fields.Tanggal));
+            return data && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         }
         if (disease === "Semua Sampel" && d.fields.Kecamatan === district) {
-            return data && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
+            return data && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         }
         if (disease === "Semua Positif" && district === "Semua") 
-            return d.fields.Status > 0 && isAfter(startDate, new Date(d.fields.Tanggal));
+            return d.fields.Status > 0 && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         if (disease === "Semua Positif" && d.fields.Kecamatan === district) 
-            return d.fields.Status > 0 && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
+            return d.fields.Status > 0 && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         if (district === "Semua") 
-            return d.fields.Status > 0 && d.fields.Penyakit === disease && isAfter(startDate, new Date(d.fields.Tanggal));
+            return d.fields.Status > 0 && d.fields.Penyakit === disease && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         else {
-            return d.fields.Status > 0 && d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
+            return d.fields.Status > 0 && d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         }
     });
 
     const samplesData = samples.filter(d => {
         if (disease === "Semua Sampel" && district === "Semua") {
-            return data && isAfter(startDate, new Date(d.fields.Tanggal));
+            return data && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         }
         if (disease === "Semua Sampel" && d.fields.Kecamatan === district) {
-            return data && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
+            return data && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         }
         if (disease === "Semua Positif" && district === "Semua") 
-            return isAfter(startDate, new Date(d.fields.Tanggal));
+            return isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         if (disease === "Semua Positif" && d.fields.Kecamatan === district) 
-            return  d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
+            return  d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         if (district === "Semua") 
-            return  d.fields.Penyakit === disease && isAfter(startDate, new Date(d.fields.Tanggal));
+            return  d.fields.Penyakit === disease && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         else {
-            return d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(startDate, new Date(d.fields.Tanggal));
+            return d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         }
     });
 

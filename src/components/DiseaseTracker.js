@@ -147,7 +147,7 @@ export default function DiseaseTracker({points, samples}) {
 
     return (
         <div >
-            <SimpleGrid mt={{xl: 1}} pt={1} m={{sm:5, xs:5, md:3}} p={{xs: 0, base: 5}} className="tracker-panel">
+            <SimpleGrid mt={{xl: 1}} pt={1} m={{sm:5, xs:5, md:3}} p={{xs: 0, base: 3}} className="tracker-panel">
                 {tracker.total_s && <div>
                     <Heading as="h3" size="xl" mb={0}>{(district === "Semua")? "Indonesia" : `${kec}`}</Heading>
                     <Heading as="h4" size="md" mb={2}>{(district === "Semua") ? "" : `${prov}`}</Heading>
@@ -191,7 +191,7 @@ export default function DiseaseTracker({points, samples}) {
                         </Box>
                         <Box>
                             <Stat>
-                                <Text fontSize="md" color="gray.500">IMNV</Text>
+                                <Text fontSize="md" color="gray.500">IMNV/Myo</Text>
                                 <Heading as="h3" size="xl">{tracker.IMNV_p.length}</Heading>
                                 <Text fontSize="sm" color="gray.500">
                                     dari {tracker.IMNV_s.length} sampel
@@ -203,7 +203,7 @@ export default function DiseaseTracker({points, samples}) {
                         </Box>
                         <Box>
                             <Stat>
-                                <Text fontSize="md" color="gray.500">WSSV</Text>
+                                <Text fontSize="md" color="gray.500">WSSV/Bintik Putih</Text>
                                 <Heading as="h3" size="xl">{tracker.WSSV_p.length}</Heading>
                                 <Text fontSize="sm" color="gray.500">
                                     dari {tracker.WSSV_s.length} sampel

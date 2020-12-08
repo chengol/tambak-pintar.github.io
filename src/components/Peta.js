@@ -7,6 +7,7 @@ import {
     Heading,
     Flex,
     Text,
+    Grid,
     useColorMode, Input
 } from '@chakra-ui/core';
 import {clusterLayer, clusterCountLayer, unclusteredPointLayer, unclusterCountLayer} from '../layers/layers';
@@ -218,7 +219,9 @@ console.log(`district`, district);
             district,
             setDistrict,
             startDate,
-            setStartDate
+            setStartDate,
+            endDate,
+            setEndDate
         } = useContext(DiseaseContext);
 
 
@@ -233,26 +236,10 @@ console.log(`district`, district);
 
         return (
             <Box>
-                <Box display={{sm:"none", xs:"none", lg:"block"}}>
-                <SimpleGrid p={5} className="control-panel" bg={colorMode === 'dark' ? 'gray.800' : 'white'}>
-                    <Box mb={2}>
-                        <Heading as="h4" size="sm" mb={2}>Pilih Penyakit</Heading>
-                        <Select
-                            size="md"
-                            value={disease}
-                            onChange={(e) => {
-                            setDisease(e.target.value)
-                        }}>
-                            <option value='Semua Sampel'>Semua Sampel</option>
-                            <option value='Semua Positif'>Semua Positif</option>
-                            <option value='AHPND'>AHPND</option>
-                            <option value='EHP'>EHP</option>
-                            <option value='IMNV'>IMNV</option>
-                            <option value='WSSV'>WSSV</option>
-                        </Select>
-                    </Box>
-                    <Box mb={2}>
-                        <Heading as="h4" size="sm" mb={2}>Pilih Daerah</Heading>
+                <Box display={{sm:"none", xs:"none", lg:"block"}} >
+                <Flex className="control-panel" bg={colorMode === 'dark' ? 'gray.800' : 'white'}>
+                <Box mb={2} w="200px" mr={4}>
+                        <Heading as="h4" size="xs" fontWeight={600} mb={2}>Pilih Daerah</Heading>
                         <Select
                             size="md"
                             value={district}
@@ -260,40 +247,56 @@ console.log(`district`, district);
                             setDistrict(e.target.value)
                             onViewportChange(kecamatan.find(kec => e.target.value === kec.Kecamatan))
                         }}>
-                            <option value='Semua'>Semua</option>
+                            <option value='Semua'>Semua Daerah</option>
                             {kecamatan.map(d => <option value={d.Kecamatan} key={d.Kecamatan}>{d.Kecamatan}</option>)}
                         </Select>
                     </Box>
-                    <Box mb={2}>
-                        <Heading as="h4" size="sm" mb={2}>Pilih Tanggal</Heading>
-                        <DatePicker
-                            closeOnScroll={true}
-                            selected={startDate}
-                            onChange={date => setStartDate(date)}
-                            customInput={<CustomInput/>}/>
-                    </Box>
-                </SimpleGrid>
-            </Box>
-            <Box display={{ lg:"none"}}>
-            <SimpleGrid columns={2} spacing={2} pr={{xs:4}} pl={{xs:4}} pt={{xs:0}} pb={{xs:2}}  className="disease-filter-res" bg={colorMode === 'dark' ? 'gray.800' : 'white'}>
-            <Box mb={2} w="100%">
-                        <Heading as="h6" size="xs" mb={1}>Penyakit</Heading>
+                    <Box mb={2} w="200px" mr={4}>
+                        <Heading as="h4" size="xs" fontWeight={600} mb={2}>Pilih Penyakit</Heading>
                         <Select
-                        p={1}
-
-                            size="sm"
+                            size="md"
                             value={disease}
                             onChange={(e) => {
                             setDisease(e.target.value)
                         }}>
-                            <option value='Semua Sampel'>Semua Sampel</option>
+                            {/* <option value='Semua Sampel'>Semua Sampel</option> */}
                             <option value='Semua Positif'>Semua Positif</option>
                             <option value='AHPND'>AHPND</option>
                             <option value='EHP'>EHP</option>
-                            <option value='IMNV'>IMNV</option>
-                            <option value='WSSV'>WSSV</option>
+                            <option value='IMNV'>IMNV/Myo</option>
+                            <option value='WSSV'>WSSV/Bintik Putih</option>
                         </Select>
                     </Box>
+                    
+                    <Box mb={2} w="150px" mr={2}>
+                        <Heading as="h4" size="xs" fontWeight={600} mb={2}>Tanggal Awal</Heading>
+                        <DatePicker
+                            closeOnScroll={true}
+                            selected={startDate}
+                            onChange={date => setStartDate(date)}
+                            selectsStart
+                            startDate={startDate}
+                            endDate={endDate}
+                            customInput={<CustomInput/>}/>
+                    </Box>
+
+                    <Box mb={2} w="150px">
+                        <Heading as="h4" size="xs" fontWeight={600} mb={2}>Tanggal Akhir</Heading>
+                        <DatePicker
+                            closeOnScroll={true}
+                            selected={endDate}
+                            onChange={date => setEndDate(date)}
+                            selectsEnd
+                            startDate={startDate}
+                            endDate={endDate}
+                            minDate={startDate}
+                            customInput={<CustomInput/>}/>
+                    </Box>
+                </Flex>
+            </Box>
+            <Box display={{ lg:"none"}}>
+            <SimpleGrid columns={2} spacing={2} pr={{xs:4}} pl={{xs:4}} pt={{xs:0}} pb={{xs:2}}  className="disease-filter-res" bg={colorMode === 'dark' ? 'gray.800' : 'white'}>
+            
                     <Box mb={2} w="100%">
                         <Heading as="h6" size="xs" mb={1}>Daerah</Heading>
                         <Select
@@ -305,8 +308,26 @@ console.log(`district`, district);
                             setDistrict(e.target.value);
                             onViewportChange(kecamatan.find(kec => e.target.value === kec.Kecamatan))
                         }}>
-                            <option value='Semua'>Semua</option>
+                            <option value='Semua'>Semua Daerah</option>
                             {kecamatan.map(d => <option value={d.Kecamatan} key={d.Kecamatan}>{d.Kecamatan}</option>)}
+                        </Select>
+                    </Box>
+                    <Box mb={2} w="100%">
+                        <Heading as="h6" size="xs" mb={1}>Penyakit</Heading>
+                        <Select
+                        p={1}
+
+                            size="sm"
+                            value={disease}
+                            onChange={(e) => {
+                            setDisease(e.target.value)
+                        }}>
+                            {/* <option value='Semua Sampel'>Semua Sampel</option> */}
+                            <option value='Semua Positif'>Semua Positif</option>
+                            <option value='AHPND'>AHPND</option>
+                            <option value='EHP'>EHP</option>
+                            <option value='IMNV'>IMNV/Myo</option>
+                            <option value='WSSV'>WSSV/Bintik Putih</option>
                         </Select>
                     </Box>
             </SimpleGrid>

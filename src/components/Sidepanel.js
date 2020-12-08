@@ -24,9 +24,9 @@ export default function Sidepanel({points, samples}) {
           <Img fluid={logo.logo.childImageSharp.fluid} />
         </Box>
         <Box m={2} p={4} pb={0} flex="1">
-        <Heading as="h3" size="md" mb={0}>Peta Distribusi</Heading>
+        <Heading as="h3" size="md" mb={0}>Peta Persebaran</Heading>
                     <Heading as="h4" size="md" mb={2}>Penyakit Udang</Heading>
-                    <Text>versi 0.0.1</Text>
+                    <Text>versi 0.0.2</Text>
         </Box>
             </Flex>
         

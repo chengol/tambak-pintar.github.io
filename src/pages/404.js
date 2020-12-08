@@ -1,7 +1,7 @@
 import React from 'react';
 import Lottie from 'react-lottie';
 import animationData from '../lotties/not-found.json';
-import {Link, Flex, Heading, Box, SimpleGrid, Button} from "@chakra-ui/core";
+import {Link, Flex, Heading, SimpleGrid, Button} from "@chakra-ui/core";
 
 export default function EmptyPages() {
     const defaultOptions = {
