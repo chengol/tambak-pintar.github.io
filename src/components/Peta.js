@@ -239,7 +239,7 @@ console.log(`district`, district);
                 <Box display={{sm:"none", xs:"none", lg:"block"}} >
                 <Flex className="control-panel" bg={colorMode === 'dark' ? 'gray.800' : 'white'}>
                 <Box mb={2} w="200px" mr={4}>
-                        <Heading as="h4" size="xs" fontWeight={600} mb={2}>Pilih Daerah</Heading>
+                        <Heading as="h4" size="xs" fontWeight={500} mb={2}>Pilih Daerah</Heading>
                         <Select
                             size="md"
                             value={district}
@@ -252,7 +252,7 @@ console.log(`district`, district);
                         </Select>
                     </Box>
                     <Box mb={2} w="200px" mr={4}>
-                        <Heading as="h4" size="xs" fontWeight={600} mb={2}>Pilih Penyakit</Heading>
+                        <Heading as="h4" size="xs" fontWeight={500} mb={2}>Pilih Penyakit</Heading>
                         <Select
                             size="md"
                             value={disease}
@@ -269,9 +269,10 @@ console.log(`district`, district);
                     </Box>
                     
                     <Box mb={2} w="150px" mr={2}>
-                        <Heading as="h4" size="xs" fontWeight={600} mb={2}>Tanggal Awal</Heading>
+                        <Heading as="h4" size="xs" fontWeight={500} mb={2}>Tanggal Awal</Heading>
                         <DatePicker
                             closeOnScroll={true}
+                            dateFormat="dd/MM/yyyy"
                             selected={startDate}
                             onChange={date => setStartDate(date)}
                             selectsStart
@@ -281,9 +282,10 @@ console.log(`district`, district);
                     </Box>
 
                     <Box mb={2} w="150px">
-                        <Heading as="h4" size="xs" fontWeight={600} mb={2}>Tanggal Akhir</Heading>
+                        <Heading as="h4" size="xs" fontWeight={500} mb={2}>Tanggal Akhir</Heading>
                         <DatePicker
                             closeOnScroll={true}
+                            dateFormat="dd/MM/yyyy"
                             selected={endDate}
                             onChange={date => setEndDate(date)}
                             selectsEnd

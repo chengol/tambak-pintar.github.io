@@ -98,7 +98,7 @@ function DiseaseData() {
     // console.log('airtable api', airtableApi); console.log('airtable base',
     // airtableApi.airtable.siteMetadata.airtableBase);
 
-    const url = `https://api.airtable.com/v0/${airtableApi.airtable.siteMetadata.airtableBase}/allRecord?api_key=${airtableApi.airtable.siteMetadata.airtableApi}`;
+    const url = `https://api.airtable.com/v0/${airtableApi.airtable.siteMetadata.airtableBase}/allRecord?api_key=${airtableApi.airtable.siteMetadata.airtableApi}&sort%5B0%5D%5Bfield%5D=Tanggal&sort%5B0%5D%5Bdirection%5D=asc`;
     const {toast} = useContext(DiseaseContext);
 
     const {data, error} = useSWR(url);
@@ -130,6 +130,8 @@ function FilterData(data) {
     // console.log('distrik', district);
 
     const samples = data.data.records;
+
+    
 
     const diseaseData = samples.filter(d => {
         if (disease === "Semua Sampel" && district === "Semua") {
@@ -166,6 +168,9 @@ function FilterData(data) {
             return d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         }
     });
+
+    console.log('sampel', samples);
+    console.log('sampleData', samplesData);
 
     const points = {
         type: "FeatureCollection",
