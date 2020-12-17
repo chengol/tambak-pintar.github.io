@@ -10,6 +10,7 @@ import {
     Grid,
     useColorMode,
     Input,
+    IconButton,
     ColorModeProvider
 } from '@chakra-ui/core';
 import useSupercluster from "use-supercluster";
@@ -229,11 +230,14 @@ export default function Peta({points, samples, samplesData}) {
 
     // console.log('klaster',clusters);
 
+    const {colorMode, toggleColorMode} = useColorMode();
+
     return (
         <Box>
             <Box display={{
                 lg: "none"
             }}>
+                
                 <Flex align="center" justify="center">
                     <Box p={2} m={0} w="100px">
                         <Img fixed={query.logo.childImageSharp.fixed}/>
@@ -300,8 +304,24 @@ export default function Peta({points, samples, samplesData}) {
                         <NavigationControl/>
                     </div>
 
+                    <Box m={2} style={{position: 'absolute',
+                        left: 0,
+                        top: 100
+                    }}
+                    display={{
+                        lg: "none"
+                    }}
+                    className="basic-panel"
+                        bg={colorMode === 'dark'
+                        ? 'gray.800'
+                        : 'white'}
+                        p={1}>
+                <IconButton aria-label="dark side" variant="ghost" icon={colorMode === 'light'? "moon":"sun"} onClick={toggleColorMode} size="md"/>
+                </Box>
+
                     
                     <Box
+                    
                         style={{
                         position: "absolute",
                         bottom: "0",

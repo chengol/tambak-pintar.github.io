@@ -6,7 +6,9 @@ import {
     useToast,
     Flex,
     Spinner,
-    Text
+    Text,
+    useColorMode,
+    Button
     // Heading
 } from '@chakra-ui/core';
 import '../styles/app.css';
@@ -245,9 +247,12 @@ function FilterData(data) {
 function LatestData({samples}){
     const latestData = samples[samples.length - 1];
     console.log('latest samples', latestData);
+    const {colorMode} = useColorMode();
     return(
       <div>
-        <Box className="latest-data">
+        <Box className="latest-data" bg={colorMode === 'dark'
+                    ? 'gray.800'
+                    : 'white'}>
     <Text fontSize="sm" fontWeight={700} m={2} fontWeight={500}>Data diperbarui terakhir {lightFormat(new Date(latestData.fields.Tanggal), 'dd-MM-yyyy')}</Text>
         </Box>
       </div>

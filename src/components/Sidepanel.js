@@ -1,7 +1,7 @@
 import React from 'react'
 import {graphql, useStaticQuery} from 'gatsby';
 import Img from 'gatsby-image';
-import {Box, Divider, Flex, Heading, Text} from '@chakra-ui/core';
+import {Box, Divider, Flex, Heading, Text, IconButton, useColorMode} from '@chakra-ui/core';
 import DiseaseTracker from './DiseaseTracker';
 
 
@@ -18,18 +18,24 @@ export default function Sidepanel({points, samples}) {
     }
   }
   `);
+
+  const {colorMode, toggleColorMode} = useColorMode();
     return (
         <div>
-            <Flex columns={2}>
+            <Flex columns={3}>
             <Box p={4} m={5} mt={0} mb={0} mr={0} pb={0} w="100px">
           <Img fluid={logo.logo.childImageSharp.fluid} />
         </Box>
-        <Box m={2} p={4} pb={0} flex="1">
+        <Box m={2} p={3} pb={0} flex="1">
         <Heading as="h3" size="md" mb={0}>Peta Persebaran</Heading>
                     <Heading as="h4" size="md" mb={2}>Penyakit Udang</Heading>
                     <Text>versi 0.0.2</Text>
         </Box>
+        <Box mt={2} mr={2}>
+        <IconButton aria-label="dark side" variant="ghost" icon={colorMode === 'light'? "moon":"sun"} onClick={toggleColorMode} size="sm"/>
+        </Box>
             </Flex>
+            
         
         <Divider orientation="horizontal" />
         <Box >

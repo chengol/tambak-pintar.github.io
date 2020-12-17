@@ -61,6 +61,12 @@ body {
     border-radius: 15px;
   }
 
+  .basic-panel{
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    margin: 20px;
+    border-radius: 50px;
+  }
+
   .disease-filter-res {
     /* background: #fff; */
     /* max-width: 500px; */
