@@ -81,34 +81,6 @@ export default function DiseaseTracker({points, samples}) {
         prov = points.features[0].properties.fields.Provinsi;
     }
 
-    // if (!points.features[0]) {     // console.log('titik tracker 1', points); }
-    // else {     // console.log('titik tracker 2', points.features);     tracker =
-    // {         total_s: points.features.length,         total_p: points
-    //  .features             .filter(d => {                 return
-    // d.properties.fields.Status === 1             }),         AHPND_p: points
-    //        .features             .filter(d => {                 return
-    // d.properties.fields.Penyakit === "AHPND" && d.properties.fields.Status === 1
-    //            }),         AHPND_s: points             .features
-    // .filter(d => {                 return d.properties.fields.Penyakit ===
-    // "AHPND"             }),         EHP_p: points             .features
-    //   .filter(d => {                 return d.properties.fields.Penyakit ===
-    // "EHP" && d.properties.fields.Status === 1             }),         EHP_s:
-    // points             .features             .filter(d => {
-    // return d.properties.fields.Penyakit === "EHP"             }),         IMNV_p:
-    // points             .features             .filter(d => {
-    // return d.properties.fields.Penyakit === "IMNV" && d.properties.fields.Status
-    // === 1             }),         IMNV_s: points             .features
-    //  .filter(d => {                 return d.properties.fields.Penyakit ===
-    // "IMNV"             }),         WSSV_p: points             .features
-    //   .filter(d => {                 return d.properties.fields.Penyakit ===
-    // "WSSV" && d.properties.fields.Status === 1             }),         WSSV_s:
-    // points             .features             .filter(d => {
-    // return d.properties.fields.Penyakit === "WSSV"             })     }     //
-    // console.log('statistik ', tracker);     kec =
-    // points.features[0].properties.fields.Kecamatan;     kab =
-    // points.features[0].properties.fields.Kabupaten;     prov =
-    // points.features[0].properties.fields.Provinsi; } console.log("tracker",
-    // tracker);
 
     return (
         <div >
@@ -238,7 +210,7 @@ export default function DiseaseTracker({points, samples}) {
                             </Box>
                             <Box>
                                 <Stat pr={1}>
-                                    <Text fontSize="md" color="gray.500">WSSV/White Spot <a href="https://app.jala.tech/diseases/white-spot-syndrome">
+                                    <Text fontSize="md" color="gray.500">WSSV/Bintik Putih <a href="https://app.jala.tech/diseases/white-spot-syndrome">
                                             <Icon focusable="true" name="question" size="16px" color="blue.400"/></a>
                                     </Text>
                                     <Heading as="h3" size="xl">
@@ -303,9 +275,7 @@ export default function DiseaseTracker({points, samples}) {
                         justifyContent="center"
                         textAlign="center">
                         <AlertIcon/>
-                        Tidak ada data penyakit {disease}
-                        di daerah {district}
-                        😞
+                        Tidak ada data penyakit {disease === "Semua Positif" ? " ": disease} di daerah {district} 😞
                     </Alert>
                 </Box>
 }

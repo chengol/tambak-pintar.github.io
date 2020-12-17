@@ -24,6 +24,22 @@ body {
   
   }
 
+  .cluster-marker{
+    display: flex;
+    /* position: relative; */
+    justify-content: center;
+    align-items: center;
+    color: white;
+    width: 3.6em;
+    height: 3.6em;
+    font-size: .7em;
+    font-weight: bold;
+    background-color: red;
+    border-radius: 100%;
+    box-shadow: 0 2px 5px rgba(black, .9);
+  
+  }
+
   .marker-btn{
       background: none;
       border: none;
@@ -72,18 +88,14 @@ body {
     overflow: scroll;
   }
 
+  .disease-marker{
+    background: none;
+    border: none;
+  }
+
   .latest-data{
     position: fixed;
   bottom: 0;
   left: 0;
-  }
-
-  .cluster-marker {
-    color: #fff;
-    background: #1978c8;
-    border-radius: 50%;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  background-color: #fff;
   }

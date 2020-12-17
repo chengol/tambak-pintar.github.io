@@ -6,13 +6,15 @@ import {
     useToast,
     Flex,
     Spinner,
+    Text
     // Heading
 } from '@chakra-ui/core';
 import '../styles/app.css';
-import {isAfter, isBefore} from 'date-fns';
+import {isAfter, isBefore, lightFormat} from 'date-fns';
 import Sidepanel from '../components/Sidepanel';
 import {graphql, useStaticQuery} from 'gatsby';
 import Peta from '../components/Peta';
+import PetaPin from '../components/PetaPin';
 // import Peta2 from '../components/Peta2';
 import Bottompanel from '../components/Bottompanel';
 import {Helmet} from 'react-helmet';
@@ -56,7 +58,7 @@ export function DiseaseProvider({children}) {
     const [endDate,
     setEndDate] = useState(new Date());
     const [disease,
-        setDisease] = useState("Semua Sampel");
+        setDisease] = useState("Semua Positif");
     const [district,
         setDistrict] = useState("Semua");
     const toast = useToast();
@@ -118,6 +120,8 @@ function DiseaseData() {
             
     }
 
+    
+
     return (
         <div>
             <FilterData data={data}/>
@@ -131,8 +135,6 @@ function FilterData(data) {
 
     const samples = data.data.records;
 
-    
-
     const diseaseData = samples.filter(d => {
         if (disease === "Semua Sampel" && district === "Semua") {
             return data && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
@@ -141,13 +143,13 @@ function FilterData(data) {
             return data && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         }
         if (disease === "Semua Positif" && district === "Semua") 
-            return d.fields.Status > 0 && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
+            return d.fields.Status !== 0 && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         if (disease === "Semua Positif" && d.fields.Kecamatan === district) 
-            return d.fields.Status > 0 && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
+            return d.fields.Status !== 0 && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         if (district === "Semua") 
-            return d.fields.Status > 0 && d.fields.Penyakit === disease && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
+            return d.fields.Status !== 0 && d.fields.Penyakit === disease && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         else {
-            return d.fields.Status > 0 && d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
+            return d.fields.Status !== 0 && d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         }
     });
 
@@ -171,6 +173,7 @@ function FilterData(data) {
 
     console.log('sampel', samples);
     console.log('sampleData', samplesData);
+    console.log('disease', disease, 'lokasi', district, 'diseaseData', diseaseData);
 
     const points = {
         type: "FeatureCollection",
@@ -180,6 +183,7 @@ function FilterData(data) {
             return {
                 type: 'Feature',
                 properties: {
+                    cluster: false,
                     ...point
                 },
                 geometry: {
@@ -189,6 +193,22 @@ function FilterData(data) {
             }
         })
     };
+
+    const pointsPeta = diseaseData.map((point = {}) => {
+            const lat = point.fields.Lat;
+            const lng = point.fields.Long;
+            return {
+                type: 'Feature',
+                properties: {
+                    cluster: false,
+                    ...point
+                },
+                geometry: {
+                    type: 'Point',
+                    coordinates: [lng, lat]
+                }
+            }
+        });
 
     // console.log('points', points);
 
@@ -202,9 +222,12 @@ function FilterData(data) {
                     sm: "none",
                     md: "none",
                     lg: "block"
-                }}><Sidepanel points={points} samples={samplesData}/></Box>
+                }}><Sidepanel points={points} samples={samplesData}/>
+                <LatestData samples={samples}/>
+                </Box>
                 <Box flex="1">
-                    <Peta points={points} samples={samples}/>
+                    {/* <Peta points={points} samples={samples}/> */}
+                    <PetaPin points={pointsPeta} samples={samples} samplesData={samplesData} />
                 </Box>
             </Flex>
             <Box id="headbottom"
@@ -218,3 +241,15 @@ function FilterData(data) {
         </div>
     )
 }
+
+function LatestData({samples}){
+    const latestData = samples[samples.length - 1];
+    console.log('latest samples', latestData);
+    return(
+      <div>
+        <Box className="latest-data">
+    <Text fontSize="sm" fontWeight={700} m={2} fontWeight={500}>Data diperbarui terakhir {lightFormat(new Date(latestData.fields.Tanggal), 'dd-MM-yyyy')}</Text>
+        </Box>
+      </div>
+    )
+  }

@@ -3,7 +3,7 @@ import {graphql, useStaticQuery} from 'gatsby';
 import Img from 'gatsby-image';
 import {Box, Divider, Flex, Heading, Text} from '@chakra-ui/core';
 import DiseaseTracker from './DiseaseTracker';
-import {lightFormat, isAfter} from 'date-fns';
+
 
 export default function Sidepanel({points, samples}) {
     const logo = useStaticQuery(graphql`
@@ -35,21 +35,10 @@ export default function Sidepanel({points, samples}) {
         <Box >
         <DiseaseTracker points={points} samples={samples}/>
         </Box>
-        <LatestData samples={samples}/>
       </div>
     )
 
-    function LatestData({samples}){
-      // console.log('latest samples', samples);
-      const latestData = samples[samples.length - 1];
-      return(
-        <div>
-          <Box className="latest-data">
-      <Text fontSize="sm" fontWeight={700} m={2} fontWeight={500}>Data diperbarui terakhir {lightFormat(new Date(latestData.fields.Tanggal), 'dd-MM-yyyy')}</Text>
-          </Box>
-        </div>
-      )
-    }
+    
     
 }
 

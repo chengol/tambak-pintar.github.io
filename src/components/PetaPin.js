@@ -1,5 +1,5 @@
 import React, {useRef, useState, useContext} from 'react';
-import ReactMapGL, {Layer, Source, NavigationControl, FlyToInterpolator} from 'react-map-gl';
+import ReactMapGL, {Layer, Source, NavigationControl, FlyToInterpolator, Marker} from 'react-map-gl';
 import {
     SimpleGrid,
     Box,
@@ -8,21 +8,25 @@ import {
     Flex,
     Text,
     Grid,
-    useColorMode, Input
+    useColorMode,
+    Input,
+    ColorModeProvider
 } from '@chakra-ui/core';
+import useSupercluster from "use-supercluster";
 import {clusterLayer, clusterCountLayer, unclusteredPointLayer, unclusterCountLayer} from '../layers/layers';
 import '../styles/app.css';
 import {graphql, useStaticQuery} from 'gatsby';
 import DatePicker from "react-datepicker";
 import {DiseaseContext} from '../pages/app';
 import Img from 'gatsby-image';
-import "react-datepicker/dist/react-datepicker.css"; 
+import "react-datepicker/dist/react-datepicker.css";
 import "mapbox-gl/dist/mapbox-gl.css"
 import _ from "lodash";
+import chroma from "chroma-js";
 
-export default function Peta({points, samples}) {
+export default function Peta({points, samples, samplesData}) {
     const query = useStaticQuery(graphql `
-  query mapboxApi {
+  query mapbox {
     site {
         siteMetadata {
           airtableApi
@@ -48,33 +52,32 @@ export default function Peta({points, samples}) {
       }
   }`);
 
+    let districtLat = -7.650510;
+    let districtLong = 109.375827;
+    let mapZoom = 5;
 
+    
 
-  let districtLat = -7.650510;
-let districtLong = 109.375827;
-let mapZoom = 5;
+    // const titik = Array.from(points.features);
+    // console.log('titik terpilih', points);
+    // const titiks = points.features;
 
-        console.log('titik terpilih', points);
+    const [viewport,
+        setViewport] = useState({
+        latitude: -7.650510,
+        longitude: 109.375827,
+        zoom: 6,
+        height: "100vh",
+        bearing: 0,
+        pitch: 0
+    });
 
+    const {setDistrict} = useContext(DiseaseContext);
 
-
-  const [viewport,
-    setViewport] = useState({
-    latitude: -5.26601,
-    longitude: 110.25879,
-    zoom: 5,
-    height: "100vh",
-    bearing: 0,
-    pitch: 0
-});
-
-const {
-    district
-} = useContext(DiseaseContext);
-
-console.log(`district`, district);
+    // console.log(`data sampel`, samplesData);
 
     const sourceRef = useRef();
+
     function _onViewportChange(viewport) {
         setViewport(viewport);
         // console.log(`goto = `, viewport);
@@ -82,33 +85,55 @@ console.log(`district`, district);
 
     const _goToViewport = (kec) => {
         // console.log('event', kec);
-        if(!kec){
+        if (!kec) {
             console.log('tidak ada data pada daerah tersebut');
             districtLong = 109.375827;
             districtLat = -7.650510;
             mapZoom = 6;
-        }else{
+        } else {
             districtLong = kec.Longitude;
             districtLat = kec.Latitude;
             mapZoom = 11;
-        
-
-            // console.log('long', districtLong);
-            // districtLat = points.features[0].geometry.coordinates[1];
-            // districtLong = points.features[0].geometry.coordinates[0];
-            // console.log(`${points.features[0].properties.fields.Kecamatan} lat ${districtLat}, long ${districtLong}`);
         }
         _onViewportChange({
-          longitude: districtLong,
-          latitude: districtLat,
-          zoom: mapZoom,
-          transitionInterpolator: new FlyToInterpolator({speed: 3}),
-          transitionDuration: 'auto'
+            longitude: districtLong,
+            latitude: districtLat,
+            zoom: mapZoom,
+            transitionInterpolator: new FlyToInterpolator({speed: 3}),
+            transitionDuration: 'auto'
         });
         // console.log(`goto = `, latitude, longitude);
-      };
+    };
 
-      
+    function _getZoom(clusterId){
+        // console.log('feature event', e);
+            const leaves = supercluster.getLeaves(clusterId);
+        console.log('leaves', leaves);
+        // const expansionZoom = Math.min(supercluster.getClusterExpansionZoom(clusterId),12);
+        _onViewportChange({
+            ...viewport,
+            latitude: leaves[0].geometry.coordinates[1],
+            longitude: leaves[0].geometry.coordinates[0],
+            zoom: 11,
+            transitionInterpolator: new FlyToInterpolator({speed: 3}),
+            transitionDuration: 'auto'
+        });
+        setDistrict(leaves[0].properties.fields.Kecamatan);
+        // const klaster = clusters;
+        
+    }
+
+    function _getZoomNonCluster(cluster){
+        _onViewportChange({
+            ...viewport,
+            latitude: cluster.geometry.coordinates[1],
+            longitude: cluster.geometry.coordinates[0],
+            zoom: 11,
+            transitionInterpolator: new FlyToInterpolator({speed: 3}),
+            transitionDuration: 'auto'
+        });
+        setDistrict(cluster.properties.fields.Kecamatan);
+    }
 
     function _getClusterLeaves(e) {
         // console.log('event', e.target.className)
@@ -129,7 +154,8 @@ console.log(`district`, district);
                         return;
                     }
                     console.log('feature', features);
-                    // _renderPopup(feature.geometry.coordinates[1],feature.geometry.coordinates[0],);
+                    // _renderPopup(feature.geometry.coordinates[1],feature.geometry.coordinates[0],
+                    // );
                 });
                 mapboxSource.getClusterExpansionZoom(clusterId, (error, zoom) => {
                     if (error) {
@@ -145,7 +171,7 @@ console.log(`district`, district);
                     })
                 });
             }
-        } 
+        }
     }
 
     function _getHover(e) {
@@ -167,21 +193,53 @@ console.log(`district`, district);
                         return;
                     }
                     console.log('feature', features);
-                    // _renderPopup(feature.geometry.coordinates[1],feature.geometry.coordinates[0],);
+                    // _renderPopup(feature.geometry.coordinates[1],feature.geometry.coordinates[0],
+                    // );
                 });
             }
-        } 
+        }
     }
+
+    function _getInterpolation(p){
+        const color = chroma.scale(['78d271','ff9d0b','ff5b7e']).domain([0,5,10]);
+        let per = 0;
+        if(p >= 10){
+            per = 10;
+        }
+        else{
+            per = p;
+        }
+
+        return color(per);
+
+    }
+
+
+
+    //get map bounds
+    const bounds = sourceRef.current ? sourceRef.current.getMap().getBounds().toArray().flat() : null;
+
+    //get cluster
+    const {clusters, supercluster} = useSupercluster({
+        points,
+        zoom: viewport.zoom,
+        bounds,
+        options: {radius: 20, maxZoom: 20}
+    });
+
+    // console.log('klaster',clusters);
 
     return (
         <Box>
-            <Box display={{lg:"none"}}>
-            <Flex align="center" justify="center">
-            <Box p={2} m={0} w="100px">
-          <Img fixed={query.logo.childImageSharp.fixed} />
-        </Box>
-        
-            </Flex>
+            <Box display={{
+                lg: "none"
+            }}>
+                <Flex align="center" justify="center">
+                    <Box p={2} m={0} w="100px">
+                        <Img fixed={query.logo.childImageSharp.fixed}/>
+                    </Box>
+
+                </Flex>
             </Box>
             <Box
                 id="map"
@@ -191,34 +249,46 @@ console.log(`district`, district);
                 sm: "70vh",
                 xs: "70vh"
             }}>
-                <ReactMapGL {...viewport} width="100%" height="100%" mapboxApiAccessToken={query.site.siteMetadata.mapboxApi} onViewportChange={(viewport) => {
-                    setViewport(viewport)
-                }} interactiveLayerIds={[clusterLayer.id]}  
-        onClick={_getClusterLeaves} onHover={_getHover}
-        >
-            <Box style={{position:"absolute", bottom:"0", left:"100px"}} p={0} mb={1} ml={1}>
-                <a href="https://jala.tech" target="_blank" rel="noreferrer">
-                <Text color="white" fontSize="xs">powered by</Text>
-                <Img fixed={query.jala.childImageSharp.fixed} />
-                </a>
-        </Box>
+                <ReactMapGL
+                    {...viewport}
+                    maxZoom={20}
+                    width="100%"
+                    height="100%"
+                    mapboxApiAccessToken={query.site.siteMetadata.mapboxApi}
+                    onViewportChange={(viewport) => {
+                    setViewport(viewport)}}
+                    ref={sourceRef}
+                    >
+                         
 
-           
-                    <DiseasePicker
-                        kecamatan={_.uniqBy(samples.map(s => ({Kecamatan: s.fields.Kecamatan, Latitude: s.fields.Lat, Longitude: s.fields.Long})), 'Kecamatan')} onViewportChange={_goToViewport}/>
-                    <Source
-                        type="geojson"
-                        data={points}
-                        cluster={true}
-                        clusterMaxZoom={15}
-                        clusterRadius={50}
-                        ref={sourceRef}>
+{clusters.map(cluster => {
+                        const [longitude, latitude] = cluster.geometry.coordinates;
+                        const { cluster: isCluster, point_count : pointCount} = cluster.properties;
 
-                        <Layer {...clusterLayer}/>
-                        <Layer {...clusterCountLayer}/>
-                        <Layer {...unclusteredPointLayer}/>
-                        <Layer {...unclusterCountLayer}/>
-                    </Source>
+                        if(isCluster) {
+                            return(
+                                <Marker key={cluster.id} latitude={latitude} longitude={longitude}>
+                                    <div className="cluster-marker" style={{background: `${_getInterpolation(pointCount)}`}}
+                                onClick={() =>{ _getZoom(cluster.id);}}
+                                >
+                                        {pointCount}
+                                    </div>
+                                </Marker>
+                            );
+                        }
+
+                        return(
+                            <Marker key={cluster.properties.id} 
+                        latitude={latitude} 
+                        longitude={longitude}
+                        >
+                            <button className="icon-marker" onClick={() =>{_getZoomNonCluster(cluster)}} style={{background: `${_getInterpolation(1)}`}}>
+                            1
+                            </button>
+                        </Marker>
+                        )
+                    })}
+
 
                     <div
                         style={{
@@ -231,47 +301,82 @@ console.log(`district`, district);
                     </div>
 
                     
+                    <Box
+                        style={{
+                        position: "absolute",
+                        bottom: "0",
+                        left: "100px"
+                    }}
+                        p={0}
+                        mb={1}
+                        ml={1}>
+                        <a href="https://jala.tech" target="_blank" rel="noreferrer">
+                            <Text color="white" fontSize="xs">powered by</Text>
+                            <Img fixed={query.jala.childImageSharp.fixed}/>
+                        </a>
+                    </Box>
+
+                    <DiseasePicker 
+                        kecamatan={_.uniqBy(samples.map(s => ({Kecamatan: s.fields.Kecamatan, Latitude: s.fields.Lat, Longitude: s.fields.Long})), 'Kecamatan')}
+                        onViewportChange={_goToViewport}/>
+
+                   
+
                 </ReactMapGL>
 
             </Box>
         </Box>
 
-        ) } 
-        
-        function DiseasePicker({kecamatan, onViewportChange}) {const {
-            disease,
-            setDisease,
-            district,
-            setDistrict,
-            startDate,
-            setStartDate,
-            endDate,
-            setEndDate
-        } = useContext(DiseaseContext);
+    )
+}
 
+function DiseasePicker({kecamatan, onViewportChange}) {
+    const {
+        disease,
+        setDisease,
+        district,
+        setDistrict,
+        startDate,
+        setStartDate,
+        endDate,
+        setEndDate
+    } = useContext(DiseaseContext);
 
-        const { colorMode } = useColorMode();
-        const CustomInput = React.forwardRef(({ value, onClick }, ref) => {
-            return (
-                <Input sz="md" value={value} onClick={onClick} readOnly={true} ref={ref}/>
-            )
-        });
+    const {colorMode} = useColorMode();
+    const CustomInput = React.forwardRef(({
+        value,
+        onClick
+    }, ref) => {
+        return (<Input sz="md" value={value} onClick={onClick} readOnly={true} ref={ref}/>)
+    });
 
-        // console.log('kecamatan',kecamatan);
+    // console.log('kecamatan',kecamatan);
 
-        return (
-            <Box>
-                <Box display={{sm:"none", xs:"none", lg:"block"}} >
-                <Flex className="control-panel" bg={colorMode === 'dark' ? 'gray.800' : 'white'}>
-                <Box mb={2} w="200px" mr={4}>
+    return (
+        <Box style={{
+            position: "relative",
+            top: 0,
+            left: 0
+        }}>
+            <Box
+                display={{
+                sm: "none",
+                xs: "none",
+                lg: "block"
+            }}>
+                <Flex
+                    className="control-panel"
+                    bg={colorMode === 'dark'
+                    ? 'gray.800'
+                    : 'white'}>
+                    <Box mb={2} w="200px" mr={4}>
                         <Heading as="h4" size="xs" fontWeight={500} mb={2}>Pilih Daerah</Heading>
                         <Select
                             size="md"
                             value={district}
                             onChange={(e) => {
                             setDistrict(e.target.value)
-                            onViewportChange(kecamatan.find(kec => e.target.value === kec.Kecamatan))
-                        }}>
+                            onViewportChange(kecamatan.find(kec => e.target.value === kec.Kecamatan))}}>
                             <option value='Semua'>Semua Daerah</option>
                             {kecamatan.map(d => <option value={d.Kecamatan} key={d.Kecamatan}>{d.Kecamatan}</option>)}
                         </Select>
@@ -292,7 +397,7 @@ console.log(`district`, district);
                             <option value='WSSV'>WSSV/Bintik Putih</option>
                         </Select>
                     </Box>
-                    
+
                     <Box mb={2} w="150px" mr={2}>
                         <Heading as="h4" size="xs" fontWeight={500} mb={2}>Tanggal Awal</Heading>
                         <DatePicker
@@ -303,7 +408,7 @@ console.log(`district`, district);
                             selectsStart
                             startDate={startDate}
                             endDate={endDate}
-                            customInput={<CustomInput/>}/>
+                            customInput={< CustomInput />}/>
                     </Box>
 
                     <Box mb={2} w="150px">
@@ -317,18 +422,37 @@ console.log(`district`, district);
                             startDate={startDate}
                             endDate={endDate}
                             minDate={startDate}
-                            customInput={<CustomInput/>}/>
+                            customInput={< CustomInput />}/>
                     </Box>
                 </Flex>
             </Box>
-            <Box display={{ lg:"none"}}>
-            <SimpleGrid columns={2} spacing={2} pr={{xs:4}} pl={{xs:4}} pt={{xs:0}} pb={{xs:2}}  className="disease-filter-res" bg={colorMode === 'dark' ? 'gray.800' : 'white'}>
-            
+            <Box display={{
+                lg: "none"
+            }}>
+                <SimpleGrid
+                    columns={2}
+                    spacing={2}
+                    pr={{
+                    xs: 4
+                }}
+                    pl={{
+                    xs: 4
+                }}
+                    pt={{
+                    xs: 0
+                }}
+                    pb={{
+                    xs: 2
+                }}
+                    className="disease-filter-res"
+                    bg={colorMode === 'dark'
+                    ? 'gray.800'
+                    : 'white'}>
+
                     <Box mb={2} w="100%">
                         <Heading as="h6" size="xs" mb={1}>Daerah</Heading>
                         <Select
-                        p={1}
-
+                            p={1}
                             size="sm"
                             value={district}
                             onChange={(e) => {
@@ -342,8 +466,7 @@ console.log(`district`, district);
                     <Box mb={2} w="100%">
                         <Heading as="h6" size="xs" mb={1}>Penyakit</Heading>
                         <Select
-                        p={1}
-
+                            p={1}
                             size="sm"
                             value={disease}
                             onChange={(e) => {
@@ -357,11 +480,10 @@ console.log(`district`, district);
                             <option value='WSSV'>WSSV/Bintik Putih</option>
                         </Select>
                     </Box>
-            </SimpleGrid>
+                </SimpleGrid>
             </Box>
-            </Box>
-            
+        </Box>
 
-        )
+    )
 
 }
