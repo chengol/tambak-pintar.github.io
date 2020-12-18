@@ -11,8 +11,10 @@ import {
     Text,
     Divider,
     Icon,
-    Select
-} from '@chakra-ui/core';
+    Select,
+    useColorMode
+} from '@chakra-ui/react';
+
 
 import {DiseaseContext} from '../pages/app'
 
@@ -24,8 +26,6 @@ export default function DiseaseTracker({points, samples}) {
     // let kab = "";
     let prov = "";
 
-    // console.log('samples tracker', samples); console.log(`point statistik`,
-    // points);
 
     let tracker = {};
 
@@ -81,6 +81,7 @@ export default function DiseaseTracker({points, samples}) {
         prov = points.features[0].properties.fields.Provinsi;
     }
 
+    const {colorMode} = useColorMode();
 
     return (
         <div >
@@ -90,12 +91,12 @@ export default function DiseaseTracker({points, samples}) {
                 {tracker.total_s && <div>
                     <Box
                         m={{
+                        md: 5,
                         sm: 5,
-                        xs: 5,
-                        md: 3
+                        lg: 3
                     }}
                         p={{
-                        xs: 0,
+                        sm: 0,
                         base: 1
                     }}>
                         <Heading as="h3" size="xl" mb={0}>{(district === "Semua")
@@ -136,8 +137,8 @@ export default function DiseaseTracker({points, samples}) {
                         </SimpleGrid>
                     </Box>
 
-                    <Box bg="gray.100" h="40px" mr={0} ml={0} mb={2}>
-                        <Text fontSize="md" p={2} fontWeight={700} m={2} color="gray.600">Penyakit</Text>
+                    <Box h="40px" mr={0} ml={0} mb={2} bg={colorMode === 'light'? "gray.100":"gray.700"}>
+                        <Text fontSize="md" p={2} fontWeight={700} m={2}>Penyakit</Text>
                     </Box>
                     <Box className="overflow-tracker">
                         <SimpleGrid
@@ -145,11 +146,11 @@ export default function DiseaseTracker({points, samples}) {
                             spacing={3}
                             m={{
                             sm: 5,
-                            xs: 5,
-                            md: 3
+                            md: 5,
+                            lg: 3
                         }}
                             p={{
-                            xs: 0,
+                            sm: 0,
                             base: 1
                         }}
                             className="tracker-panel">
@@ -227,17 +228,17 @@ export default function DiseaseTracker({points, samples}) {
                                 </Stat>
                             </Box>
                         </SimpleGrid>
-                        <Box bg="gray.100" h="40px" mr={0} ml={0} mb={2}>
-                            <Text fontSize="md" p={2} fontWeight={700} m={2} color="gray.600">Trend Penyakit</Text>
+                        <Box bg="gray.100" h="40px" mr={0} ml={0} mb={2} bg={colorMode === 'light'? "gray.100":"gray.700"}>
+                            <Text fontSize="md" p={2} fontWeight={700} m={2}>Trend Penyakit</Text>
                         </Box>
                         <Box
                             m={{
                             sm: 5,
-                            xs: 5,
-                            md: 3
+                            md: 5,
+                            lg: 3
                         }}
                             p={{
-                            xs: 0,
+                            sm: 0,
                             base: 1
                         }}>
                             <Box mb={2} w="100%" mr={4}>
@@ -258,7 +259,7 @@ export default function DiseaseTracker({points, samples}) {
                                 justifyContent="center"
                                 textAlign="center"
                                 height="200px">
-                                <AlertIcon size="40px" mr={0}/>
+                                <AlertIcon boxSize="40px" mr={0}/>
                                 <AlertTitle mt={4} mb={1} fontSize="lg">
                                     Coming Soon!
                                 </AlertTitle>
@@ -275,7 +276,7 @@ export default function DiseaseTracker({points, samples}) {
                         justifyContent="center"
                         textAlign="center">
                         <AlertIcon/>
-                        Tidak ada data penyakit {disease === "Semua Positif" ? " ": disease} di daerah {district} 😞
+                        Tidak ada data penyakit {disease === "Semua Positif" ? " ": disease} di {district === "Semua" ? "semua daerah" : district} 😞
                     </Alert>
                 </Box>
 }
