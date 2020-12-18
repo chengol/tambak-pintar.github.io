@@ -9,7 +9,7 @@ import {
     Text,
     Grid,
     useColorMode, Input
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import {clusterLayer, clusterCountLayer, unclusteredPointLayer, unclusterCountLayer} from '../layers/layers';
 import '../styles/app.css';
 import {graphql, useStaticQuery} from 'gatsby';

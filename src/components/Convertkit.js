@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Button} from '@chakra-ui/core';
+import {Button} from '@chakra-ui/react';
 
 const Convertkit = () => {
   const [email, setEmail] = useState('');

@@ -1,7 +1,7 @@
 import React from 'react';
 import Lottie from 'react-lottie';
 import animationData from '../lotties/not-found.json';
-import {Link, Flex, Heading, SimpleGrid, Button} from "@chakra-ui/core";
+import {Link, Flex, Heading, SimpleGrid, Button} from "@chakra-ui/react";
 
 export default function EmptyPages() {
     const defaultOptions = {
@@ -16,7 +16,7 @@ export default function EmptyPages() {
         <div>
             <Flex
                 bg="blue.50"
-                size="150px"
+                boxSize="150px"
                 align="center"
                 justify="center"
                 w="100%"
@@ -31,7 +31,7 @@ export default function EmptyPages() {
     Halaman tidak ditemukan
   </Heading>
                 <Lottie options={defaultOptions} height={400} width={400}/>
-                <Button borderRadius="10px" variantColor="blue"><Link href="/" color="white">Kembali ke halaman utama</Link></Button>
+                <Button borderRadius="10px" colorScheme="blue"><Link href="/" color="white">Kembali ke halaman utama</Link></Button>
                 
                  
             </SimpleGrid>

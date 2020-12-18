@@ -8,9 +8,10 @@ import {
     Spinner,
     Text,
     useColorMode,
-    Button
+    Button,
+    ChakraProvider
     // Heading
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import '../styles/app.css';
 import {isAfter, isBefore, lightFormat} from 'date-fns';
 import Sidepanel from '../components/Sidepanel';
@@ -24,10 +25,11 @@ import {Helmet} from 'react-helmet';
 export default function AppDynamicData() {
     return (
         <div>
-
+            <ChakraProvider>
             <DiseaseProvider>
                 <AppContent/>
             </DiseaseProvider>
+            </ChakraProvider>
         </div>
     )
 }
@@ -219,12 +221,13 @@ function FilterData(data) {
             <Flex wrap="wrap">
                 <Box
                     w="360px"
-                    display={{
-                    xs: "none",
-                    sm: "none",
-                    md: "none",
-                    lg: "block"
-                }}><Sidepanel points={points} samples={samplesData}/>
+                display={{
+                sm:"none",
+                md:"none",
+                lg:"none",
+                xl:"flex"}}
+                >
+                <Sidepanel points={points} samples={samplesData}/>
                 <LatestData samples={samples}/>
                 </Box>
                 <Box flex="1">
@@ -233,12 +236,8 @@ function FilterData(data) {
                 </Box>
             </Flex>
             <Box id="headbottom"
-                display={{
-                xs: "block",
-                sm: "block",
-                md: "block",
-                lg: "none"
-            }}><Bottompanel points={points} samples={samplesData}/></Box>
+            display={{ sm: "block", md: "block", lg: "block", xl: "none" }}
+            ><Bottompanel points={points} samples={samplesData}/></Box>
 
         </div>
     )

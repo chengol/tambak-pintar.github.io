@@ -6,7 +6,7 @@ import {
     Heading,
     Text,
     Button,
-} from '@chakra-ui/core'
+} from '@chakra-ui/react'
 
 const MenuItems = props => {
     const {

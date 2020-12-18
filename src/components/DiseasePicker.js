@@ -7,7 +7,7 @@ import {
     Input,
     Flex,
     Select
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 import {DiseaseContext} from '../pages/app'
 import DatePicker from "react-datepicker";
@@ -42,9 +42,10 @@ export default function DiseasePicker({kecamatan, onViewportChange}) {
         }}>
             <Box
                 display={{
+                md: "none",
                 sm: "none",
-                xs: "none",
-                lg: "block"
+                lg: "none",
+                xl: "block"
             }}>
                 <Flex
                     className="control-panel"
@@ -109,7 +110,7 @@ export default function DiseasePicker({kecamatan, onViewportChange}) {
                 </Flex>
             </Box>
             <Box display={{
-                lg: "none"
+                xl: "none"
             }}>
                 <SimpleGrid
                     columns={2}

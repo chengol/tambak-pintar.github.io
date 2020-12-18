@@ -85,7 +85,7 @@ module.exports = {
         }
       }
     },
-      `gatsby-plugin-chakra-ui`,
+      // `gatsby-plugin-chakra-ui`,
       
   ]
 }

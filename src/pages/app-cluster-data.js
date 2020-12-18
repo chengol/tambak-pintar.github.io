@@ -5,7 +5,7 @@ import {Header} from '../components';
 import {SimpleGrid, Box, Skeleton, Button, Select,  Stat,
     StatLabel,
     StatNumber,
-    StatHelpText,} from '@chakra-ui/core';
+    StatHelpText,} from '@chakra-ui/react';
 import '../styles/app.css';
 import {clusterLayer, clusterCountLayer, unclusteredPointLayer} from '../layers/layers';
 

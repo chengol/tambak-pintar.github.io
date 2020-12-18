@@ -12,12 +12,11 @@ import {
     Input,
     IconButton,
     ColorModeProvider
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
+import {SunIcon, MoonIcon} from '@chakra-ui/icons';
 import useSupercluster from "use-supercluster";
-import {clusterLayer, clusterCountLayer, unclusteredPointLayer, unclusterCountLayer} from '../layers/layers';
 import '../styles/app.css';
 import {graphql, useStaticQuery} from 'gatsby';
-import DatePicker from "react-datepicker";
 import {DiseaseContext} from '../pages/app';
 import Img from 'gatsby-image';
 import "react-datepicker/dist/react-datepicker.css";
@@ -58,12 +57,6 @@ export default function Peta({points, samples}) {
     let districtLong = 109.375827;
     let mapZoom = 5;
 
-    
-
-    // const titik = Array.from(points.features);
-    // console.log('titik terpilih', points);
-    // const titiks = points.features;
-
     const [viewport,
         setViewport] = useState({
         latitude: -7.650510,
@@ -76,17 +69,13 @@ export default function Peta({points, samples}) {
 
     const {setDistrict} = useContext(DiseaseContext);
 
-    // console.log(`data sampel`, samplesData);
-
     const sourceRef = useRef();
 
     function _onViewportChange(viewport) {
         setViewport(viewport);
-        // console.log(`goto = `, viewport);
     }
 
     const _goToViewport = (kec) => {
-        // console.log('event', kec);
         if (!kec) {
             console.log('tidak ada data pada daerah tersebut');
             districtLong = 109.375827;
@@ -246,10 +235,10 @@ export default function Peta({points, samples}) {
             <Box
                 id="map"
                 height={{
-                lg: "100vh",
-                md: "75vh",
-                sm: "70vh",
-                xs: "70vh"
+                xl: "100vh",
+                lg: "75vh",
+                md: "70vh",
+                sm: "70vh"
             }}>
                 <ReactMapGL
                     {...viewport}
@@ -270,11 +259,11 @@ export default function Peta({points, samples}) {
                         if(isCluster) {
                             return(
                                 <Marker key={cluster.id} latitude={latitude} longitude={longitude}>
-                                    <div className="cluster-marker" style={{background: `${_getInterpolation(pointCount)}`}}
+                                    <button className="cluster-marker" style={{background: `${_getInterpolation(pointCount)}`}}
                                 onClick={() =>{ _getZoom(cluster.id);}}
                                 >
                                         {pointCount}
-                                    </div>
+                                    </button>
                                 </Marker>
                             );
                         }
@@ -307,14 +296,14 @@ export default function Peta({points, samples}) {
                         top: 100
                     }}
                     display={{
-                        lg: "none"
+                        xl: "none"
                     }}
                     className="basic-panel"
                         bg={colorMode === 'dark'
                         ? 'gray.800'
                         : 'white'}
                         p={1}>
-                <IconButton aria-label="dark side" variant="ghost" icon={colorMode === 'light'? "moon":"sun"} onClick={toggleColorMode} size="md"/>
+                <IconButton aria-label="dark side" variant="ghost" icon={colorMode === 'light'? <MoonIcon/>:<SunIcon/>} onClick={toggleColorMode} size="md"/>
                 </Box>
 
                     
