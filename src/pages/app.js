@@ -229,7 +229,7 @@ function FilterData(data) {
                 </Box>
                 <Box flex="1">
                     {/* <Peta points={points} samples={samples}/> */}
-                    <PetaPin points={pointsPeta} samples={samples} samplesData={samplesData} />
+                    <PetaPin points={pointsPeta} samples={samples}/>
                 </Box>
             </Flex>
             <Box id="headbottom"
