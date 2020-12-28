@@ -42,9 +42,10 @@ export default function DiseasePicker({kecamatan, onViewportChange}) {
         }}>
             <Box
                 display={{
+                    base: "none",
                 md: "none",
                 sm: "none",
-                lg: "none",
+                lg: "block",
                 xl: "block"
             }}>
                 <Flex
@@ -110,7 +111,10 @@ export default function DiseasePicker({kecamatan, onViewportChange}) {
                 </Flex>
             </Box>
             <Box display={{
-                xl: "none"
+                xl: "none",
+                lg:"none",
+                md: "block",
+                sm: "block"
             }}>
                 <SimpleGrid
                     columns={2}

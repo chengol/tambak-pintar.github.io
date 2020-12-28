@@ -218,16 +218,22 @@ function FilterData(data) {
 
     return (
         <div>
-            <Flex wrap="wrap">
-                <Box
+            <Flex wrap="wrap" id="wrap-sidepanel">
+                <Box id="box-sidepanel"
                     w="360px"
                 display={{
-                sm:"none",
-                md:"none",
-                lg:"none",
-                xl:"flex"}}
+                    base: "none",
+                sm: "none",
+                md: "none",
+                lg: "block" ,
+                xl: "block" }}
                 >
-                <Sidepanel points={points} samples={samplesData}/>
+                <Sidepanel display={{
+                base: "none",
+                sm: "none",
+                md: "none",
+                lg: "block" ,
+                xl: "block" }} id="sidepanel" points={points} samples={samplesData} />
                 <LatestData samples={samples}/>
                 </Box>
                 <Box flex="1">
@@ -236,8 +242,9 @@ function FilterData(data) {
                 </Box>
             </Flex>
             <Box id="headbottom"
-            display={{ sm: "block", md: "block", lg: "block", xl: "none" }}
-            ><Bottompanel points={points} samples={samplesData}/></Box>
+            display={{ sm: "block", md: "block", lg: "none", xl: "none" }}
+            >
+                <Bottompanel points={points} samples={samplesData} display={{ sm: "block", md: "block", lg: "block", xl: "none" }}/></Box>
 
         </div>
     )

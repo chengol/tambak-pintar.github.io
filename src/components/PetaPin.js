@@ -222,7 +222,11 @@ export default function Peta({points, samples}) {
     return (
         <Box>
             <Box display={{
-                lg: "none"
+                xl: "none",
+                lg: "none",
+                md: "block",
+                sm: "block",
+                base: "block"
             }}>
                 
                 <Flex align="center" justify="center">
@@ -236,9 +240,10 @@ export default function Peta({points, samples}) {
                 id="map"
                 height={{
                 xl: "100vh",
-                lg: "75vh",
+                lg: "100vh",
                 md: "70vh",
-                sm: "70vh"
+                sm: "70vh",
+                base: "60vh"
             }}>
                 <ReactMapGL
                     {...viewport}
@@ -296,7 +301,10 @@ export default function Peta({points, samples}) {
                         top: 100
                     }}
                     display={{
-                        xl: "none"
+                        xl: "none",
+                        lg: "none",
+                        md: "block",
+                        sm: "block"
                     }}
                     className="basic-panel"
                         bg={colorMode === 'dark'
