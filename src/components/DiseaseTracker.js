@@ -93,7 +93,8 @@ export default function DiseaseTracker({points, samples}) {
                         m={{
                         md: 5,
                         sm: 5,
-                        lg: 3
+                        lg: 3,
+                        base: 3
                     }}
                         p={{
                         sm: 0,
@@ -147,7 +148,8 @@ export default function DiseaseTracker({points, samples}) {
                             m={{
                             sm: 5,
                             md: 5,
-                            lg: 3
+                            lg: 3,
+                            base: 3
                         }}
                             p={{
                             sm: 0,
@@ -157,7 +159,7 @@ export default function DiseaseTracker({points, samples}) {
                             <Box>
                                 <Stat>
                                     <Text fontSize="md" color="gray.500">AHPND <a
-                                            href="https://app.jala.tech/diseases/acute-hepatopancreatic-necrosis-disease">
+                                            href="https://app.jala.tech/diseases/acute-hepatopancreatic-necrosis-disease" target="_blank">
                                             <Icon focusable="true" name="question" size="14px" color="blue.400"/></a>
                                     </Text>
                                     <Heading as="h3" size="xl">
@@ -175,7 +177,7 @@ export default function DiseaseTracker({points, samples}) {
                             </Box>
                             <Box>
                                 <Stat>
-                                    <Text fontSize="md" color="gray.500">EHP <a href="https://app.jala.tech/diseases/hepatopancreatic%20-microsporidiosis">
+                                    <Text fontSize="md" color="gray.500">EHP <a href="https://app.jala.tech/diseases/hepatopancreatic%20-microsporidiosis" target="_blank">
                                             <Icon focusable="true" name="question" size="16px" color="blue.400"/></a>
                                     </Text>
                                     <Heading as="h3" size="xl">
@@ -193,7 +195,7 @@ export default function DiseaseTracker({points, samples}) {
                             </Box>
                             <Box>
                                 <Stat>
-                                    <Text fontSize="md" color="gray.500">IMNV/Myo <a href="https://app.jala.tech/diseases/infectious-myonecrosis-virus">
+                                    <Text fontSize="md" color="gray.500">IMNV/Myo <a href="https://app.jala.tech/diseases/infectious-myonecrosis-virus" target="_blank">
                                             <Icon focusable="true" name="question" size="16px" color="blue.400"/></a>
                                     </Text>
                                     <Heading as="h3" size="xl">
@@ -211,7 +213,7 @@ export default function DiseaseTracker({points, samples}) {
                             </Box>
                             <Box>
                                 <Stat pr={1}>
-                                    <Text fontSize="md" color="gray.500">WSSV/Bintik Putih <a href="https://app.jala.tech/diseases/white-spot-syndrome">
+                                    <Text fontSize="md" color="gray.500">WSSV/Bintik Putih <a href="https://app.jala.tech/diseases/white-spot-syndrome" target="_blank">
                                             <Icon focusable="true" name="question" size="16px" color="blue.400"/></a>
                                     </Text>
                                     <Heading as="h3" size="xl">
