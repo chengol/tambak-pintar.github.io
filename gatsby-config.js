@@ -26,7 +26,8 @@ module.exports = {
     name: 'Syauqy',
     airtableApi : process.env.AIRTABLE_API_KEY,
     airtableBase : process.env.AIRTABLE_BASEID,
-    mapboxApi : process.env.REACT_APP_MAPBOX_TOKEN
+    mapboxApi : process.env.REACT_APP_MAPBOX_TOKEN,
+    jalaAccessToken: process.env.JALA_ACCESS_TOKEN
   },
   plugins: [
     {
