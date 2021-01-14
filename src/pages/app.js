@@ -21,6 +21,7 @@ import PetaPin from '../components/PetaPin';
 // import Peta2 from '../components/Peta2';
 import Bottompanel from '../components/Bottompanel';
 import {Helmet} from 'react-helmet';
+import _ from 'lodash';
 
 export default function AppDynamicData() {
     return (
@@ -98,6 +99,7 @@ function DiseaseData() {
         airtableApi
         airtableBase
         mapboxApi
+        jalaAccessToken
       }
     }
   }`);
@@ -107,8 +109,41 @@ function DiseaseData() {
     const url = `https://api.airtable.com/v0/${airtableApi.airtable.siteMetadata.airtableBase}/allRecord?api_key=${airtableApi.airtable.siteMetadata.airtableApi}&sort%5B0%5D%5Bfield%5D=Tanggal&sort%5B0%5D%5Bdirection%5D=asc`;
     const {toast} = useContext(DiseaseContext);
 
-    const {data, error} = useSWR(url);
-    if (error) 
+    // const {data, error} = useSWR(url);
+    const response = useSWR("https://staging-app.jala.tech/api/laboratories/1/cycle_diseases?per_page=1000&with=cycle.pond.farm.region,disease&cycle_id=1,6,8,11",
+      (url) => fetcher(url, {
+        headers: {
+          'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
+          'Accept': 'application/json',
+        }
+      }))
+
+    const data = {
+      records: response.data ? response.data.data.map((datum) => ({
+        id: datum.id,
+        fields: {
+          DoC: datum.age,
+          Kabupaten: _.startCase(datum.cycle.pond.farm.region.regency_name.toLowerCase()),
+          'Kabupaten 2': [datum.cycle.pond.farm.region.id],
+          Kecamatan: _.startCase(datum.cycle.pond.farm.region.regency_name.toLowerCase()) + (datum.cycle.pond.farm.region.district_name ? `, ${_.startCase(datum.cycle.pond.farm.region.district_name.toLowerCase())}` : ''),
+          Lat: parseFloat(datum.cycle.pond.farm.region.latitude),
+          Long: parseFloat(datum.cycle.pond.farm.region.longitude),
+          Penyakit: ((name) => {
+            if (name === 'IMNV / Myo') return 'IMNV';
+            if (name === 'WSS / WSD') return 'WSSV';
+            if (name === 'EHP/HPM') return 'EHP';
+            return name;
+          })(datum.disease.short_name || datum.disease.full_name),
+          Provinsi: _.startCase(datum.cycle.pond.farm.region.province_name.toLowerCase()),
+          RecordID: datum.logged_at,
+          Status: datum.positive === true ? 1 : 0,
+          Tambak: datum.cycle.pond.farm.name,
+          Tanggal: datum.logged_at.substr(0, 10)
+        },
+        createdTime: datum.created_at
+      })) : []
+    }
+    if (response.error)
         return <div>{toast({title: "An error occurred.", description: "Unable to get the data.", status: "error", duration: 9000, isClosable: true})}</div>
     if (!data) {
         return (
@@ -259,7 +294,7 @@ function LatestData({samples}){
         <Box className="latest-data" bg={colorMode === 'dark'
                     ? 'gray.800'
                     : 'white'}>
-    <Text fontSize="sm" fontWeight={700} m={2} fontWeight={500}>Data diperbarui terakhir {lightFormat(new Date(latestData.fields.Tanggal), 'dd-MM-yyyy')}</Text>
+    <Text fontSize="sm" fontWeight={700} m={2} fontWeight={500}>Data diperbarui terakhir {latestData ? lightFormat(new Date(latestData.fields.Tanggal), 'dd-MM-yyyy') : ''}</Text>
         </Box>
       </div>
     )
