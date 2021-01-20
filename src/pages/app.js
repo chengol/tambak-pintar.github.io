@@ -110,13 +110,14 @@ function DiseaseData() {
     const {toast} = useContext(DiseaseContext);
 
     // const {data, error} = useSWR(url);
-    const response = useSWR("https://staging-app.jala.tech/api/laboratories/1/cycle_diseases?per_page=1000&with=cycle.pond.farm.region,disease&cycle_id=1,6,8,11",
+    const response = useSWR("https://app.jala.tech/api/laboratories/1/cycle_diseases?per_page=1000&with=cycle.pond.farm.region,disease&cycle_id=1,6,8,11",
       (url) => fetcher(url, {
         headers: {
           'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
           'Accept': 'application/json',
         }
       }))
+    
 
     const data = {
       records: response.data ? response.data.data.map((datum) => ({
@@ -158,8 +159,6 @@ function DiseaseData() {
         )
             
     }
-
-    
 
     return (
         <div>
@@ -286,7 +285,7 @@ function FilterData(data) {
 }
 
 function LatestData({samples}){
-    const latestData = samples[samples.length - 1];
+    const latestData = samples[0];
     console.log('latest samples', latestData);
     const {colorMode} = useColorMode();
     return(
@@ -299,3 +298,4 @@ function LatestData({samples}){
       </div>
     )
   }
+
