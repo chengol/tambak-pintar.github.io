@@ -59,9 +59,9 @@ export default function Peta({points, samples, regions}) {
 
     const [viewport,
         setViewport] = useState({
-        latitude: -7.650510,
-        longitude: 109.375827,
-        zoom: 6,
+        latitude: -4.5,
+        longitude: 110,
+        zoom: 4.5,
         height: "100vh",
         bearing: 0,
         pitch: 0
@@ -78,9 +78,9 @@ export default function Peta({points, samples, regions}) {
     const _goToViewport = (kec) => {
         if (!kec) {
             console.log('tidak ada data pada daerah tersebut');
-            districtLong = 109.375827;
-            districtLat = -7.650510;
-            mapZoom = 6;
+            districtLong = 110;
+            districtLat = -4.5;
+            mapZoom = 5;
         }else if(kec.id.length === 2){
             districtLong = parseFloat(kec.longitude);
             districtLat = parseFloat(kec.latitude);

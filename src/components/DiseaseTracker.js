@@ -36,61 +36,61 @@ export default function DiseaseTracker({points, samples, statistics, region}) {
     const stats = statistics;
     const regionName = region;
 
-    console.log('region', regionName);
+    // console.log('region', regionName);
 
-    let tracker = {};
+    // let tracker = {};
 
-    if (!samples || !samples.length || !points || !points.features.length) {
-        console.log('titik tracker 1', samples);
-    } else {
-        // console.log('titik tracker 2', points.features);
-        tracker = {
-            total_s: samples.length,
-            total_p: points
-                .features
-                .filter(d => {
-                    return d.properties.fields.Status === 1
-                }),
-            AHPND_p: points
-                .features
-                .filter(d => {
-                    return d.properties.fields.Penyakit === "AHPND" && d.properties.fields.Status === 1
-                }),
-            AHPND_s: samples.filter(d => {
-                return d.fields.Penyakit === "AHPND"
-            }),
-            EHP_p: points
-                .features
-                .filter(d => {
-                    return d.properties.fields.Penyakit === "EHP" && d.properties.fields.Status === 1
-                }),
-            EHP_s: samples.filter(d => {
-                return d.fields.Penyakit === "EHP"
-            }),
-            IMNV_p: points
-                .features
-                .filter(d => {
-                    return d.properties.fields.Penyakit === "IMNV" && d.properties.fields.Status === 1
-                }),
-            IMNV_s: samples.filter(d => {
-                return d.fields.Penyakit === "IMNV"
-            }),
-            WSSV_p: points
-                .features
-                .filter(d => {
-                    return d.properties.fields.Penyakit === "WSSV" && d.properties.fields.Status === 1
-                }),
-            WSSV_s: samples.filter(d => {
-                return d.fields.Penyakit === "WSSV"
-            })
-        }
+    // if (!samples || !samples.length || !points || !points.features.length) {
+    //     // console.log('titik tracker 1', samples);
+    // } else {
+    //     // console.log('titik tracker 2', points.features);
+    //     tracker = {
+    //         total_s: samples.length,
+    //         total_p: points
+    //             .features
+    //             .filter(d => {
+    //                 return d.properties.fields.Status === 1
+    //             }),
+    //         AHPND_p: points
+    //             .features
+    //             .filter(d => {
+    //                 return d.properties.fields.Penyakit === "AHPND" && d.properties.fields.Status === 1
+    //             }),
+    //         AHPND_s: samples.filter(d => {
+    //             return d.fields.Penyakit === "AHPND"
+    //         }),
+    //         EHP_p: points
+    //             .features
+    //             .filter(d => {
+    //                 return d.properties.fields.Penyakit === "EHP" && d.properties.fields.Status === 1
+    //             }),
+    //         EHP_s: samples.filter(d => {
+    //             return d.fields.Penyakit === "EHP"
+    //         }),
+    //         IMNV_p: points
+    //             .features
+    //             .filter(d => {
+    //                 return d.properties.fields.Penyakit === "IMNV" && d.properties.fields.Status === 1
+    //             }),
+    //         IMNV_s: samples.filter(d => {
+    //             return d.fields.Penyakit === "IMNV"
+    //         }),
+    //         WSSV_p: points
+    //             .features
+    //             .filter(d => {
+    //                 return d.properties.fields.Penyakit === "WSSV" && d.properties.fields.Status === 1
+    //             }),
+    //         WSSV_s: samples.filter(d => {
+    //             return d.fields.Penyakit === "WSSV"
+    //         })
+    //     }
 
-        // console.log('statistik ', tracker);
+    //     // console.log('statistik ', tracker);
 
-        // kec = points.features[0].properties.fields.Kecamatan;
-        // // kab = points.features[0].properties.fields.Kabupaten;
-        // prov = points.features[0].properties.fields.Provinsi;
-    }
+    //     // kec = points.features[0].properties.fields.Kecamatan;
+    //     // // kab = points.features[0].properties.fields.Kabupaten;
+    //     // prov = points.features[0].properties.fields.Provinsi;
+    // }
 
     if(regionName){
         kec = regionName.district_name;
@@ -117,7 +117,8 @@ export default function DiseaseTracker({points, samples, statistics, region}) {
                         p={{
                         sm: 0,
                         base: 1
-                    }}>{console.log('total positive', stats.total_positive)}
+                    }}>
+                        {/* {console.log('total positive', stats.total_positive)} */}
                     <Heading as="h3" size="xl" mb={0}>{(regionId === "")
                         ? "Indonesia"
                         : `${kec !== null && kec !== undefined  ? _.startCase(kec.toLowerCase())+`, ` : ""}`+`${kab !== null && kab !== undefined  ? _.startCase(kab.toLowerCase()) : prov !== undefined ? _.startCase(prov.toLowerCase()) : 'memuat...'}`}</Heading>

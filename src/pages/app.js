@@ -8,15 +8,13 @@ import {
     Spinner,
     Text,
     useColorMode,
-    Button,
     ChakraProvider
     // Heading
 } from '@chakra-ui/react';
 import '../styles/app.css';
-import {isAfter, isBefore, lightFormat, formatISO, formatISO9075} from 'date-fns';
+import {isAfter, isBefore, lightFormat, formatISO} from 'date-fns';
 import Sidepanel from '../components/Sidepanel';
 import {graphql, useStaticQuery} from 'gatsby';
-import Peta from '../components/Peta';
 import PetaPin from '../components/PetaPin';
 // import Peta2 from '../components/Peta2';
 import Bottompanel from '../components/Bottompanel';
@@ -113,9 +111,9 @@ function DiseaseData() {
     // airtableApi.airtable.siteMetadata.airtableBase);
 
     // const url = `https://api.airtable.com/v0/${airtableApi.airtable.siteMetadata.airtableBase}/allRecord?api_key=${airtableApi.airtable.siteMetadata.airtableApi}&sort%5B0%5D%5Bfield%5D=Tanggal&sort%5B0%5D%5Bdirection%5D=asc`;
-    const {toast} = useContext(DiseaseContext);
+    // const {toast} = useContext(DiseaseContext);
 
-    const {disease, district, regionId, startDate, endDate, diseaseId} = useContext(DiseaseContext);
+    const {toast, regionId, startDate, endDate, diseaseId} = useContext(DiseaseContext);
 
     // const {data, error} = useSWR(url);
     const response = useSWR(`https://app.jala.tech/api/laboratories/1/cycle_diseases?region_id=${regionId}&per_page=1000&with=cycle.pond.farm.region,disease&cycle_id=1,6,8,11&logged_at__gte=${formatISO(startDate, { representation: 'date' })}00:00:00&logged_at__lte=${formatISO(endDate, { representation: 'date' })}23:59:59&disease_id=${diseaseId}`,
@@ -150,11 +148,11 @@ function DiseaseData() {
         }
       }))
 
-      console.log('total cycle data',totalCycleResponse.data);
-      console.log('all diseases', response.data);
+    //   console.log('total cycle data',totalCycleResponse.data);
+    //   console.log('all diseases', response.data);
 
-      console.log('region', regionId);
-      console.log('region terpilih', regionResponse.data);
+    //   console.log('region', regionId);
+    //   console.log('region terpilih', regionResponse.data);
     //   console.log('all region has disease', listRegionResponse.data);
     //   console.log('diesase id', diseaseId);
     
@@ -209,7 +207,7 @@ function DiseaseData() {
 }
 
 function FilterData(data) {
-    const {disease, district, startDate, endDate} = useContext(DiseaseContext);
+    const {disease, startDate, endDate} = useContext(DiseaseContext);
     // console.log('distrik', district);
 
     // console.log('startdate', formatISO(startDate, { representation: 'date' }), 'endDate', formatISO(endDate, { representation: 'date' }));
@@ -236,8 +234,8 @@ function FilterData(data) {
             return  d.fields.Penyakit === disease && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
     });
 
-    console.log('statistic data', data.statisticData);
-    console.log('sampel', samples);
+    // console.log('statistic data', data.statisticData);
+    // console.log('sampel', samples);
     // console.log('sampleData', samplesData);
     // console.log('disease', disease, 'lokasi', district, 'diseaseData', diseaseData);
 
@@ -306,7 +304,7 @@ function FilterData(data) {
             <Box id="headbottom"
             display={{ sm: "block", md: "block", lg: "none", xl: "none" }}
             >
-                <Bottompanel points={points} samples={samplesData} display={{ sm: "block", md: "block", lg: "block", xl: "none" }}/></Box>
+                <Bottompanel points={points} samples={samplesData} statistics={data.statisticData} region={data.regionDetailData} display={{ sm: "block", md: "block", lg: "block", xl: "none" }}/></Box>
 
         </div>
     )
@@ -321,7 +319,7 @@ function LatestData(data){
         <Box className="latest-data" bg={colorMode === 'dark'
                     ? 'gray.800'
                     : 'white'}>
-    <Text fontSize="sm" fontWeight={700} m={2} fontWeight={500}>Data diperbarui terakhir {data.latestData.last_logged_at ? lightFormat(new Date(data.latestData.last_logged_at), 'dd/MM/yyyy') : ''}</Text>
+    <Text fontSize="sm" m={2} fontWeight={500}>Data diperbarui terakhir {data.latestData.last_logged_at ? lightFormat(new Date(data.latestData.last_logged_at), 'dd/MM/yyyy') : ''}</Text>
         </Box>
       </div>
     )

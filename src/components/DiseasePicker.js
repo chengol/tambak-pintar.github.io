@@ -78,7 +78,7 @@ export default function DiseasePicker({kecamatan, onViewportChange, regions}) {
                             value={regionId}
                             onChange={(e) => {
                             setRegionId(e.target.value)
-                            console.log('set region',e.target.value)
+                            // console.log('set region',e.target.value)
                             onViewportChange(regions.find(reg => e.target.value === reg.id))}}>
                             <option value=''>Semua Daerah</option>
                             {regions.map(d => <option value={d.id} key={d.id}>{_.startCase(d.full_name.toLowerCase())}</option>)}
@@ -173,13 +173,13 @@ export default function DiseasePicker({kecamatan, onViewportChange, regions}) {
                         <Select
                             p={1}
                             size="sm"
-                            value={district}
+                            value={regionId}
                             onChange={(e) => {
-                            setDistrict(e.target.value);
-                            onViewportChange(kecamatan.find(kec => e.target.value === kec.Kecamatan))
+                            setRegionId(e.target.value);
+                            onViewportChange(regions.find(reg => e.target.value === reg.id))
                         }}>
-                            <option value='Semua'>Semua Daerah</option>
-                            {kecamatan.map(d => <option value={d.Kecamatan} key={d.Kecamatan}>{d.Kecamatan}</option>)}
+                            <option value=''>Semua Daerah</option>
+                            {regions.map(d => <option value={d.id} key={d.id}>{_.startCase(d.full_name.toLowerCase())}</option>)}
                         </Select>
                     </Box>
                     <Box mb={2} w="100%">
@@ -187,16 +187,16 @@ export default function DiseasePicker({kecamatan, onViewportChange, regions}) {
                         <Select
                             p={1}
                             size="sm"
-                            value={disease}
+                            value={diseaseId}
                             onChange={(e) => {
-                            setDisease(e.target.value)
+                            setDiseaseId(e.target.value)
                         }}>
                             {/* <option value='Semua Sampel'>Semua Sampel</option> */}
-                            <option value='Semua Positif'>Semua Positif</option>
-                            <option value='AHPND'>AHPND</option>
-                            <option value='EHP'>EHP</option>
-                            <option value='IMNV'>IMNV/Myo</option>
-                            <option value='WSSV'>WSSV/Bintik Putih</option>
+                            <option value=''>Semua Positif</option>
+                            <option value='1'>AHPND</option>
+                            <option value='6'>EHP</option>
+                            <option value='8'>IMNV/Myo</option>
+                            <option value='11'>WSSV/Bintik Putih</option>
                         </Select>
                     </Box>
                 </SimpleGrid>
