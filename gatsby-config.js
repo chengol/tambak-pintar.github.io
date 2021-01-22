@@ -23,7 +23,7 @@ module.exports = {
   siteMetadata: {
     title: 'Smart Farming Disease Monitoring Dashboard',
     author: 'Jala Tech, Pte. Ltd.',
-    name: 'Syauqy',
+    name: 'Syauqy & Farid',
     airtableApi : process.env.AIRTABLE_API_KEY,
     airtableBase : process.env.AIRTABLE_BASEID,
     mapboxApi : process.env.REACT_APP_MAPBOX_TOKEN,

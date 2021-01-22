@@ -13,7 +13,7 @@ import {
     // Heading
 } from '@chakra-ui/react';
 import '../styles/app.css';
-import {isAfter, isBefore, lightFormat} from 'date-fns';
+import {isAfter, isBefore, lightFormat, formatISO, formatISO9075} from 'date-fns';
 import Sidepanel from '../components/Sidepanel';
 import {graphql, useStaticQuery} from 'gatsby';
 import Peta from '../components/Peta';
@@ -66,6 +66,8 @@ export function DiseaseProvider({children}) {
         setDisease] = useState("Semua Positif");
     const [district,
         setDistrict] = useState("Semua");
+    const [regionId, setRegionId] = useState('');
+    const [diseaseId, setDiseaseId] = useState('');
     const toast = useToast();
 
     // const [selectedDistrict,
@@ -82,7 +84,11 @@ export function DiseaseProvider({children}) {
             setStartDate,
             toast,
             endDate,
-            setEndDate
+            setEndDate,
+            regionId,
+            setRegionId,
+            diseaseId,
+            setDiseaseId
         }}>
             {children}
         </DiseaseContext.Provider>
@@ -106,17 +112,51 @@ function DiseaseData() {
     // console.log('airtable api', airtableApi); console.log('airtable base',
     // airtableApi.airtable.siteMetadata.airtableBase);
 
-    const url = `https://api.airtable.com/v0/${airtableApi.airtable.siteMetadata.airtableBase}/allRecord?api_key=${airtableApi.airtable.siteMetadata.airtableApi}&sort%5B0%5D%5Bfield%5D=Tanggal&sort%5B0%5D%5Bdirection%5D=asc`;
+    // const url = `https://api.airtable.com/v0/${airtableApi.airtable.siteMetadata.airtableBase}/allRecord?api_key=${airtableApi.airtable.siteMetadata.airtableApi}&sort%5B0%5D%5Bfield%5D=Tanggal&sort%5B0%5D%5Bdirection%5D=asc`;
     const {toast} = useContext(DiseaseContext);
 
+    const {disease, district, regionId, startDate, endDate, diseaseId} = useContext(DiseaseContext);
+
     // const {data, error} = useSWR(url);
-    const response = useSWR("https://app.jala.tech/api/laboratories/1/cycle_diseases?per_page=1000&with=cycle.pond.farm.region,disease&cycle_id=1,6,8,11",
+    const response = useSWR(`https://app.jala.tech/api/laboratories/1/cycle_diseases?region_id=${regionId}&per_page=1000&with=cycle.pond.farm.region,disease&cycle_id=1,6,8,11&logged_at__gte=${formatISO(startDate, { representation: 'date' })}00:00:00&logged_at__lte=${formatISO(endDate, { representation: 'date' })}23:59:59&disease_id=${diseaseId}`,
       (url) => fetcher(url, {
         headers: {
           'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
           'Accept': 'application/json',
         }
       }))
+
+      const totalCycleResponse = useSWR(`https://app.jala.tech/api/laboratories/1/cycle_diseases_total?region_id=${regionId}&per_page=1000&logged_at__gte=${formatISO(startDate, { representation: 'date' })}00:00:00&logged_at__lte=${formatISO(endDate, { representation: 'date' })}23:59:59&disease_id=${diseaseId}`,
+      (url) => fetcher(url, {
+        headers: {
+          'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
+          'Accept': 'application/json',
+        }
+      }))
+
+      const listRegionResponse = useSWR("https://app.jala.tech/api/regions?has=farms.ponds.cycles.jala_cycle_diseases&per_page=1000&scope=district",
+      (url) => fetcher(url, {
+        headers: {
+          'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
+          'Accept': 'application/json',
+        }
+      }))
+
+      const regionResponse = useSWR(`https://app.jala.tech/api/regions/${regionId}`,
+      (url) => fetcher(url, {
+        headers: {
+          'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
+          'Accept': 'application/json',
+        }
+      }))
+
+      console.log('total cycle data',totalCycleResponse.data);
+      console.log('all diseases', response.data);
+
+      console.log('region', regionId);
+      console.log('region terpilih', regionResponse.data);
+    //   console.log('all region has disease', listRegionResponse.data);
+    //   console.log('diesase id', diseaseId);
     
 
     const data = {
@@ -125,7 +165,7 @@ function DiseaseData() {
         fields: {
           DoC: datum.age,
           Kabupaten: _.startCase(datum.cycle.pond.farm.region.regency_name.toLowerCase()),
-          'Kabupaten 2': [datum.cycle.pond.farm.region.id],
+          Region: [datum.cycle.pond.farm.region.id],
           Kecamatan: _.startCase(datum.cycle.pond.farm.region.regency_name.toLowerCase()) + (datum.cycle.pond.farm.region.district_name ? `, ${_.startCase(datum.cycle.pond.farm.region.district_name.toLowerCase())}` : ''),
           Lat: parseFloat(datum.cycle.pond.farm.region.latitude),
           Long: parseFloat(datum.cycle.pond.farm.region.longitude),
@@ -162,7 +202,8 @@ function DiseaseData() {
 
     return (
         <div>
-            <FilterData data={data}/>
+            
+            <FilterData data={data} regionData={listRegionResponse.data ? listRegionResponse.data.data : []} statisticData={totalCycleResponse.data ? totalCycleResponse.data.data[0] : []} regionDetailData={regionResponse.data ? regionResponse.data.data : []}/>
         </div>
     )
 }
@@ -171,47 +212,34 @@ function FilterData(data) {
     const {disease, district, startDate, endDate} = useContext(DiseaseContext);
     // console.log('distrik', district);
 
+    // console.log('startdate', formatISO(startDate, { representation: 'date' }), 'endDate', formatISO(endDate, { representation: 'date' }));
+
     const samples = data.data.records;
 
     const diseaseData = samples.filter(d => {
-        if (disease === "Semua Sampel" && district === "Semua") {
+        if (disease === "Semua Sampel") {
             return data && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         }
-        if (disease === "Semua Sampel" && d.fields.Kecamatan === district) {
-            return data && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-        }
-        if (disease === "Semua Positif" && district === "Semua") 
+        if (disease === "Semua Positif"){
             return d.fields.Status !== 0 && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-        if (disease === "Semua Positif" && d.fields.Kecamatan === district) 
-            return d.fields.Status !== 0 && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-        if (district === "Semua") 
-            return d.fields.Status !== 0 && d.fields.Penyakit === disease && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-        else {
-            return d.fields.Status !== 0 && d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         }
+            return d.fields.Status !== 0 && d.fields.Penyakit === disease && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
     });
 
     const samplesData = samples.filter(d => {
-        if (disease === "Semua Sampel" && district === "Semua") {
+        if (disease === "Semua Sampel") {
             return data && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         }
-        if (disease === "Semua Sampel" && d.fields.Kecamatan === district) {
-            return data && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-        }
-        if (disease === "Semua Positif" && district === "Semua") 
+        if (disease === "Semua Positif"){
             return isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-        if (disease === "Semua Positif" && d.fields.Kecamatan === district) 
-            return  d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-        if (district === "Semua") 
-            return  d.fields.Penyakit === disease && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-        else {
-            return d.fields.Penyakit === disease && d.fields.Kecamatan === district && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
         }
+            return  d.fields.Penyakit === disease && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
     });
 
+    console.log('statistic data', data.statisticData);
     console.log('sampel', samples);
-    console.log('sampleData', samplesData);
-    console.log('disease', disease, 'lokasi', district, 'diseaseData', diseaseData);
+    // console.log('sampleData', samplesData);
+    // console.log('disease', disease, 'lokasi', district, 'diseaseData', diseaseData);
 
     const points = {
         type: "FeatureCollection",
@@ -267,12 +295,12 @@ function FilterData(data) {
                 sm: "none",
                 md: "none",
                 lg: "block" ,
-                xl: "block" }} id="sidepanel" points={points} samples={samplesData} />
-                <LatestData samples={samples}/>
+                xl: "block" }} id="sidepanel" points={points} samples={samplesData} statistics={data.statisticData} region={data.regionDetailData} />
+                <LatestData latestData={data.statisticData}/>
                 </Box>
                 <Box flex="1">
                     {/* <Peta points={points} samples={samples}/> */}
-                    <PetaPin points={pointsPeta} samples={samples}/>
+                    <PetaPin points={pointsPeta} samples={samples} regions={data.regionData}/>
                 </Box>
             </Flex>
             <Box id="headbottom"
@@ -284,16 +312,16 @@ function FilterData(data) {
     )
 }
 
-function LatestData({samples}){
-    const latestData = samples[0];
-    console.log('latest samples', latestData);
+function LatestData(data){
+    // const latestData = samples[0];
+    // console.log('latest samples', data.latestData.last_logged_at);
     const {colorMode} = useColorMode();
     return(
       <div>
         <Box className="latest-data" bg={colorMode === 'dark'
                     ? 'gray.800'
                     : 'white'}>
-    <Text fontSize="sm" fontWeight={700} m={2} fontWeight={500}>Data diperbarui terakhir {latestData ? lightFormat(new Date(latestData.fields.Tanggal), 'dd-MM-yyyy') : ''}</Text>
+    <Text fontSize="sm" fontWeight={700} m={2} fontWeight={500}>Data diperbarui terakhir {data.latestData.last_logged_at ? lightFormat(new Date(data.latestData.last_logged_at), 'dd/MM/yyyy') : ''}</Text>
         </Box>
       </div>
     )

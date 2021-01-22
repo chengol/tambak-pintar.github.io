@@ -12,7 +12,9 @@ import {
 import {DiseaseContext} from '../pages/app'
 import DatePicker from "react-datepicker";
 
-export default function DiseasePicker({kecamatan, onViewportChange}) {
+import _ from "lodash"
+
+export default function DiseasePicker({kecamatan, onViewportChange, regions}) {
     const {
         disease,
         setDisease,
@@ -21,7 +23,11 @@ export default function DiseasePicker({kecamatan, onViewportChange}) {
         startDate,
         setStartDate,
         endDate,
-        setEndDate
+        setEndDate,
+        setRegionId,
+        regionId,
+        diseaseId,
+        setDiseaseId
     } = useContext(DiseaseContext);
 
     const {colorMode} = useColorMode();
@@ -53,7 +59,7 @@ export default function DiseasePicker({kecamatan, onViewportChange}) {
                     bg={colorMode === 'dark'
                     ? 'gray.800'
                     : 'white'}>
-                    <Box mb={2} w="200px" mr={4}>
+                    {/* <Box mb={2} w="200px" mr={4}>
                         <Heading as="h4" size="xs" fontWeight={500} mb={2}>Pilih Daerah</Heading>
                         <Select
                             size="md"
@@ -64,21 +70,47 @@ export default function DiseasePicker({kecamatan, onViewportChange}) {
                             <option value='Semua'>Semua Daerah</option>
                             {kecamatan.map(d => <option value={d.Kecamatan} key={d.Kecamatan}>{d.Kecamatan}</option>)}
                         </Select>
-                    </Box>
+                    </Box> */}
                     <Box mb={2} w="200px" mr={4}>
+                        <Heading as="h4" size="xs" fontWeight={500} mb={2}>Pilih Daerah</Heading>
+                        <Select
+                            size="md"
+                            value={regionId}
+                            onChange={(e) => {
+                            setRegionId(e.target.value)
+                            console.log('set region',e.target.value)
+                            onViewportChange(regions.find(reg => e.target.value === reg.id))}}>
+                            <option value=''>Semua Daerah</option>
+                            {regions.map(d => <option value={d.id} key={d.id}>{_.startCase(d.full_name.toLowerCase())}</option>)}
+                        </Select>
+                    </Box>
+                    {/* <Box mb={2} w="200px" mr={4}>
                         <Heading as="h4" size="xs" fontWeight={500} mb={2}>Pilih Penyakit</Heading>
                         <Select
                             size="md"
                             value={disease}
                             onChange={(e) => {
-                            setDisease(e.target.value)
-                        }}>
-                            {/* <option value='Semua Sampel'>Semua Sampel</option> */}
+                            setDisease(e.target.value)}}>
                             <option value='Semua Positif'>Semua Positif</option>
                             <option value='AHPND'>AHPND</option>
                             <option value='EHP'>EHP</option>
                             <option value='IMNV'>IMNV/Myo</option>
                             <option value='WSSV'>WSSV/Bintik Putih</option>
+                        </Select>
+                    </Box> */}
+                    <Box mb={2} w="200px" mr={4}>
+                        <Heading as="h4" size="xs" fontWeight={500} mb={2}>Pilih Penyakit</Heading>
+                        <Select
+                            size="md"
+                            value={diseaseId}
+                            onChange={(e) => {
+                            setDiseaseId(e.target.value)
+                        }}>
+                            <option value=''>Semua Positif</option>
+                            <option value='1'>AHPND</option>
+                            <option value='6'>EHP</option>
+                            <option value='8'>IMNV/Myo</option>
+                            <option value='11'>WSSV/Bintik Putih</option>
                         </Select>
                     </Box>
 

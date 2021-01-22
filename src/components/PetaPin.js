@@ -25,7 +25,7 @@ import _ from "lodash";
 import chroma from "chroma-js";
 import DiseasePicker from './DiseasePicker';
 
-export default function Peta({points, samples}) {
+export default function Peta({points, samples, regions}) {
     const query = useStaticQuery(graphql `
   query mapbox {
     site {
@@ -67,7 +67,7 @@ export default function Peta({points, samples}) {
         pitch: 0
     });
 
-    const {setDistrict} = useContext(DiseaseContext);
+    const {setDistrict, setRegionId} = useContext(DiseaseContext);
 
     const sourceRef = useRef();
 
@@ -81,9 +81,19 @@ export default function Peta({points, samples}) {
             districtLong = 109.375827;
             districtLat = -7.650510;
             mapZoom = 6;
-        } else {
-            districtLong = kec.Longitude;
-            districtLat = kec.Latitude;
+        }else if(kec.id.length === 2){
+            districtLong = parseFloat(kec.longitude);
+            districtLat = parseFloat(kec.latitude);
+            mapZoom = 7;
+        }
+        else if(kec.id.length === 4){
+            districtLong = parseFloat(kec.longitude);
+            districtLat = parseFloat(kec.latitude);
+            mapZoom = 10;
+        }
+         else {
+            districtLong = parseFloat(kec.longitude);
+            districtLat = parseFloat(kec.latitude);
             mapZoom = 11;
         }
         _onViewportChange({
@@ -93,7 +103,7 @@ export default function Peta({points, samples}) {
             transitionInterpolator: new FlyToInterpolator({speed: 3}),
             transitionDuration: 'auto'
         });
-        // console.log(`goto = `, latitude, longitude);
+        // console.log(`goto = `, districtLat, districtLong);
     };
 
     function _getZoom(clusterId){
@@ -109,7 +119,8 @@ export default function Peta({points, samples}) {
             transitionInterpolator: new FlyToInterpolator({speed: 3}),
             transitionDuration: 'auto'
         });
-        setDistrict(leaves[0].properties.fields.Kecamatan);
+        // setDistrict(leaves[0].properties.fields.Kecamatan);
+        setRegionId(leaves[0].properties.fields.Region[0]);
         // const klaster = clusters;
         
     }
@@ -123,7 +134,8 @@ export default function Peta({points, samples}) {
             transitionInterpolator: new FlyToInterpolator({speed: 3}),
             transitionDuration: 'auto'
         });
-        setDistrict(cluster.properties.fields.Kecamatan);
+        // setDistrict(cluster.properties.fields.Kecamatan);
+        setRegionId(cluster.properties.fields.Region[0]);
     }
 
     function _getClusterLeaves(e) {
@@ -333,7 +345,7 @@ export default function Peta({points, samples}) {
 
                     <DiseasePicker 
                         kecamatan={_.uniqBy(samples.map(s => ({Kecamatan: s.fields.Kecamatan, Latitude: s.fields.Lat, Longitude: s.fields.Long})), 'Kecamatan')}
-                        onViewportChange={_goToViewport}/>
+                        onViewportChange={_goToViewport} regions={regions}/>
                 </ReactMapGL>
 
             </Box>
