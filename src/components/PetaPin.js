@@ -24,6 +24,7 @@ import "mapbox-gl/dist/mapbox-gl.css"
 import _ from "lodash";
 import chroma from "chroma-js";
 import DiseasePicker from './DiseasePicker';
+import Legends from '../components/Legends'
 
 export default function Peta({points, samples, regions}) {
     const query = useStaticQuery(graphql `
@@ -307,6 +308,8 @@ export default function Peta({points, samples, regions}) {
                     }}>
                         <NavigationControl/>
                     </div>
+
+                    <Legends />
 
                     <Box m={2} style={{position: 'absolute',
                         left: 0,
