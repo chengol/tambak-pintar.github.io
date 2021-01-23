@@ -16,16 +16,18 @@ import {
     TagLabel,
     HStack,
     Skeleton,
-    useColorMode
+    useColorMode,
+
+    Table, Thead, Tbody, Tr, Th, Td, TableCaption
 } from '@chakra-ui/react';
 
 import _ from 'lodash';
 
 import {DiseaseContext} from '../pages/app'
 
-export default function DiseaseTracker({points, samples, statistics, region}) {
+export default function DiseaseTracker({points, samples, statistics, region, chart}) {
 
-    const {disease, district, regionId} = useContext(DiseaseContext);
+    const {disease, district, regionId, diseaseId, setDiseaseId} = useContext(DiseaseContext);
 
     let kec = "";
     let kab = "";
@@ -37,60 +39,6 @@ export default function DiseaseTracker({points, samples, statistics, region}) {
     const regionName = region;
 
     // console.log('region', regionName);
-
-    // let tracker = {};
-
-    // if (!samples || !samples.length || !points || !points.features.length) {
-    //     // console.log('titik tracker 1', samples);
-    // } else {
-    //     // console.log('titik tracker 2', points.features);
-    //     tracker = {
-    //         total_s: samples.length,
-    //         total_p: points
-    //             .features
-    //             .filter(d => {
-    //                 return d.properties.fields.Status === 1
-    //             }),
-    //         AHPND_p: points
-    //             .features
-    //             .filter(d => {
-    //                 return d.properties.fields.Penyakit === "AHPND" && d.properties.fields.Status === 1
-    //             }),
-    //         AHPND_s: samples.filter(d => {
-    //             return d.fields.Penyakit === "AHPND"
-    //         }),
-    //         EHP_p: points
-    //             .features
-    //             .filter(d => {
-    //                 return d.properties.fields.Penyakit === "EHP" && d.properties.fields.Status === 1
-    //             }),
-    //         EHP_s: samples.filter(d => {
-    //             return d.fields.Penyakit === "EHP"
-    //         }),
-    //         IMNV_p: points
-    //             .features
-    //             .filter(d => {
-    //                 return d.properties.fields.Penyakit === "IMNV" && d.properties.fields.Status === 1
-    //             }),
-    //         IMNV_s: samples.filter(d => {
-    //             return d.fields.Penyakit === "IMNV"
-    //         }),
-    //         WSSV_p: points
-    //             .features
-    //             .filter(d => {
-    //                 return d.properties.fields.Penyakit === "WSSV" && d.properties.fields.Status === 1
-    //             }),
-    //         WSSV_s: samples.filter(d => {
-    //             return d.fields.Penyakit === "WSSV"
-    //         })
-    //     }
-
-    //     // console.log('statistik ', tracker);
-
-    //     // kec = points.features[0].properties.fields.Kecamatan;
-    //     // // kab = points.features[0].properties.fields.Kabupaten;
-    //     // prov = points.features[0].properties.fields.Provinsi;
-    // }
 
     if(regionName){
         kec = regionName.district_name;
@@ -310,14 +258,17 @@ export default function DiseaseTracker({points, samples, statistics, region}) {
                             base: 1
                         }}>
                             <Box mb={2} w="100%" mr={4}>
-                                <Select size="md">
-                                    <option value='Semua Positif'>Semua Positif</option>
-                                    <option value='AHPND'>AHPND</option>
-                                    <option value='EHP'>EHP</option>
-                                    <option value='IMNV'>IMNV/Myo</option>
-                                    <option value='WSSV'>WSSV/Bintik Putih</option>
+                                <Select size="md" value={diseaseId} onChange={(e) => {
+                            setDiseaseId(e.target.value)
+                        }}>
+                                    <option value=''>Semua Positif</option>
+                                    <option value='1'>AHPND</option>
+                                    <option value='6'>EHP</option>
+                                    <option value='8'>IMNV/Myo</option>
+                                    <option value='11'>WSSV/Bintik Putih</option>
                                 </Select>
                             </Box>
+                            <DataTable chart={chart} />
                             <Alert
                                 status="warning"
                                 variant="subtle"
@@ -355,4 +306,35 @@ export default function DiseaseTracker({points, samples, statistics, region}) {
             </SimpleGrid>
         </div>
     );
+}
+
+function DataTable(chart){
+    const chartData = chart;
+    console.log('chart data', chartData);
+
+    return(
+        <Box mt="2" mb="2">
+            <Table size="sm" >
+  <Thead>
+    <Tr>
+      <Th>Bulan</Th>
+      <Th>Sampel</Th>
+      <Th>Positif</Th>
+    </Tr>
+  </Thead>
+  <Tbody>
+  {chartData.chart.map(data => {
+
+      return(
+        <Tr>
+        <Td>{data.logged_month}-{data.logged_year}</Td>
+        <Td>{data.total}</Td>
+        <Td>{data.total_positive}</Td>
+      </Tr>
+      )
+  })}
+  </Tbody>
+</Table>
+        </Box>
+    )
 }

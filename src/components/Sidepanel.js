@@ -6,7 +6,7 @@ import DiseaseTracker from './DiseaseTracker';
 import {SunIcon, MoonIcon} from '@chakra-ui/icons';
 
 
-export default function Sidepanel({points, samples, statistics, region}) {
+export default function Sidepanel({points, samples, statistics, region, chart}) {
     const logo = useStaticQuery(graphql`
   query LogoSidepanel {
     logo: file(relativePath: {eq: "assets/tambakpintar.png"}) {
@@ -40,7 +40,7 @@ export default function Sidepanel({points, samples, statistics, region}) {
         
         <Divider orientation="horizontal" />
         <Box >
-        <DiseaseTracker points={points} samples={samples} statistics={statistics} region={region}/>
+        <DiseaseTracker points={points} samples={samples} statistics={statistics} region={region} chart={chart}/>
         </Box>
       </div>
     )
