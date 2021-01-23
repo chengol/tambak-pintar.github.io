@@ -15,7 +15,7 @@ import format from 'date-fns/format'
 
 export default function ChartData(chart) {
     const chartData = chart;
-    console.log('chart', chartData);
+    // console.log('chart', chartData);
     const dataDummy = [
         {
             name: 'Page A',
@@ -55,7 +55,7 @@ export default function ChartData(chart) {
         }
     ];
 
-    console.log('dummy data', dataDummy);
+    // console.log('dummy data', dataDummy);
 
     let data = [{}];
     if (chartData) {
@@ -64,7 +64,7 @@ export default function ChartData(chart) {
             });
     }
 
-    console.log('chart data', data);
+    // console.log('chart data', data);
 
     return (
         <div>

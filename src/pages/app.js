@@ -151,7 +151,7 @@ function DiseaseData() {
         }
       }))
 
-      const totalCycleMonthResponse = useSWR(`https://app.jala.tech/api/laboratories/1/cycle_diseases_total_per_month?${regionId}&logged_at__gte=${formatISO(startDate, { representation: 'date' })}00:00:00&logged_at__lte=${formatISO(endDate, { representation: 'date' })}23:59:59&disease_id=${diseaseId}`,
+      const totalCycleMonthResponse = useSWR(`https://app.jala.tech/api/laboratories/1/cycle_diseases_total_per_month?region_id=${regionId}&logged_at__gte=${formatISO(startDate, { representation: 'date' })}00:00:00&logged_at__lte=${formatISO(endDate, { representation: 'date' })}23:59:59&disease_id=${diseaseId}`,
       (url) => fetcher(url, {
         headers: {
           'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
