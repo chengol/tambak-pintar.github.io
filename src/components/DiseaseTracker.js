@@ -24,6 +24,8 @@ import {
 import _ from 'lodash';
 
 import {DiseaseContext} from '../pages/app'
+import ChartData from '../components/ChartData'
+import format from 'date-fns/format'
 
 export default function DiseaseTracker({points, samples, statistics, region, chart}) {
 
@@ -78,7 +80,7 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                             display={{
                             lg: "none"
                         }}>
-                            <Divider/>
+                            <Divider mb={4} />
                         </Box>
                         <SimpleGrid columns={2} spacing={3}>
                             <Box>
@@ -268,8 +270,9 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                     <option value='11'>WSSV/Bintik Putih</option>
                                 </Select>
                             </Box>
-                            <DataTable chart={chart} />
-                            <Alert
+                            {/* <DataTable chart={chart} /> */}
+                            <ChartData chart={chart} />
+                            {/* <Alert
                                 status="warning"
                                 variant="subtle"
                                 flexDirection="column"
@@ -280,7 +283,7 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                 <AlertTitle mt={4} mb={1} fontSize="lg">
                                     Coming Soon!
                                 </AlertTitle>
-                            </Alert>
+                            </Alert> */}
                         </Box>
 
                     </Box>
@@ -326,8 +329,8 @@ function DataTable(chart){
   {chartData.chart.map(data => {
 
       return(
-        <Tr>
-        <Td>{data.logged_month}-{data.logged_year}</Td>
+        <Tr key={data.last_logged_at}>
+        <Td>{format(new Date(data.last_logged_at), 'MMM yy')}</Td>
         <Td>{data.total}</Td>
         <Td>{data.total_positive}</Td>
       </Tr>
