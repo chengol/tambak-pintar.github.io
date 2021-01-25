@@ -127,3 +127,6 @@ body {
     outline: none;
     border-radius: 15px;
   }
+  .legend-panel .legend-scale{
+    background: linear-gradient(90deg, rgba(255,230,0,1) 0%, rgba(255,107,0,1) 50%, rgba(255,58,58,1) 100%);
+  }

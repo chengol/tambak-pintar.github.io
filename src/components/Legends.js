@@ -5,7 +5,7 @@ import {
     Heading,
     Icon,
     Text,
-    useColorMode
+    useColorMode, Spacer
 } from '@chakra-ui/react'
 import {FaCircle} from 'react-icons/fa'
 
@@ -32,17 +32,21 @@ export default function Legends() {
                     ? 'gray.800'
                     : 'white'}>
                     <Heading as="h4" size="sm" fontWeight={500} mb={2}>Zona Kasus (jumlah positif)</Heading>
+                    <Box className="legend-scale" w="100%" h={5} pr={4} pl={4}></Box>
                     <Flex>
-                        <Box mb={2} mr={2}>
-                            <Text fontSize="md"><Icon w={8} h={8} as={FaCircle} color="green.300"/>{` < 25%`}</Text>
+                        <Box>
+                            <Text fontSize="md">0</Text>
                         </Box>
-                        <Box mb={2} mr={2}>
-                            <Text fontSize="md"><Icon w={8} h={8} as={FaCircle} color="orange.300"/>{` 25% - 50%`}</Text>
+                        <Spacer />
+                        <Box>
+                            <Text fontSize="md">10</Text>
                         </Box>
-                        <Box mb={2} mr={2}>
-                            <Text fontSize="md"><Icon w={8} h={8} as={FaCircle} color="red.300"/>{` > 50%`}</Text>
+                        <Spacer />
+                        <Box>
+                            <Text fontSize="md">{` > 20`}</Text>
                         </Box>
                     </Flex>
+                    
 
                 </Box>
 

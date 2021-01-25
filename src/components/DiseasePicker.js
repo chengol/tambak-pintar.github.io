@@ -40,6 +40,8 @@ export default function DiseasePicker({kecamatan, onViewportChange, regions}) {
 
     // console.log('kecamatan',kecamatan);
 
+    // console.log('picker region', regionId);
+
     return (
         <Box style={{
             position: "relative",

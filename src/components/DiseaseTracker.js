@@ -18,7 +18,13 @@ import {
     Skeleton,
     useColorMode,
 
-    Table, Thead, Tbody, Tr, Th, Td, TableCaption
+    Table,
+    Thead,
+    Tbody,
+    Tr,
+    Th,
+    Td,
+    Stack, Spinner, Center
 } from '@chakra-ui/react';
 
 import _ from 'lodash';
@@ -42,21 +48,23 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
 
     // console.log('region', regionName);
 
-    if(regionName){
+    if (regionName) {
         kec = regionName.district_name;
-    kab = regionName.regency_name;
-    prov = regionName.province_name;
+        kab = regionName.regency_name;
+        prov = regionName.province_name;
     }
-    
 
     const {colorMode} = useColorMode();
+
+    // console.log('total positif', stats.total_positive)
+    // console.log('stat', stats);
 
     return (
         <div >
             <SimpleGrid mt={{
                 xl: 1
             }} pt={1}>
-                {region && stats && <div>
+                {region && stats.total ? <div>
                     <Box
                         m={{
                         md: 5,
@@ -69,18 +77,29 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                         base: 1
                     }}>
                         {/* {console.log('total positive', stats.total_positive)} */}
-                    <Heading as="h3" size="xl" mb={0}>{(regionId === "")
-                        ? "Indonesia"
-                        : `${kec !== null && kec !== undefined  ? _.startCase(kec.toLowerCase())+`, ` : ""}`+`${kab !== null && kab !== undefined  ? _.startCase(kab.toLowerCase()) : prov !== undefined ? _.startCase(prov.toLowerCase()) : 'memuat...'}`}</Heading>
-                <Heading as="h4" size="md" mb={2}>{(regionId === "")
-                        ? ""
-                        : `${kab !== null && kab !== undefined ? _.startCase(prov.toLowerCase()) : ""}`}</Heading>
                         
+                            <Box>
+                                <Heading as="h3" size="xl" mb={0}>{(regionId === "")
+                                        ? "Indonesia"
+                                        : `${kec !== null && kec !== undefined
+                                            ? _.startCase(kec.toLowerCase()) + `, `
+                                            : ""}` + `${kab !== null && kab !== undefined
+                                                ? _.startCase(kab.toLowerCase())
+                                                : prov !== undefined
+                                                    ? _.startCase(prov.toLowerCase())
+                                                    : 'memuat...'}`}</Heading>
+                                <Heading as="h4" size="md" mb={2}>{(regionId === "")
+                                        ? ""
+                                        : `${kab !== null && kab !== undefined
+                                            ? _.startCase(prov.toLowerCase())
+                                            : ""}`}</Heading>
+                            </Box>
+
                         <Box
                             display={{
                             lg: "none"
                         }}>
-                            <Divider mb={4} />
+                            <Divider mb={4}/>
                         </Box>
                         <SimpleGrid columns={2} spacing={3}>
                             <Box>
@@ -96,6 +115,7 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                         : ((stats.total_positive / stats.total) * 100).toFixed(2)}% Positif
                                 </Text>
                             </Box>
+
                             <Box>
                                 <Text fontSize="md" color="gray.500" fontWeight={700}>Total Sampel
                                 </Text>
@@ -103,7 +123,8 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                     <strong>{stats.total}</strong>
                                 </Heading>
                                 <Text fontSize="sm" color="gray.500">
-                                    dari {stats.total_ponds} kolam
+                                    dari {stats.total_ponds}{' '}
+                                    kolam
                                 </Text>
                             </Box>
                         </SimpleGrid>
@@ -140,18 +161,25 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                         <a
                                             href="https://app.jala.tech/diseases/acute-hepatopancreatic-necrosis-disease"
                                             target="_blank">
-                                            <Icon focusable="true" name="question" size="14px" color="blue.400"/></a>
+                                            {` `}<Icon focusable="true" name="question" size="14px" color="blue.400"/></a>
                                     </Text>
                                     <HStack>
                                         <Heading as="h3" size="xl">
                                             <strong>{stats.total_disease_id_1_positive}</strong>
                                         </Heading>
-                                        <Tag size="md" borderRadius="full" variant="solid" colorScheme={stats.last_week_total_disease_id_1_positive === 0 ? "gray" : "red"}>
+                                        <Tag
+                                            size="md"
+                                            borderRadius="full"
+                                            variant="solid"
+                                            colorScheme={stats.last_week_total_disease_id_1_positive === 0
+                                            ? "gray"
+                                            : "red"}>
                                             <TagLabel>+{stats.last_week_total_disease_id_1_positive}</TagLabel>
                                         </Tag>
                                     </HStack>
                                     <Text fontSize="sm" color="gray.500">
-                                        {stats.total_disease_id_1} sampel
+                                        {stats.total_disease_id_1}{' '}
+                                        sampel
                                     </Text>
                                     <Text fontSize="sm" color="gray.500">
                                         {(stats.total_disease_id_1_positive === 0)
@@ -166,19 +194,26 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                         <a
                                             href="https://app.jala.tech/diseases/hepatopancreatic%20-microsporidiosis"
                                             target="_blank">
-                                            <Icon focusable="true" name="question" size="16px" color="blue.400"/></a>
+                                            {` `}<Icon focusable="true" name="question" size="16px" color="blue.400"/></a>
                                     </Text>
                                     <HStack>
-                                    <Heading as="h3" size="xl">
-                                        <strong>{stats.total_disease_id_6_positive}</strong>
-                                    </Heading>
-                                    <Tag size="md" borderRadius="full" variant="solid" colorScheme={stats.last_week_total_disease_id_6_positive === 0 ? "gray" : "red"}>
+                                        <Heading as="h3" size="xl">
+                                            <strong>{stats.total_disease_id_6_positive}</strong>
+                                        </Heading>
+                                        <Tag
+                                            size="md"
+                                            borderRadius="full"
+                                            variant="solid"
+                                            colorScheme={stats.last_week_total_disease_id_6_positive === 0
+                                            ? "gray"
+                                            : "red"}>
                                             <TagLabel>+{stats.last_week_total_disease_id_6_positive}</TagLabel>
                                         </Tag>
                                     </HStack>
-                                    
+
                                     <Text fontSize="sm" color="gray.500">
-                                        {stats.total_disease_id_6} sampel
+                                        {stats.total_disease_id_6}{' '}
+                                        sampel
                                     </Text>
                                     <Text fontSize="sm" color="gray.500">
                                         {(stats.total_disease_id_6_positive === 0)
@@ -193,18 +228,25 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                         <a
                                             href="https://app.jala.tech/diseases/infectious-myonecrosis-virus"
                                             target="_blank">
-                                            <Icon focusable="true" name="question" size="16px" color="blue.400"/></a>
+                                            {` `}<Icon focusable="true" name="question" size="16px" color="blue.400"/></a>
                                     </Text>
                                     <HStack>
-                                    <Heading as="h3" size="xl">
-                                        <strong>{stats.total_disease_id_8_positive}</strong>
-                                    </Heading>
-                                    <Tag size="md" borderRadius="full" variant="solid" colorScheme={stats.last_week_total_disease_id_8_positive === 0 ? "gray" : "red"}>
+                                        <Heading as="h3" size="xl">
+                                            <strong>{stats.total_disease_id_8_positive}</strong>
+                                        </Heading>
+                                        <Tag
+                                            size="md"
+                                            borderRadius="full"
+                                            variant="solid"
+                                            colorScheme={stats.last_week_total_disease_id_8_positive === 0
+                                            ? "gray"
+                                            : "red"}>
                                             <TagLabel>+{stats.last_week_total_disease_id_8_positive}</TagLabel>
                                         </Tag>
                                     </HStack>
                                     <Text fontSize="sm" color="gray.500">
-                                        {stats.total_disease_id_8} sampel
+                                        {stats.total_disease_id_8}{' '}
+                                        sampel
                                     </Text>
                                     <Text fontSize="sm" color="gray.500">
                                         {(stats.total_disease_id_8_positive === 0)
@@ -217,18 +259,25 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                 <Stat pr={1}>
                                     <Text fontSize="md" color="gray.500">WSSV/Bintik Putih
                                         <a href="https://app.jala.tech/diseases/white-spot-syndrome" target="_blank">
-                                            <Icon focusable="true" name="question" size="16px" color="blue.400"/></a>
+                                            {` `}<Icon focusable="true" name="question" size="16px" color="blue.400"/></a>
                                     </Text>
                                     <HStack>
-                                    <Heading as="h3" size="xl">
-                                        <strong>{stats.total_disease_id_11_positive}</strong>
-                                    </Heading>
-                                    <Tag size="md" borderRadius="full" variant="solid" colorScheme={stats.last_week_total_disease_id_11_positive === 0 ? "gray" : "red"}>
+                                        <Heading as="h3" size="xl">
+                                            <strong>{stats.total_disease_id_11_positive}</strong>
+                                        </Heading>
+                                        <Tag
+                                            size="md"
+                                            borderRadius="full"
+                                            variant="solid"
+                                            colorScheme={stats.last_week_total_disease_id_11_positive === 0
+                                            ? "gray"
+                                            : "red"}>
                                             <TagLabel>+{stats.last_week_total_disease_id_11_positive}</TagLabel>
                                         </Tag>
                                     </HStack>
                                     <Text fontSize="sm" color="gray.500">
-                                        {stats.total_disease_id_11} sampel
+                                        {stats.total_disease_id_11}{' '}
+                                        sampel
                                     </Text>
                                     <Text fontSize="sm" color="gray.500">
                                         {(stats.total_disease_id_11_positive === 0)
@@ -260,9 +309,12 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                             base: 1
                         }}>
                             <Box mb={2} w="100%" mr={4}>
-                                <Select size="md" value={diseaseId} onChange={(e) => {
-                            setDiseaseId(e.target.value)
-                        }}>
+                                <Select
+                                    size="md"
+                                    value={diseaseId}
+                                    onChange={(e) => {
+                                    setDiseaseId(e.target.value)
+                                }}>
                                     <option value=''>Semua Positif</option>
                                     <option value='1'>AHPND</option>
                                     <option value='6'>EHP</option>
@@ -271,8 +323,7 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                 </Select>
                             </Box>
                             {/* <DataTable chart={chart} /> */}
-                            <ChartData chart={chart} />
-                            {/* <Alert
+                            <ChartData chart={chart}/> {/* <Alert
                                 status="warning"
                                 variant="subtle"
                                 flexDirection="column"
@@ -285,9 +336,16 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                 </AlertTitle>
                             </Alert> */}
                         </Box>
-
                     </Box>
-                </div>}
+                </div> : <Center w="100%" h={500}>
+                    <Spinner 
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="xl"/>
+                
+                </Center>}
                 {!region || !stats && <Box mt={3}>
                     <Alert
                         status="error"
@@ -311,33 +369,35 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
     );
 }
 
-function DataTable(chart){
+function DataTable(chart) {
     const chartData = chart;
     console.log('chart data', chartData);
 
-    return(
+    return (
         <Box mt="2" mb="2">
-            <Table size="sm" >
-  <Thead>
-    <Tr>
-      <Th>Bulan</Th>
-      <Th>Sampel</Th>
-      <Th>Positif</Th>
-    </Tr>
-  </Thead>
-  <Tbody>
-  {chartData.chart.map(data => {
+            <Table size="sm">
+                <Thead>
+                    <Tr>
+                        <Th>Bulan</Th>
+                        <Th>Sampel</Th>
+                        <Th>Positif</Th>
+                    </Tr>
+                </Thead>
+                <Tbody>
+                    {chartData
+                        .chart
+                        .map(data => {
 
-      return(
-        <Tr key={data.last_logged_at}>
-        <Td>{format(new Date(data.last_logged_at), 'MMM yy')}</Td>
-        <Td>{data.total}</Td>
-        <Td>{data.total_positive}</Td>
-      </Tr>
-      )
-  })}
-  </Tbody>
-</Table>
+                            return (
+                                <Tr key={data.last_logged_at}>
+                                    <Td>{format(new Date(data.last_logged_at), 'MMM yy')}</Td>
+                                    <Td>{data.total}</Td>
+                                    <Td>{data.total_positive}</Td>
+                                </Tr>
+                            )
+                        })}
+                </Tbody>
+            </Table>
         </Box>
     )
 }

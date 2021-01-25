@@ -205,7 +205,7 @@ export default function Peta({points, samples, regions}) {
     }
 
     function _getInterpolation(p){
-        const color = chroma.scale(['78d271','ff9d0b','ff5b7e']).domain([0,5,10]);
+        const color = chroma.scale(['ffe600','ff6b00','ff3a3a']).domain([0,10,20]);
         let per = 0;
         if(p >= 10){
             per = 10;

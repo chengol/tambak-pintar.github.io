@@ -143,13 +143,21 @@ function DiseaseData() {
         }
       }))
 
-      const regionResponse = useSWR(`https://app.jala.tech/api/regions/${regionId}`,
+      const listRegenciesResponse = useSWR("https://app.jala.tech/api/regencies?has=farms.ponds.cycles.jala_cycle_diseases&per_page=1000",
       (url) => fetcher(url, {
         headers: {
           'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
           'Accept': 'application/json',
         }
       }))
+
+    //   const regionResponse = useSWR(`https://app.jala.tech/api/regions/${regionId}`,
+    //   (url) => fetcher(url, {
+    //     headers: {
+    //       'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
+    //       'Accept': 'application/json',
+    //     }
+    //   }))
 
       const totalCycleMonthResponse = useSWR(`https://app.jala.tech/api/laboratories/1/cycle_diseases_total_per_month?region_id=${regionId}&logged_at__gte=${formatISO(startDate, { representation: 'date' })}00:00:00&logged_at__lte=${formatISO(endDate, { representation: 'date' })}23:59:59&disease_id=${diseaseId}`,
       (url) => fetcher(url, {
@@ -165,6 +173,7 @@ function DiseaseData() {
     //   console.log('region', regionId);
     //   console.log('region terpilih', regionResponse.data);
     //   console.log('all region has disease', listRegionResponse.data);
+    //   console.log('all regencies has disease', listRegenciesResponse.data);
     //   console.log('diesase id', diseaseId);
 
     // console.log('total disease per bulan', totalCycleMonthResponse.data);
@@ -176,7 +185,7 @@ function DiseaseData() {
         fields: {
           DoC: datum.age,
           Kabupaten: _.startCase(datum.cycle.pond.farm.region.regency_name.toLowerCase()),
-          Region: [datum.cycle.pond.farm.region.id],
+          Region: [datum.cycle.pond.farm.region.id.substring(0,7)],
           Kecamatan: _.startCase(datum.cycle.pond.farm.region.regency_name.toLowerCase()) + (datum.cycle.pond.farm.region.district_name ? `, ${_.startCase(datum.cycle.pond.farm.region.district_name.toLowerCase())}` : ''),
           Lat: parseFloat(datum.cycle.pond.farm.region.latitude),
           Long: parseFloat(datum.cycle.pond.farm.region.longitude),
@@ -195,9 +204,9 @@ function DiseaseData() {
         createdTime: datum.created_at
       })) : []
     }
-    if (response.error || totalCycleResponse.error || listRegionResponse.error || regionResponse.error || totalCycleMonthResponse.error )
+    if (response.error || totalCycleResponse.error || listRegionResponse.error || totalCycleMonthResponse.error )
         return <div>{toast({title: "An error occurred.", description: "Unable to get the data.", status: "error", duration: 9000, isClosable: true})}</div>
-    if (!data.records) {
+    if (!data || !totalCycleMonthResponse || !totalCycleResponse) {
         return (
             <Flex  style={{top:"50%",left:"50%",width: "100%",
   height: "100%", position:"fixed" }}>
@@ -211,9 +220,11 @@ function DiseaseData() {
             
     }
 
+    // console.log('region', regionId);
+
     return (
         <div>
-            <FilterData data={data} chartData={totalCycleMonthResponse.data ? totalCycleMonthResponse.data.data : []} regionData={listRegionResponse.data ? listRegionResponse.data.data : []} statisticData={totalCycleResponse.data ? totalCycleResponse.data.data[0] : []} regionDetailData={regionResponse.data ? regionResponse.data.data : []}/>
+            <FilterData data={data} chartData={totalCycleMonthResponse.data ? totalCycleMonthResponse.data.data : []} regionData={listRegionResponse.data ? listRegionResponse.data.data : []} statisticData={totalCycleResponse.data ? totalCycleResponse.data.data[0] : []} regionDetailData={listRegionResponse.data && listRegionResponse.data.data.length && regionId ? listRegionResponse.data.data.find((r)=>r.id===regionId) : []}/>
         </div>
     )
 }
@@ -284,6 +295,7 @@ function FilterData(data) {
         });
 
     // console.log('points', points);
+    
 
     return (
         <div>
