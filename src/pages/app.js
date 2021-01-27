@@ -16,6 +16,7 @@ import {isAfter, isBefore, formatISO} from 'date-fns';
 import Sidepanel from '../components/Sidepanel';
 import {graphql, useStaticQuery} from 'gatsby';
 import PetaPin from '../components/PetaPin';
+import PetaRegion from '../components/PetaRegion';
 import LatestData from '../components/LatestData';
 // import Peta2 from '../components/Peta2';
 import Bottompanel from '../components/Bottompanel';
@@ -143,21 +144,21 @@ function DiseaseData() {
         }
       }))
 
-      const listRegenciesResponse = useSWR("https://app.jala.tech/api/regencies?has=farms.ponds.cycles.jala_cycle_diseases&per_page=1000",
-      (url) => fetcher(url, {
-        headers: {
-          'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
-          'Accept': 'application/json',
-        }
-      }))
-
-    //   const regionResponse = useSWR(`https://app.jala.tech/api/regions/${regionId}`,
+    //   const listRegenciesResponse = useSWR("https://app.jala.tech/api/regencies?has=farms.ponds.cycles.jala_cycle_diseases&per_page=1000",
     //   (url) => fetcher(url, {
     //     headers: {
     //       'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
     //       'Accept': 'application/json',
     //     }
     //   }))
+
+      const regionDiseaseResponse = useSWR(`https://app.jala.tech/api/laboratories/1/cycle_diseases_total_per_region?region_id=${regionId}&logged_at__gte=${formatISO(startDate, { representation: 'date' })}00:00:00&logged_at__lte=${formatISO(endDate, { representation: 'date' })}23:59:59&disease_id=${diseaseId}&with=region&per_page=1000&scope=district`,
+      (url) => fetcher(url, {
+        headers: {
+          'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
+          'Accept': 'application/json',
+        }
+      }))
 
       const totalCycleMonthResponse = useSWR(`https://app.jala.tech/api/laboratories/1/cycle_diseases_total_per_month?region_id=${regionId}&logged_at__gte=${formatISO(startDate, { representation: 'date' })}00:00:00&logged_at__lte=${formatISO(endDate, { representation: 'date' })}23:59:59&disease_id=${diseaseId}`,
       (url) => fetcher(url, {
@@ -167,12 +168,13 @@ function DiseaseData() {
         }
       }))
 
-    //   console.log('total cycle data',totalCycleResponse.data);
-    //   console.log('all diseases', response.data);
+      console.log('total cycle data',totalCycleResponse.data);
+      console.log('all diseases', response.data);
 
     //   console.log('region', regionId);
     //   console.log('region terpilih', regionResponse.data);
     //   console.log('all region has disease', listRegionResponse.data);
+      console.log('all disease in each region', regionDiseaseResponse.data);
     //   console.log('all regencies has disease', listRegenciesResponse.data);
     //   console.log('diesase id', diseaseId);
 
@@ -224,7 +226,7 @@ function DiseaseData() {
 
     return (
         <div>
-            <FilterData data={data} chartData={totalCycleMonthResponse.data ? totalCycleMonthResponse.data.data : []} regionData={listRegionResponse.data ? listRegionResponse.data.data : []} statisticData={totalCycleResponse.data ? totalCycleResponse.data.data[0] : []} regionDetailData={listRegionResponse.data && listRegionResponse.data.data.length && regionId ? listRegionResponse.data.data.find((r)=>r.id===regionId) : []}/>
+            <FilterData data={data} diseaseData={regionDiseaseResponse.data ? regionDiseaseResponse.data.data : []} chartData={totalCycleMonthResponse.data ? totalCycleMonthResponse.data.data : []} regionData={listRegionResponse.data ? listRegionResponse.data.data : []} statisticData={totalCycleResponse.data ? totalCycleResponse.data.data[0] : []} regionDetailData={listRegionResponse.data && listRegionResponse.data.data.length && regionId ? listRegionResponse.data.data.find((r)=>r.id===regionId) : []}/>
         </div>
     )
 }
@@ -318,7 +320,8 @@ function FilterData(data) {
                 <LatestData latestData={data.statisticData}/>
                 </Box>
                 <Box flex="1">
-                    <PetaPin points={pointsPeta} samples={samples} regions={data.regionData}/>
+                    {/* <PetaPin points={pointsPeta} samples={samples} regions={data.regionData}/> */}
+                    <PetaRegion points={pointsPeta} samples={samples} regions={data.regionData} statistics={data.statisticData} disease={data.diseaseData} />
                 </Box>
             </Flex>
             <Box id="headbottom"

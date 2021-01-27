@@ -16,11 +16,10 @@ body {
     justify-content: center;
     align-items: center;
     color: white;
-    width: 3.6em;
-    height: 3.6em;
+    width: 5em;
+    height: 5em;
     font-size: .7em;
     font-weight: bold;
-    background-color: red;
     border-radius: 100%;
     box-shadow: 0 2px 5px rgba(black, .9);
   
