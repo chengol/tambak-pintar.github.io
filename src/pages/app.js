@@ -312,7 +312,7 @@ function FilterData(data) {
                 sm: "none",
                 md: "none",
                 lg: "block" ,
-                xl: "block" }} id="sidepanel" chart={data.chartData} statistics={data.statisticData} region={data.regionDetailData} />
+                xl: "block" }} id="sidepanel" chart={data.chartData} statistics={data.statisticData} disease={data.diseaseData} region={data.regionDetailData} />
                 <LatestData latestData={data.statisticData}/>
                 </Box>
                 <Box flex="1">
@@ -323,7 +323,7 @@ function FilterData(data) {
             <Box id="headbottom"
             display={{ sm: "block", md: "block", lg: "none", xl: "none" }}
             >
-                <Bottompanel chart={data.chartData} statistics={data.statisticData} region={data.regionDetailData} display={{ sm: "block", md: "block", lg: "block", xl: "none" }}/></Box>
+                <Bottompanel chart={data.chartData} statistics={data.statisticData} disease={data.diseaseData} region={data.regionDetailData} display={{ sm: "block", md: "block", lg: "block", xl: "none" }}/></Box>
 
         </div>
     )

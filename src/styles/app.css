@@ -147,3 +147,8 @@ body {
     outline: none;
     border-radius: 20px;
   }
+
+  .heading-button:hover{
+    cursor: pointer;
+    color: #065ca3;
+  }
