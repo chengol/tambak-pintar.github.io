@@ -16,8 +16,8 @@ body {
     justify-content: center;
     align-items: center;
     color: white;
-    width: 5em;
-    height: 5em;
+    width: 4em;
+    height: 4em;
     font-size: .7em;
     font-weight: bold;
     border-radius: 100%;
@@ -127,5 +127,23 @@ body {
     border-radius: 15px;
   }
   .legend-panel .legend-scale{
-    background: linear-gradient(90deg, rgba(255,230,0,1) 0%, rgba(255,107,0,1) 50%, rgba(255,58,58,1) 100%);
+    background: linear-gradient(90deg,#8FFF00 0%, #FF6B00 50.68%, #FF3A3A 100% 100%);
+  }
+
+  /* .region-popup{
+    max-width: 400px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    
+    outline: none;
+    border-radius: 15px;
+  } */
+
+  .mapboxgl-popup-content{
+    max-width: 400px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    padding: 12px 24px;
+    line-height: 2;
+    /*color: #6b6b76;*/
+    outline: none;
+    border-radius: 20px;
   }

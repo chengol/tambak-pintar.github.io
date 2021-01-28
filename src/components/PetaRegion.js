@@ -20,6 +20,8 @@ import {
     useColorMode,
     Input,
     IconButton,
+    Divider,
+    Spacer,
     ColorModeProvider
 } from '@chakra-ui/react';
 import {SunIcon, MoonIcon} from '@chakra-ui/icons';
@@ -34,7 +36,7 @@ import _ from "lodash";
 import chroma from "chroma-js";
 import DiseasePicker from './DiseasePicker';
 import Legends from './Legends'
-import {lightFormat} from 'date-fns';
+import {format} from 'date-fns';
 
 export default function PetaRegion({points, samples, regions, statistics, disease}) {
     const query = useStaticQuery(graphql `
@@ -306,7 +308,7 @@ export default function PetaRegion({points, samples, regions, statistics, diseas
                     {diseases.map(d => {
                         const latitude = d.region.latitude;
                         const longitude = d.region.longitude;
-                        const positiveRate = ((d.total_positive / d.total) * 100).toFixed(2);
+                        const positiveRate = ((d.total_positive / d.total) * 100).toFixed();
                         const positif = d.total_positive;
                         // console.log('positif rate', positiveRate)
                         return (
@@ -346,16 +348,36 @@ export default function PetaRegion({points, samples, regions, statistics, diseas
                             <Popup
                                 latitude={parseFloat(selectedPoint.region.latitude)}
                                 longitude={parseFloat(selectedPoint.region.longitude)}
-                                onClose={() => {setSelectedPoint(null)}}>
-                                <Heading as="h3" size="sm">
-                                    <strong>{_.startCase(selectedPoint.region.full_name.toLowerCase())}</strong>
+                                onClose={() => {setSelectedPoint(null)}}
+                                closeButton={false}>
+                                <Heading as="h3" size="md">
+                                    <strong>{_.startCase(selectedPoint.region.district_name.toLowerCase())}</strong>
                                 </Heading>
-                                <Text fontSize="sm" color="gray.500">Diperbarui {` `}{selectedPoint.last_logged_at
-                                        ? lightFormat(new Date(selectedPoint.last_logged_at), 'dd/MM/yyyy')
+                                <Heading as="h3" fontSize="sm">
+                                    {_.startCase(selectedPoint.region.regency_name.toLowerCase())+`, `}{_.startCase(selectedPoint.region.province_name.toLowerCase())}
+                                </Heading>
+                                
+                                <Text fontSize="sm" color="gray.500" >Diperbarui {` `}{selectedPoint.last_logged_at
+                                        ? format(new Date(selectedPoint.last_logged_at), 'dd MMM yyyy')
                                         : ''}</Text>
-                                <Text fontSize="sm">{selectedPoint.total_positive}{` Positif`}</Text>
-                                <Text fontSize="sm">{((selectedPoint.total_positive / selectedPoint.total) * 100).toFixed(2)}{` %`}</Text>
-                                <Text fontSize="sm">{selectedPoint.total}{` Sampel`}</Text>
+                                        <Divider mb={2} mt={2}/>
+                                <Box>
+                                    <Flex>
+                                        <Text fontSize="sm">Kasus</Text>
+                                        <Spacer />
+                                    <Text fontSize="sm" fontWeight={700} >{selectedPoint.total_positive}{` Positif`}</Text>
+                                    </Flex>
+                                    <Flex>
+                                        <Text fontSize="sm">Presentase</Text>
+                                        <Spacer />
+                                    <Text fontSize="sm" fontWeight={700} >{((selectedPoint.total_positive / selectedPoint.total) * 100).toFixed()}{`% Positif`}</Text>
+                                    </Flex>
+                                    <Flex>
+                                        <Text fontSize="sm">Sampel</Text>
+                                        <Spacer />
+                                    <Text fontSize="sm" fontWeight={700}>{selectedPoint.total}{` Sampel`}</Text>
+                                    </Flex>
+                                </Box>
                             </Popup>
                         )
                         : null}

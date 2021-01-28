@@ -32,18 +32,18 @@ export default function Legends() {
                     ? 'gray.800'
                     : 'white'}>
                     <Heading as="h4" size="sm" fontWeight={500} mb={2}>Zona Kasus (jumlah positif)</Heading>
-                    {/* <Box className="legend-scale" w="100%" h={5} pr={4} pl={4}></Box> */}
+                    <Box className="legend-scale" w="100%" h={5} pr={4} pl={4}></Box>
                     <Flex>
                         <Box mr={4}>
-                            <Text fontSize="md"><Icon as={FaCircle} w={8} h={8} color="yellow.300" />{` < 25%`}</Text>
+                            <Text fontSize="md">{`0%`}</Text>
                         </Box>
                         <Spacer />
                         <Box mr={4}>
-                            <Text fontSize="md"><Icon as={FaCircle} w={8} h={8} color="orange.300"/>{` 25% - 50%`}</Text>
+                            <Text fontSize="md">{` 25%`}</Text>
                         </Box>
                         <Spacer />
                         <Box>
-                            <Text fontSize="md"><Icon as={FaCircle} w={8} h={8} color="red.300"/>{` > 50%`}</Text>
+                            <Text fontSize="md">{` > 50%`}</Text>
                         </Box>
                     </Flex>
                     

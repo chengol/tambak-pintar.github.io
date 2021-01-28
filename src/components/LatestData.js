@@ -1,6 +1,6 @@
 import React from 'react'
 import {useColorMode, Box, Text} from '@chakra-ui/react'
-import {lightFormat} from 'date-fns';
+import {lightFormat, format} from 'date-fns';
 
 export default function LatestData(data) {
     const {colorMode} = useColorMode();
@@ -12,7 +12,7 @@ export default function LatestData(data) {
                 ? 'gray.800'
                 : 'white'}>
                 <Text fontSize="sm" m={2} fontWeight={500}>Data diperbarui terakhir {data.latestData.last_logged_at
-                        ? lightFormat(new Date(data.latestData.last_logged_at), 'dd/MM/yyyy')
+                        ? format(new Date(data.latestData.last_logged_at), 'dd MMMM yyyy')
                         : ''}</Text>
             </Box>
         </div>

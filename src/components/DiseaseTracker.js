@@ -112,7 +112,7 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                 <Text fontSize="sm" color="gray.500">
                                     {(stats.total_positive === 0)
                                         ? 0
-                                        : ((stats.total_positive / stats.total) * 100).toFixed(2)}% Positif
+                                        : ((stats.total_positive / stats.total) * 100).toFixed()}% Positif
                                 </Text>
                             </Box>
 
@@ -184,7 +184,7 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                     <Text fontSize="sm" color="gray.500">
                                         {(stats.total_disease_id_1_positive === 0)
                                             ? 0
-                                            : ((stats.total_disease_id_1_positive / stats.total_disease_id_1) * 100).toFixed(2)}% Positif
+                                            : ((stats.total_disease_id_1_positive / stats.total_disease_id_1) * 100).toFixed()}% Positif
                                     </Text>
                                 </Stat>
                             </Box>
@@ -218,7 +218,7 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                     <Text fontSize="sm" color="gray.500">
                                         {(stats.total_disease_id_6_positive === 0)
                                             ? 0
-                                            : ((stats.total_disease_id_6_positive / stats.total_disease_id_6) * 100).toFixed(2)}% Positif
+                                            : ((stats.total_disease_id_6_positive / stats.total_disease_id_6) * 100).toFixed()}% Positif
                                     </Text>
                                 </Stat>
                             </Box>
@@ -251,7 +251,7 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                     <Text fontSize="sm" color="gray.500">
                                         {(stats.total_disease_id_8_positive === 0)
                                             ? 0
-                                            : ((stats.total_disease_id_8_positive / stats.total_disease_id_8) * 100).toFixed(2)}% Positif
+                                            : ((stats.total_disease_id_8_positive / stats.total_disease_id_8) * 100).toFixed()}% Positif
                                     </Text>
                                 </Stat>
                             </Box>
@@ -282,7 +282,7 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
                                     <Text fontSize="sm" color="gray.500">
                                         {(stats.total_disease_id_11_positive === 0)
                                             ? 0
-                                            : ((stats.total_disease_id_11_positive / stats.total_disease_id_11) * 100).toFixed(2)}% Positif
+                                            : ((stats.total_disease_id_11_positive / stats.total_disease_id_11) * 100).toFixed()}% Positif
                                     </Text>
                                 </Stat>
                             </Box>

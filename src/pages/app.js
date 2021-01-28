@@ -152,7 +152,7 @@ function DiseaseData() {
     //     }
     //   }))
 
-      const regionDiseaseResponse = useSWR(`https://app.jala.tech/api/laboratories/1/cycle_diseases_total_per_region?logged_at__gte=${formatISO(startDate, { representation: 'date' })}00:00:00&logged_at__lte=${formatISO(endDate, { representation: 'date' })}23:59:59&disease_id=${diseaseId}&with=region&per_page=1000&scope=district`,
+      const regionDiseaseResponse = useSWR(`https://app.jala.tech/api/laboratories/1/cycle_diseases_total_per_region?logged_at__gte=${formatISO(startDate, { representation: 'date' })}00:00:00&logged_at__lte=${formatISO(endDate, { representation: 'date' })}23:59:59&disease_id=${diseaseId}&with=region&per_page=1000&scope_only=district`,
       (url) => fetcher(url, {
         headers: {
           'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
