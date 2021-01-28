@@ -14,7 +14,7 @@ import DatePicker from "react-datepicker";
 
 import _ from "lodash"
 
-export default function DiseasePicker({kecamatan, onViewportChange, regions}) {
+export default function DiseasePicker({onViewportChange, regions}) {
     const {
         disease,
         setDisease,
@@ -39,6 +39,7 @@ export default function DiseasePicker({kecamatan, onViewportChange, regions}) {
     });
 
     // console.log('kecamatan',kecamatan);
+    // console.log('region', regions);
 
     // console.log('picker region', regionId);
 
@@ -83,7 +84,7 @@ export default function DiseasePicker({kecamatan, onViewportChange, regions}) {
                             // console.log('set region',e.target.value)
                             onViewportChange(regions.find(reg => e.target.value === reg.id))}}>
                             <option value=''>Semua Daerah</option>
-                            {regions.map(d => <option value={d.id} key={d.id}>{_.startCase(d.full_name.toLowerCase())}</option>)}
+                            {regions.map(d => <option value={d.id} key={d.id}>{d.province_name ? _.startCase(d.province_name.toLowerCase()) : ''}{d.regency_name ? `, `+_.startCase(d.regency_name.toLowerCase()):''}{d.district_name?  `, `+_.startCase(d.district_name.toLowerCase()) : ''}</option>)}
                         </Select>
                     </Box>
                     {/* <Box mb={2} w="200px" mr={4}>

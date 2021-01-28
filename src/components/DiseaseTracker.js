@@ -3,11 +3,9 @@ import {
     SimpleGrid,
     Heading,
     Stat,
-    StatGroup,
     Box,
     Alert,
     AlertIcon,
-    AlertTitle,
     Text,
     Divider,
     Icon,
@@ -15,7 +13,6 @@ import {
     Tag,
     TagLabel,
     HStack,
-    Skeleton,
     useColorMode,
 
     Table,
@@ -23,8 +20,7 @@ import {
     Tbody,
     Tr,
     Th,
-    Td,
-    Stack, Spinner, Center
+    Td,Spinner, Center
 } from '@chakra-ui/react';
 
 import _ from 'lodash';
@@ -33,7 +29,7 @@ import {DiseaseContext} from '../pages/app'
 import ChartData from '../components/ChartData'
 import format from 'date-fns/format'
 
-export default function DiseaseTracker({points, samples, statistics, region, chart}) {
+export default function DiseaseTracker({statistics, region, chart}) {
 
     const {disease, district, regionId, diseaseId, setDiseaseId} = useContext(DiseaseContext);
 
@@ -47,6 +43,7 @@ export default function DiseaseTracker({points, samples, statistics, region, cha
     const regionName = region;
 
     // console.log('region', regionName);
+    // console.log('statistik', stats);
 
     if (regionName) {
         kec = regionName.district_name;

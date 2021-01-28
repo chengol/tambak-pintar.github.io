@@ -70,9 +70,6 @@ export function DiseaseProvider({children}) {
     const [diseaseId, setDiseaseId] = useState('');
     const toast = useToast();
 
-    // const [selectedDistrict,
-    //     setSelectedDistrict] = useState(null);
-
     return (
         <DiseaseContext.Provider
             value={{
@@ -109,11 +106,6 @@ function DiseaseData() {
       }
     }
   }`);
-    // console.log('airtable api', airtableApi); console.log('airtable base',
-    // airtableApi.airtable.siteMetadata.airtableBase);
-
-    // const url = `https://api.airtable.com/v0/${airtableApi.airtable.siteMetadata.airtableBase}/allRecord?api_key=${airtableApi.airtable.siteMetadata.airtableApi}&sort%5B0%5D%5Bfield%5D=Tanggal&sort%5B0%5D%5Bdirection%5D=asc`;
-    // const {toast} = useContext(DiseaseContext);
 
     const {toast, regionId, startDate, endDate, diseaseId} = useContext(DiseaseContext);
 
@@ -168,13 +160,13 @@ function DiseaseData() {
         }
       }))
 
-      console.log('total cycle data',totalCycleResponse.data);
-      console.log('all diseases', response.data);
+    //   console.log('total cycle data',totalCycleResponse.data);
+    //   console.log('all diseases', response.data);
 
     //   console.log('region', regionId);
     //   console.log('region terpilih', regionResponse.data);
     //   console.log('all region has disease', listRegionResponse.data);
-      console.log('all disease in each region', regionDiseaseResponse.data);
+    //   console.log('all disease in each region', regionDiseaseResponse.data);
     //   console.log('all regencies has disease', listRegenciesResponse.data);
     //   console.log('diesase id', diseaseId);
 
@@ -206,9 +198,10 @@ function DiseaseData() {
         createdTime: datum.created_at
       })) : []
     }
+
     if (response.error || totalCycleResponse.error || listRegionResponse.error || totalCycleMonthResponse.error )
         return <div>{toast({title: "An error occurred.", description: "Unable to get the data.", status: "error", duration: 9000, isClosable: true})}</div>
-    if (!data || !totalCycleMonthResponse || !totalCycleResponse) {
+    if (!data || !totalCycleMonthResponse || !totalCycleResponse || !regionDiseaseResponse || !listRegionResponse) {
         return (
             <Flex  style={{top:"50%",left:"50%",width: "100%",
   height: "100%", position:"fixed" }}>
@@ -226,77 +219,80 @@ function DiseaseData() {
 
     return (
         <div>
-            <FilterData data={data} diseaseData={regionDiseaseResponse.data ? regionDiseaseResponse.data.data : []} chartData={totalCycleMonthResponse.data ? totalCycleMonthResponse.data.data : []} regionData={listRegionResponse.data ? listRegionResponse.data.data : []} statisticData={totalCycleResponse.data ? totalCycleResponse.data.data[0] : []} regionDetailData={listRegionResponse.data && listRegionResponse.data.data.length && regionId ? listRegionResponse.data.data.find((r)=>r.id===regionId) : []}/>
+            <FilterData data={data} diseaseData={regionDiseaseResponse.data ? regionDiseaseResponse.data.data : []} 
+            chartData={totalCycleMonthResponse.data ? totalCycleMonthResponse.data.data : []} 
+            regionData={listRegionResponse.data ? listRegionResponse.data.data : []} 
+            statisticData={totalCycleResponse.data ? totalCycleResponse.data.data[0] : []} 
+            regionDetailData={listRegionResponse.data && listRegionResponse.data.data.length && regionId ? listRegionResponse.data.data.find((r)=>r.id===regionId) : []}/>
         </div>
     )
 }
 
 function FilterData(data) {
-    const {disease, startDate, endDate} = useContext(DiseaseContext);
+    // const {disease, startDate, endDate} = useContext(DiseaseContext);
 
-    const samples = data.data.records;
+    // const samples = data.data.records;
 
-    const diseaseData = samples.filter(d => {
-        if (disease === "Semua Sampel") {
-            return data && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-        }
-        if (disease === "Semua Positif"){
-            return d.fields.Status !== 0 && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-        }
-            return d.fields.Status !== 0 && d.fields.Penyakit === disease && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-    });
+    // const diseaseData = samples.filter(d => {
+    //     if (disease === "Semua Sampel") {
+    //         return data && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
+    //     }
+    //     if (disease === "Semua Positif"){
+    //         return d.fields.Status !== 0 && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
+    //     }
+    //         return d.fields.Status !== 0 && d.fields.Penyakit === disease && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
+    // });
 
-    const samplesData = samples.filter(d => {
-        if (disease === "Semua Sampel") {
-            return data && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-        }
-        if (disease === "Semua Positif"){
-            return isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-        }
-            return  d.fields.Penyakit === disease && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
-    });
+    // const samplesData = samples.filter(d => {
+    //     if (disease === "Semua Sampel") {
+    //         return data && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
+    //     }
+    //     if (disease === "Semua Positif"){
+    //         return isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
+    //     }
+    //         return  d.fields.Penyakit === disease && isAfter(endDate, new Date(d.fields.Tanggal)) && isBefore(startDate, new Date(d.fields.Tanggal));
+    // });
 
     // console.log('statistic data', data.statisticData);
     // console.log('sampel', samples);
     // console.log('sampleData', samplesData);
     // console.log('disease', disease, 'lokasi', district, 'diseaseData', diseaseData);
 
-    const points = {
-        type: "FeatureCollection",
-        features: diseaseData.map((point = {}) => {
-            const lat = point.fields.Lat;
-            const lng = point.fields.Long;
-            return {
-                type: 'Feature',
-                properties: {
-                    cluster: false,
-                    ...point
-                },
-                geometry: {
-                    type: 'Point',
-                    coordinates: [lng, lat]
-                }
-            }
-        })
-    };
+    // const points = {
+    //     type: "FeatureCollection",
+    //     features: diseaseData.map((point = {}) => {
+    //         const lat = point.fields.Lat;
+    //         const lng = point.fields.Long;
+    //         return {
+    //             type: 'Feature',
+    //             properties: {
+    //                 cluster: false,
+    //                 ...point
+    //             },
+    //             geometry: {
+    //                 type: 'Point',
+    //                 coordinates: [lng, lat]
+    //             }
+    //         }
+    //     })
+    // };
 
-    const pointsPeta = diseaseData.map((point = {}) => {
-            const lat = point.fields.Lat;
-            const lng = point.fields.Long;
-            return {
-                type: 'Feature',
-                properties: {
-                    cluster: false,
-                    ...point
-                },
-                geometry: {
-                    type: 'Point',
-                    coordinates: [lng, lat]
-                }
-            }
-        });
+    // const pointsPeta = diseaseData.map((point = {}) => {
+    //         const lat = point.fields.Lat;
+    //         const lng = point.fields.Long;
+    //         return {
+    //             type: 'Feature',
+    //             properties: {
+    //                 cluster: false,
+    //                 ...point
+    //             },
+    //             geometry: {
+    //                 type: 'Point',
+    //                 coordinates: [lng, lat]
+    //             }
+    //         }
+    //     });
 
-    // console.log('points', points);
     
 
     return (
@@ -316,35 +312,20 @@ function FilterData(data) {
                 sm: "none",
                 md: "none",
                 lg: "block" ,
-                xl: "block" }} id="sidepanel" points={points} samples={samplesData} chart={data.chartData} statistics={data.statisticData} region={data.regionDetailData} />
+                xl: "block" }} id="sidepanel" chart={data.chartData} statistics={data.statisticData} region={data.regionDetailData} />
                 <LatestData latestData={data.statisticData}/>
                 </Box>
                 <Box flex="1">
                     {/* <PetaPin points={pointsPeta} samples={samples} regions={data.regionData}/> */}
-                    <PetaRegion points={pointsPeta} samples={samples} regions={data.regionData} statistics={data.statisticData} disease={data.diseaseData} />
+                    <PetaRegion regions={data.regionData} disease={data.diseaseData} />
                 </Box>
             </Flex>
             <Box id="headbottom"
             display={{ sm: "block", md: "block", lg: "none", xl: "none" }}
             >
-                <Bottompanel points={points} samples={samplesData} chart={data.chartData} statistics={data.statisticData} region={data.regionDetailData} display={{ sm: "block", md: "block", lg: "block", xl: "none" }}/></Box>
+                <Bottompanel chart={data.chartData} statistics={data.statisticData} region={data.regionDetailData} display={{ sm: "block", md: "block", lg: "block", xl: "none" }}/></Box>
 
         </div>
     )
 }
-
-// function LatestData(data){
-//     // const latestData = samples[0];
-//     // console.log('latest samples', data.latestData.last_logged_at);
-//     const {colorMode} = useColorMode();
-//     return(
-//       <div>
-//         <Box className="latest-data" bg={colorMode === 'dark'
-//                     ? 'gray.800'
-//                     : 'white'}>
-//     <Text fontSize="sm" m={2} fontWeight={500}>Data diperbarui terakhir {data.latestData.last_logged_at ? lightFormat(new Date(data.latestData.last_logged_at), 'dd/MM/yyyy') : ''}</Text>
-//         </Box>
-//       </div>
-//     )
-//   }
 

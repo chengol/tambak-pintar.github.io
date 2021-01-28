@@ -38,7 +38,7 @@ import DiseasePicker from './DiseasePicker';
 import Legends from './Legends'
 import {format} from 'date-fns';
 
-export default function PetaRegion({points, samples, regions, statistics, disease}) {
+export default function PetaRegion({regions,  disease}) {
     const query = useStaticQuery(graphql `
   query mapboxRegion {
     site {
@@ -129,26 +129,6 @@ export default function PetaRegion({points, samples, regions, statistics, diseas
         // console.log(`goto = `, districtLat, districtLong);
     };
 
-    function _getZoom(clusterId) {
-        // console.log('feature event', e);
-        const leaves = supercluster.getLeaves(clusterId);
-        console.log('leaves', leaves);
-        // const expansionZoom =
-        // Math.min(supercluster.getClusterExpansionZoom(clusterId),12);
-        _onViewportChange({
-            ...viewport,
-            latitude: leaves[0].geometry.coordinates[1],
-            longitude: leaves[0].geometry.coordinates[0],
-            zoom: 11,
-            transitionInterpolator: new FlyToInterpolator({speed: 3}),
-            transitionDuration: 'auto'
-        });
-        // setDistrict(leaves[0].properties.fields.Kecamatan);
-        setRegionId(leaves[0].properties.fields.Region[0]);
-        // const klaster = clusters;
-
-    }
-
     function _getZoomPoint(point) {
         console.log(point);
         _onViewportChange({
@@ -163,70 +143,6 @@ export default function PetaRegion({points, samples, regions, statistics, diseas
         setRegionId(point.region_id);
     }
 
-    function _getClusterLeaves(e) {
-        // console.log('event', e.target.className)
-        if (e.target.className === "overlays") {
-            const feature = e.features[0];
-            if (feature === undefined) {
-                console.log('e ', e);
-                // const fields = feature.properties.fields;
-                console.log("not a cluster ");
-            } else {
-                const clusterId = feature.properties.cluster_id;
-                const mapboxSource = sourceRef
-                    .current
-                    .getSource();
-                mapboxSource.getClusterLeaves(clusterId, 100, 0, (error, features) => {
-                    if (error) {
-                        console.log('error', error);
-                        return;
-                    }
-                    console.log('feature', features);
-                    // _renderPopup(feature.geometry.coordinates[1],feature.geometry.coordinates[0],
-                    // );
-                });
-                mapboxSource.getClusterExpansionZoom(clusterId, (error, zoom) => {
-                    if (error) {
-                        return;
-                    }
-                    console.log('zoom expand ', zoom);
-                    _onViewportChange({
-                        ...viewport,
-                        longitude: feature.geometry.coordinates[0],
-                        latitude: feature.geometry.coordinates[1],
-                        zoom,
-                        transitionDuration: 500
-                    })
-                });
-            }
-        }
-    }
-
-    function _getHover(e) {
-        console.log('event hover', e.target.className)
-        if (e.target.className === "overlays") {
-            const feature = e.features[0];
-            if (feature === undefined) {
-                console.log('e ', e);
-                // const fields = feature.properties.fields;
-                console.log("not a cluster ");
-            } else {
-                const clusterId = feature.properties.cluster_id;
-                const mapboxSource = sourceRef
-                    .current
-                    .getSource();
-                mapboxSource.getClusterLeaves(clusterId, 100, 0, (error, features) => {
-                    if (error) {
-                        console.log('error', error);
-                        return;
-                    }
-                    console.log('feature', features);
-                    // _renderPopup(feature.geometry.coordinates[1],feature.geometry.coordinates[0],
-                    // );
-                });
-            }
-        }
-    }
 
     function _getInterpolation(p) {
         const color = chroma
@@ -251,17 +167,6 @@ export default function PetaRegion({points, samples, regions, statistics, diseas
             .toArray()
             .flat()
         : null;
-
-    //get cluster
-    const {clusters, supercluster} = useSupercluster({
-        points,
-        zoom: viewport.zoom,
-        bounds,
-        options: {
-            radius: 20,
-            maxZoom: 20
-        }
-    });
 
     // console.log('klaster',clusters);
 
@@ -325,13 +230,13 @@ export default function PetaRegion({points, samples, regions, statistics, diseas
                                     _getZoomPoint(d)
                                 }}
                                     onMouseEnter={e => {
-                                        console.log('masuk', e);
+                                        // console.log('masuk', e);
                                     e.preventDefault();
                                     setSelectedPoint(d)
                                 }}
                                 
                                 onMouseLeave={e => {
-                                    console.log('keluar');
+                                    // console.log('keluar');
                                     e.preventDefault();
                                     setSelectedPoint(null)
                                 }}>
@@ -350,10 +255,14 @@ export default function PetaRegion({points, samples, regions, statistics, diseas
                                 longitude={parseFloat(selectedPoint.region.longitude)}
                                 onClose={() => {setSelectedPoint(null)}}
                                 closeButton={false}>
-                                <Heading as="h3" size="md">
+                                <Heading as="h3" size="md" color={colorMode === 'dark'
+                ? 'gray.800'
+                : 'black'}>
                                     <strong>{_.startCase(selectedPoint.region.district_name.toLowerCase())}</strong>
                                 </Heading>
-                                <Heading as="h3" fontSize="sm">
+                                <Heading as="h3" fontSize="sm" color={colorMode === 'dark'
+                ? 'gray.800'
+                : 'black'}>
                                     {_.startCase(selectedPoint.region.regency_name.toLowerCase())+`, `}{_.startCase(selectedPoint.region.province_name.toLowerCase())}
                                 </Heading>
                                 
@@ -363,19 +272,31 @@ export default function PetaRegion({points, samples, regions, statistics, diseas
                                         <Divider mb={2} mt={2}/>
                                 <Box>
                                     <Flex>
-                                        <Text fontSize="sm">Kasus</Text>
+                                        <Text fontSize="sm" color={colorMode === 'dark'
+                ? 'gray.800'
+                : 'black'}>Kasus</Text>
                                         <Spacer />
-                                    <Text fontSize="sm" fontWeight={700} >{selectedPoint.total_positive}{` Positif`}</Text>
+                                    <Text fontSize="sm" fontWeight={700} color={colorMode === 'dark'
+                ? 'gray.800'
+                : 'black'}>{selectedPoint.total_positive}{` Positif`}</Text>
                                     </Flex>
                                     <Flex>
-                                        <Text fontSize="sm">Presentase</Text>
+                                        <Text fontSize="sm" color={colorMode === 'dark'
+                ? 'gray.800'
+                : 'black'}>Presentase</Text>
                                         <Spacer />
-                                    <Text fontSize="sm" fontWeight={700} >{((selectedPoint.total_positive / selectedPoint.total) * 100).toFixed()}{`% Positif`}</Text>
+                                    <Text fontSize="sm" fontWeight={700} color={colorMode === 'dark'
+                ? 'gray.800'
+                : 'black'}>{((selectedPoint.total_positive / selectedPoint.total) * 100).toFixed()}{`% Positif`}</Text>
                                     </Flex>
                                     <Flex>
-                                        <Text fontSize="sm">Sampel</Text>
+                                        <Text fontSize="sm" color={colorMode === 'dark'
+                ? 'gray.800'
+                : 'black'}>Sampel</Text>
                                         <Spacer />
-                                    <Text fontSize="sm" fontWeight={700}>{selectedPoint.total}{` Sampel`}</Text>
+                                    <Text fontSize="sm" fontWeight={700 } color={colorMode === 'dark'
+                ? 'gray.800'
+                : 'black'}>{selectedPoint.total}{` Sampel`}</Text>
                                     </Flex>
                                 </Box>
                             </Popup>
@@ -438,7 +359,6 @@ export default function PetaRegion({points, samples, regions, statistics, diseas
                     </Box>
 
                     <DiseasePicker
-                        kecamatan={_.uniqBy(samples.map(s => ({Kecamatan: s.fields.Kecamatan, Latitude: s.fields.Lat, Longitude: s.fields.Long})), 'Kecamatan')}
                         onViewportChange={_goToViewport}
                         regions={regions}/>
                 </ReactMapGL>
