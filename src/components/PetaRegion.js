@@ -319,7 +319,7 @@ export default function PetaRegion({points, samples, regions, statistics, diseas
                                     style={{
                                     background: `${_getInterpolation(positiveRate)}`
                                 }}
-                                    onDoubleClick={() => {
+                                    onClick={() => {
                                     _getZoomPoint(d)
                                 }}
                                     onMouseEnter={e => {
