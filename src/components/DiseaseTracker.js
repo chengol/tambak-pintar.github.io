@@ -42,6 +42,7 @@ import {motion} from "framer-motion"
 import {DiseaseContext} from '../pages/app'
 import ChartData from '../components/ChartData'
 import format from 'date-fns/format'
+import PositiveTable from '../components/PositiveTable'
 
 export default function DiseaseTracker({statistics, region, chart, disease}) {
 
@@ -398,11 +399,11 @@ export default function DiseaseTracker({statistics, region, chart, disease}) {
             </SimpleGrid>
 
             {drawerData === "positif"
-                ? <Drawer placement={"left"} onClose={onClose} isOpen={isOpen} size={"md"}>
+                ? <Drawer placement={"left"} onClose={onClose} isOpen={isOpen} size={"sm"}>
                         <DrawerOverlay>
                             <DrawerContent>
                                 <DrawerHeader borderBottomWidth="1px">
-                                    <Heading as="h2" size="xl">
+                                    <Heading as="h2" size="4xl" fontSize={["2xl", "3xl", "3xl", "4xl"]}>
                                         <IconButton
                                         variant="unstyled"
                                         icon={< ArrowBackIcon w = {7} h = {7}
@@ -441,7 +442,7 @@ export default function DiseaseTracker({statistics, region, chart, disease}) {
                 : <Drawer placement={"left"} onClose={onClose} isOpen={isOpen} size={"sm"}>
                     <DrawerOverlay>
                         <DrawerContent>
-                            <DrawerHeader borderBottomWidth="1px"><Heading as="h2" size="xl">
+                            <DrawerHeader borderBottomWidth="1px"><Heading as="h2" size="4xl" fontSize={["2xl", "3xl", "3xl", "4xl"]}>
                                         <IconButton
                                         variant="unstyled"
                                         icon={< ArrowBackIcon w = {7} h = {7}
@@ -479,44 +480,44 @@ export default function DiseaseTracker({statistics, region, chart, disease}) {
     );
 }
 
-function PositiveTable(data) {
-    const chartData = data.chart;
-    const diseasesData = data.disease;
-    // console.log('chart data', chartData);
-    // console.log('disease data', diseasesData);
+// function PositiveTable(data) {
+//     const chartData = data.chart;
+//     const diseasesData = data.disease;
+//     // console.log('chart data', chartData);
+//     // console.log('disease data', diseasesData);
 
-    return (
-        <Box mt="2" mb="2">
-            <Table size="sm">
-                <Thead>
-                    <Tr>
-                        <Th>Lokasi</Th>
-                        <Th isNumeric>Total Positif</Th>
-                        <Th isNumeric>AHPND</Th>
-                        <Th isNumeric>EHP</Th>
-                        <Th isNumeric>Myo</Th>
-                        <Th isNumeric>Berak Putih</Th>
-                    </Tr>
-                </Thead>
-                <Tbody>
-                    {diseasesData
-                        .map(d => {
-                            return (
-                                <Tr key={d.region_id}>
-                                    <Td>{d.region.district_name? _.startCase(d.region.district_name.toLowerCase()) : ''}{d.region.regency_name ? ` `+_.startCase(d.region.regency_name.toLowerCase()):''}{d.region.province_name ? `, `+_.startCase(d.region.province_name.toLowerCase()) : ''}</Td>
-                                    <Td isNumeric>{d.total_positive}</Td>
-                                    <Td isNumeric>{d.total_disease_id_1_positive}</Td>
-                                    <Td isNumeric>{d.total_disease_id_6_positive}</Td>
-                                    <Td isNumeric>{d.total_disease_id_8_positive}</Td>
-                                    <Td isNumeric>{d.total_disease_id_11_positive}</Td>
-                                </Tr>
-                            )
-                        })}
-                </Tbody>
-            </Table>
-        </Box>
-    )
-}
+//     return (
+//         <Box mt="2" mb="2">
+//             <Table size="sm">
+//                 <Thead>
+//                     <Tr>
+//                         <Th>Lokasi</Th>
+//                         <Th isNumeric>Total Positif</Th>
+//                         <Th isNumeric>AHPND</Th>
+//                         <Th isNumeric>EHP</Th>
+//                         <Th isNumeric>Myo</Th>
+//                         <Th isNumeric>Berak Putih</Th>
+//                     </Tr>
+//                 </Thead>
+//                 <Tbody>
+//                     {diseasesData
+//                         .map(d => {
+//                             return (
+//                                 <Tr key={d.region_id}>
+//                                     <Td>{d.region.district_name? _.startCase(d.region.district_name.toLowerCase()) : ''}{d.region.regency_name ? ` `+_.startCase(d.region.regency_name.toLowerCase()):''}{d.region.province_name ? `, `+_.startCase(d.region.province_name.toLowerCase()) : ''}</Td>
+//                                     <Td isNumeric>{d.total_positive}</Td>
+//                                     <Td isNumeric>{d.total_disease_id_1_positive}</Td>
+//                                     <Td isNumeric>{d.total_disease_id_6_positive}</Td>
+//                                     <Td isNumeric>{d.total_disease_id_8_positive}</Td>
+//                                     <Td isNumeric>{d.total_disease_id_11_positive}</Td>
+//                                 </Tr>
+//                             )
+//                         })}
+//                 </Tbody>
+//             </Table>
+//         </Box>
+//     )
+// }
 
 function SampleTable(data) {
     // const chartData = data.chart;

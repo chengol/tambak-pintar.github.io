@@ -182,7 +182,7 @@ export default function DiseasePicker({onViewportChange, regions}) {
                             onViewportChange(regions.find(reg => e.target.value === reg.id))
                         }}>
                             <option value=''>Semua Daerah</option>
-                            {regions.map(d => <option value={d.id} key={d.id}>{_.startCase(d.full_name.toLowerCase())}</option>)}
+                            {regions.map(d => <option value={d.id} key={d.id}>{d.province_name ? _.startCase(d.province_name.toLowerCase()) : ''}{d.regency_name ? `, `+_.startCase(d.regency_name.toLowerCase()):''}{d.district_name?  `, `+_.startCase(d.district_name.toLowerCase()) : ''}</option>)}
                         </Select>
                     </Box>
                     <Box mb={2} w="100%">
