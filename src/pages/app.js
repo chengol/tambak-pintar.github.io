@@ -127,6 +127,15 @@ function DiseaseData() {
         }
       }))
 
+      //data persebaran
+      const persebaranResponse = useSWR(`https://app.jala.tech/api/laboratories/1/cycle_diseases_total?per_page=1000&logged_at__gte=${formatISO(startDate, { representation: 'date' })}00:00:00&logged_at__lte=${formatISO(endDate, { representation: 'date' })}23:59:59`,
+      (url) => fetcher(url, {
+        headers: {
+          'Authorization': `Bearer ${airtableApi.airtable.siteMetadata.jalaAccessToken}`,
+          'Accept': 'application/json',
+        }
+      }))
+
 
       const listRegionResponse = useSWR("https://app.jala.tech/api/regions?has=farms.ponds.cycles.jala_cycle_diseases&per_page=1000&scope=district",
       (url) => fetcher(url, {
@@ -223,7 +232,8 @@ function DiseaseData() {
             chartData={totalCycleMonthResponse.data ? totalCycleMonthResponse.data.data : []} 
             regionData={listRegionResponse.data ? listRegionResponse.data.data : []} 
             statisticData={totalCycleResponse.data ? totalCycleResponse.data.data[0] : []} 
-            regionDetailData={listRegionResponse.data && listRegionResponse.data.data.length && regionId ? listRegionResponse.data.data.find((r)=>r.id===regionId) : []}/>
+            regionDetailData={listRegionResponse.data && listRegionResponse.data.data.length && regionId ? listRegionResponse.data.data.find((r)=>r.id===regionId) : []}
+            persebaranData={persebaranResponse.data ? persebaranResponse.data.data[0] : []} />
         </div>
     )
 }
@@ -312,7 +322,7 @@ function FilterData(data) {
                 sm: "none",
                 md: "none",
                 lg: "block" ,
-                xl: "block" }} id="sidepanel" chart={data.chartData} statistics={data.statisticData} disease={data.diseaseData} region={data.regionDetailData} />
+                xl: "block" }} id="sidepanel" chart={data.chartData} statistics={data.statisticData} disease={data.diseaseData} region={data.regionDetailData} persebaran={data.persebaranData} />
                 <LatestData latestData={data.statisticData}/>
                 </Box>
                 <Box flex="1">

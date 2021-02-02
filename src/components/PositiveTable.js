@@ -18,7 +18,9 @@ export default function PositiveTable(diseaseData) {
     // const chartData = data.chart;
     const diseasesData = diseaseData.disease;
 
-    console.log('diseases data', diseasesData);
+
+    // console.log('diseases data', diseasesData);
+    // console.log('persebaran data', persebaranData);
 
     const data2 = useMemo(() => diseasesData.map(d => {
         return {
@@ -168,7 +170,7 @@ export default function PositiveTable(diseaseData) {
                             return (
                                 <Tr key={d.region_id}>
                                     <Td>{d.region.district_name
-                                            ? _.startCase(d.region.district_name.toLowerCase())
+                                            ? <strong>{_.startCase(d.region.district_name.toLowerCase())}</strong>
                                             : ''}{d.region.regency_name
                                             ? ` ` + _.startCase(d.region.regency_name.toLowerCase())
                                             : ''}{d.region.province_name

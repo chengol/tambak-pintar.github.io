@@ -44,7 +44,7 @@ import ChartData from '../components/ChartData'
 import format from 'date-fns/format'
 import PositiveTable from '../components/PositiveTable'
 
-export default function DiseaseTracker({statistics, region, chart, disease}) {
+export default function DiseaseTracker({statistics, region, chart, disease, persebaran}) {
 
     const {regionId, diseaseId, setDiseaseId} = useContext(DiseaseContext);
 
@@ -56,6 +56,9 @@ export default function DiseaseTracker({statistics, region, chart, disease}) {
 
     const stats = statistics;
     const regionName = region;
+    const persebaranData = persebaran;
+
+    console.log('persebaran', persebaranData);
 
     // console.log('region', regionName); console.log('statistik', stats);
 
@@ -418,7 +421,7 @@ export default function DiseaseTracker({statistics, region, chart, disease}) {
                                                 <Heading
                                                     as="h3"
                                                     size="xl">
-                                                    <strong>{stats.total_positive}</strong>
+                                                    <strong>{persebaranData.total_positive}</strong>
                                                 </Heading>
                                             </Box>
                                             <Box>
@@ -427,19 +430,19 @@ export default function DiseaseTracker({statistics, region, chart, disease}) {
                                                 <Heading
                                                     as="h3"
                                                     size="xl">
-                                                    <strong>{(stats.total_positive === 0)
+                                                    <strong>{(persebaranData.total_positive === 0)
                                                             ? 0
-                                                            : ((stats.total_positive / stats.total) * 100).toFixed()}%</strong>
+                                                            : ((persebaranData.total_positive / persebaranData.total) * 100).toFixed()}%</strong>
                                                 </Heading>
                                             </Box>
                                         </SimpleGrid>
                                     </Box>
-                                    <PositiveTable chart={chart} statistics={statistics} disease={disease} />
+                                    <PositiveTable chart={chart} statistics={statistics} disease={disease} persebaran={persebaran} />
                                 </DrawerBody>
                             </DrawerContent>
                         </DrawerOverlay>
                     </Drawer>
-                : <Drawer placement={"left"} onClose={onClose} isOpen={isOpen} size={"sm"}>
+                : (persebaranData && <Drawer placement={"left"} onClose={onClose} isOpen={isOpen} size={"sm"}>
                     <DrawerOverlay>
                         <DrawerContent>
                             <DrawerHeader borderBottomWidth="1px"><Heading as="h2" size="4xl" fontSize={["2xl", "3xl", "3xl", "4xl"]}>
@@ -456,7 +459,7 @@ export default function DiseaseTracker({statistics, region, chart, disease}) {
                                                 <Heading
                                                     as="h3"
                                                     size="xl">
-                                                    <strong>{stats.total}</strong>
+                                                    <strong>{persebaranData.total}</strong>
                                                 </Heading>
                                             </Box>
                                             <Box>
@@ -465,7 +468,7 @@ export default function DiseaseTracker({statistics, region, chart, disease}) {
                                                 <Heading
                                                     as="h3"
                                                     size="xl">
-                                                    <strong>{stats.total_ponds}</strong>
+                                                    <strong>{persebaranData.total_ponds}</strong>
                                                 </Heading>
                                             </Box>
                                         </SimpleGrid>
@@ -473,8 +476,8 @@ export default function DiseaseTracker({statistics, region, chart, disease}) {
                                     <SampleTable chart={chart} statistics={statistics} disease={disease} />
                             </DrawerBody>
                         </DrawerContent>
-                    </DrawerOverlay>
-                </Drawer>
+                    </DrawerOverlay> 
+                </Drawer> )
 }
         </div>
     );
