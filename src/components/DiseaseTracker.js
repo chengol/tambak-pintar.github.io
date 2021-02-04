@@ -59,7 +59,7 @@ export default function DiseaseTracker({statistics, region, chart, disease, pers
     const regionName = region;
     const persebaranData = persebaran;
 
-    console.log('persebaran', persebaranData);
+    // console.log('persebaran', persebaranData);
 
     // console.log('region', regionName); console.log('statistik', stats);
 
@@ -358,7 +358,7 @@ export default function DiseaseTracker({statistics, region, chart, disease, pers
                                         </Select>
                                     </Box>
 
-                                    <ChartData chart={chart}/>
+                                    {/* <ChartData chart={chart}/> */}
                                     <ChartLine chart={chart}/>
 
                                 </Box>

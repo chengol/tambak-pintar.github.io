@@ -1,0 +1,33 @@
+.tooltip-title{
+    font-size: 12px;
+    display: inline-block;
+    color: #777777;
+    font-weight: 400;
+}
+
+.tooltip-label{
+    display: flex;
+    justify-content: space-between;
+    padding-left: 8px;
+    /* width: 90%; */
+    padding-right: 0px;
+}
+
+.tooltip-label-penyakit{
+    font-size: 14px;
+    display: inline-block;
+    color: #1E1E1F;
+    font-weight: 400;
+}
+
+.tooltip-label-jumlah-penyakit{
+    font-size: 14px;
+    display: inline-block;
+    color: #1E1E1F;
+    font-weight: 600;
+}
+
+.ibox-content{
+    /* padding: 0 0 0 0; */
+    background-color: white;
+}

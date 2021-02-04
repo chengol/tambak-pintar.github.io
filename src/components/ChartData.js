@@ -149,7 +149,7 @@ export default function ChartData(chart) {
                         <Legend width={340} verticalAlign="top" height={40} iconType='circle'/>
                     </LineChart>
                 </Box> */}
-                <Box
+                {/* <Box
                     pb={5}
                     className="chart-box-mobile" display={{base: "block",
                     sm: "block",
@@ -216,7 +216,7 @@ export default function ChartData(chart) {
                         <Tooltip/>
                         <Legend width={340} verticalAlign="top" height={40} iconType='circle'/>
                     </LineChart>
-                </Box>
+                </Box> */}
             </Box>
                 
 }

@@ -3,6 +3,7 @@ import {Line} from '@reactchartjs/react-chart.js'
 import format from 'date-fns/format'
 import _ from 'lodash'
 import {HStack, Box, Text, Heading} from '@chakra-ui/react'
+import '../styles/chart.css'
 
 export default function ChartLine(chart) {
 
@@ -20,7 +21,7 @@ export default function ChartLine(chart) {
             {
                 fill: false,
                 label: 'AHPND',
-                lineTension: 0,
+                lineTension: 0.1,
                 backgroundColor: '#4CB244',
                 borderColor: '#4CB244',
                 data: chartData
@@ -32,7 +33,7 @@ export default function ChartLine(chart) {
             }, {
                 fill: false,
                 label: 'EHP',
-                lineTension: 0,
+                lineTension: 0.1,
                 backgroundColor: '#E22B3A',
                 borderColor: '#E22B3A',
                 data: chartData
@@ -44,7 +45,7 @@ export default function ChartLine(chart) {
             }, {
                 fill: false,
                 label: 'Myo',
-                lineTension: 0,
+                lineTension: 0.1,
                 backgroundColor: '#3F5EFB',
                 borderColor: '#3F5EFB',
                 data: chartData
@@ -56,7 +57,7 @@ export default function ChartLine(chart) {
             }, {
                 fill: false,
                 label: 'Berak Putih',
-                lineTension: 0,
+                lineTension: 0.1,
                 backgroundColor: '#FF9D0B',
                 borderColor: '#FF9D0B',
                 data: chartData
@@ -69,194 +70,16 @@ export default function ChartLine(chart) {
         ]
     }
 
-    console.log('state', stateData);
-    console.log('chart', chartData);
+    // console.log('state', stateData);
+    // console.log('chart', chartData);
 
     return (
         <div>
-            {/* <Line
+            <Box w="100%" mb={2} >
+            <Line height="220px"
                 data={stateData}
                 options={{
-                responsive: true,
-                tooltips: {
-                    mode: 'x',
-                    intersect: false,
-                  enabled: false,
-                  callbacks: {
-                    title: function(ts, d){
-                        let title = `{<Box w="100%" p={4} fontSize="md">`;
-                        // console.log('ts', ts, 'd', d);
-                        if (ts[0].datasetIndex === 1)
-                        title += '<div>'+ format(new Date(ts[0].label), 'MMM yy')+'</div>';
-                        title += '</Box>'
-                        const judul = format(new Date(ts[0].label), 'MMM yy');
-                        return judul;
-                        // return (
-                        //   <Box w="100%" p={4} fontSize="md">
-                        //     <Heading as="h4" size="sm" fontWeight={500} mb={2}>{judul}</Heading>
-                        //   </Box>
-                        // )
-                    }.bind(this),
-                    label: function (t, d) {
-                      // console.log('t', t, 'd', d);
-                        var body = '<div class="clearfix" style="font-size: 14px, height:30px">';
-                        body+= '<p style="margin-bottom:0px; font-weight: 600">'+d.datasets[t.datasetIndex].label+'</p><span style="right: 0; margin-top:0px; font-weight: 600; color: #004492;">'+t.value+'</span>';
-                        body+= '</div>'
-                        return body;
-                    }.bind(this)
-                },
-                  custom: function (tooltipModel) {
-                    let tooltipWidth = 200;
-                    // Tooltip Element
-                    var tooltipEl = document.getElementById('chartjs-tooltip');
-                  
-                    // Create element on first render
-                    if (!tooltipEl) {
-                        tooltipEl = document.createElement('div');
-                        tooltipEl.id = 'chartjs-tooltip';
-                        tooltipEl.innerHTML = '<div id="inner-tooltip" class="ibox-content no-padding" style="box-shadow: 1px 1px 3px 3px #65686B80; border:0; margin: 0; min-width: '+tooltipWidth+'px; border-radius: 5px; z-index: 10; font-family: Open Sans;"></div>';
-                        document.body.appendChild(tooltipEl);
-                    }
-                  
-                    // Hide if no tooltip
-                    if (tooltipModel.opacity === 0) {
-                        tooltipEl.style.opacity = 0;
-                        return;
-                    }
-                  
-                    // Set caret Position
-                    tooltipEl.classList.remove('above', 'below', 'no-transform');
-                    if (tooltipModel.yAlign) {
-                        tooltipEl.classList.add(tooltipModel.yAlign);
-                    } else {
-                        tooltipEl.classList.add('no-transform');
-                    }
-                  
-                    function getBody(bodyItem) {
-                        return bodyItem.lines;
-                    }
-                  
-                    // Set Text
-                    if (tooltipModel.body) {
-                        var titleLines = tooltipModel.title || [];
-                        var bodyLines = tooltipModel.body.map(getBody);
-                        var bodyPartHeight = 40;
-                  
-                        var innerHtml = '';
-                  
-                        titleLines.forEach(function(title, i) {
-                            // innerHtml += '<div class="clearfix"><div style="display: inline-block; border-top-left-radius: 5px; padding-left: 5px; background-color: #FFFFFF; width: 95%">' + title + '</div><div class="pull-right" style="display: inline-block; border-top-right-radius: 5px; width:3%; background-color: #FFFFFF;">&nbsp</div></div>';
-                            innerHtml += '<Box class="clearfix"><Heading as="h4" size="sm" fontWeight={500} mb={2}>' + title + '</Heading><Box class="pull-right" style="display: inline-block; border-top-right-radius: 5px; width:3%; background-color: #FFFFFF;">&nbsp</Box></Box>';
-
-                        });
-                  
-                        var bodyLineFiltered = bodyLines.map((body,i)=>{
-                            return{
-                                text: body,
-                                colors:tooltipModel.labelColors[i],
-                            }
-                        }).filter(function(body){
-                            return body.text.length;
-                        });
-                        bodyLineFiltered.forEach(function(body, i) {
-                            var colors = body.colors;
-                            var style = 'background:' + colors.borderColor+';';
-                            style += 'border: 1px solid' + colors.borderColor+';';
-                            var leftStyle = '';
-                            if (i == (bodyLineFiltered.length -1)){
-                                style += 'border-bottom-right-radius: 5px;';
-                                leftStyle += 'border-bottom-left-radius: 5px;';
-                            }
-                            innerHtml += '<div class="clearfix"><div style="display: inline-block; background-color: #FFFFFF; width: 95%; padding-left: 5px; height: '+bodyPartHeight+'px; '+leftStyle+'">' + body.text + '</div><div class="pull-right" style="'+style+'display: inline-block; width:3%; height: 40px">&nbsp</div></div>';
-                        });
-                        var tableRoot = tooltipEl.querySelector('#inner-tooltip');
-                        tableRoot.innerHTML = innerHtml;
-                    }
-                  
-                    // `this` will be the overall tooltip
-                    var position = this._chart.canvas.getBoundingClientRect();
-                  
-                    // Display, position, and set styles for font
-                    tooltipEl.style.opacity = 1;
-                    tooltipEl.style.position = 'absolute';
-                    tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-                    let tooltipYPosition = tooltipModel.caretY+ (bodyLineFiltered.length*bodyPartHeight)
-                    let tooltipXPosition =position.left + window.pageXOffset + tooltipModel.caretX+tooltipWidth;
-                    if (tooltipXPosition > position.right){
-                        tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipWidth + 'px';
-                    }
-                    let windowInnerHeight = window.innerHeight;
-                    if (position.bottom > windowInnerHeight){
-                        tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - ((bodyLineFiltered.length*bodyPartHeight) + 10) + 'px';
-                    }else{
-                        if ((position.top + tooltipYPosition) > (windowInnerHeight)){
-                            tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - ((bodyLineFiltered.length*bodyPartHeight) + 10) + 'px';
-                        }else{
-                            tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
-                        }
-                    }
-                    tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
-                    tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
-                    tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
-                    tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
-                    tooltipEl.style.animationDuration = '400';
-                    tooltipEl.style.pointerEvents = 'none';
-                  }
-                },
-                elements: {
-                    point: {
-                        redius: 1,
-                        pointStyle: 'circle'
-                    }
-                },
-                legend: {
-                    display: true,
-                    position: 'top',
-                    labels: {
-                        boxWidth: 10
-                    }
-                },
-                layout: {
-                    padding: {
-                        left: 0,
-                        right: 0,
-                        top: 5,
-                        bottom: 0
-                    }
-                },
-                scales: {
-                    xAxes: [
-                        {
-                            type: 'time',
-                            position: 'bottom',
-                            time: {
-                                unit: 'quarter',
-                                displayFormats: {
-                                    quarter: 'MMM YY'
-                                }
-                            }
-                        }
-                    ],
-                    yAxes: [
-                        {
-                            type: 'linear',
-                            ticks: {
-                                min: 0,
-                                max: 5,
-                                stepSize: 1
-                            },
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: "Jumlah Positif"
-                            }
-                        }
-                    ]
-                }
-            }}/> */}
-            <Line
-                data={stateData}
-                options={{
+                    maintainAspectRatio: false,
                 responsive: true,
                 animation: {
                   duration : 1000,
@@ -269,26 +92,29 @@ export default function ChartLine(chart) {
                   callbacks: {
                     title: function (t, d){
                       
+                      var judul = `<div class="tooltip-title">`+format(new Date(t[0].xLabel), 'MMM yy')+`</div>`;
+                      return judul;
                     },
-                    label: function(tooltipItem, data) {
-                        var label = data.datasets[tooltipItem.datasetIndex].label || '';
-    
-                        if (label) {
-                            label += ': ';
-                        }
-                        label += Math.round(tooltipItem.yLabel * 100) / 100;
+                    label: function(ts, data) {
+                        // console.log('t',ts,'d',data);
+                        var label = `<div class="tooltip-label"><div class="tooltip-label-penyakit">`+data.datasets[ts.datasetIndex].label+`</div>` || '';
+                        label += `<div class="tooltip-label-jumlah-penyakit">`+Math.round(ts.yLabel * 100) / 100+`</div></div>`;
                         return label;
                     }
                 },
                   custom: function(tooltipModel) {
                     // Tooltip Element
                     var tooltipEl = document.getElementById('chartjs-tooltip');
+                    let tooltipWidth = 120;
+                    var bodyPartHeight = 130;
+
+                    var innerHtml = '';
     
                     // Create element on first render
                     if (!tooltipEl) {
                         tooltipEl = document.createElement('div');
                         tooltipEl.id = 'chartjs-tooltip';
-                        tooltipEl.innerHTML = '<table></table>';
+                        tooltipEl.innerHTML = '<div id="inner-tooltip" class="ibox-content" style="box-shadow: 1px 1px 3px 3px #65686B80; border:0; margin: 0; min-width: '+tooltipWidth+'px; border-radius: 5px; z-index: 10;"></div>';
                         document.body.appendChild(tooltipEl);
                     }
     
@@ -315,24 +141,27 @@ export default function ChartLine(chart) {
                         var titleLines = tooltipModel.title || [];
                         var bodyLines = tooltipModel.body.map(getBody);
     
-                        var innerHtml = '<thead>';
+                        var innerHtml = '';
     
                         titleLines.forEach(function(title) {
-                            innerHtml += '<tr><th>' + title + '</th></tr>';
+                            innerHtml += '<div style="display: block; padding-left: 8px; padding-top: 8px; padding-bottom: 5px;">' + title + '</div>';
                         });
-                        innerHtml += '</thead><tbody>';
     
                         bodyLines.forEach(function(body, i) {
                             var colors = tooltipModel.labelColors[i];
                             var style = 'background:' + colors.backgroundColor;
                             style += '; border-color:' + colors.borderColor;
-                            style += '; border-width: 2px';
-                            var span = '<span style="' + style + '"></span>';
-                            innerHtml += '<tr><td>' + span + body + '</td></tr>';
+                            style += '; border-width: 3px';
+                            style += ';'
+                            if (i == (bodyLines.length -1)){
+                                style += ' border-bottom-right-radius: 5px;';
+                                // leftStyle += 'border-bottom-left-radius: 5px;';
+                            }
+                            // var span = '<span style="' + style + '"></span>';
+                            innerHtml += '<div style="max-width: '+tooltipWidth+'px;"><div style="display: inline-block; width: 95%; padding-right:8px; ">' + body + '</div><div style="'+style+'display: inline-block; width:3%; padding-right:0;">&nbsp</div></div>';
                         });
-                        innerHtml += '</tbody>';
     
-                        var tableRoot = tooltipEl.querySelector('table');
+                        var tableRoot = tooltipEl.querySelector('#inner-tooltip');
                         tableRoot.innerHTML = innerHtml;
                     }
     
@@ -343,7 +172,7 @@ export default function ChartLine(chart) {
                     tooltipEl.style.opacity = 1;
                     tooltipEl.style.position = 'absolute';
                     tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-                    tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+                    tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - bodyPartHeight + 'px';
                     tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
                     tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
                     tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
@@ -353,7 +182,7 @@ export default function ChartLine(chart) {
                 },
                 elements: {
                     point: {
-                        redius: 1,
+                        radius: 2,
                         pointStyle: 'circle'
                     }
                 },
@@ -402,6 +231,7 @@ export default function ChartLine(chart) {
                     ]
                 }
             }}/>
+            </Box>
         </div>
     )
 }
