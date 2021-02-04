@@ -20,6 +20,8 @@
     "@chakra-ui/react": "^1.0.4",
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0",
+    "@reactchartjs/react-chart.js": "^1.0.0-rc.3",
+    "chart.js": "^2.9.4",
     "chroma-js": "^2.1.0",
     "framer-motion": ">=3.0.0",
     "gatsby": "^2.24.80",

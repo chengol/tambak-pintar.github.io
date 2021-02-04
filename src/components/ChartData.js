@@ -15,6 +15,7 @@ import {
 import {Box} from '@chakra-ui/react'
 import format from 'date-fns/format'
 
+
 export default function ChartData(chart) {
     const chartData = chart;
     // console.log('chart', chartData);
@@ -74,10 +75,13 @@ export default function ChartData(chart) {
 
     // console.log('chart data', data);
 
+    
+      
+
     return (
         <div>
             {chartData && <Box>
-                <Box
+                {/* <Box
                     pb={5}
                     className="chart-box-desktop" display={{base: "none",
                     sm: "none",
@@ -144,7 +148,7 @@ export default function ChartData(chart) {
                         <Tooltip/>
                         <Legend width={340} verticalAlign="top" height={40} iconType='circle'/>
                     </LineChart>
-                </Box>
+                </Box> */}
                 <Box
                     pb={5}
                     className="chart-box-mobile" display={{base: "block",
@@ -216,6 +220,8 @@ export default function ChartData(chart) {
             </Box>
                 
 }
+
+
         </div>
     )
 }
