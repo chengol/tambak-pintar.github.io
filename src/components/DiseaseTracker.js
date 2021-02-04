@@ -43,6 +43,7 @@ import {DiseaseContext} from '../pages/app'
 import ChartData from '../components/ChartData'
 import format from 'date-fns/format'
 import PositiveTable from '../components/PositiveTable'
+import ChartLine from '../components/Chart'
 
 export default function DiseaseTracker({statistics, region, chart, disease, persebaran}) {
 
@@ -357,18 +358,9 @@ export default function DiseaseTracker({statistics, region, chart, disease, pers
                                         </Select>
                                     </Box>
 
-                                    <ChartData chart={chart}/> {/* <Alert
-                                status="warning"
-                                variant="subtle"
-                                flexDirection="column"
-                                justifyContent="center"
-                                textAlign="center"
-                                height="200px">
-                                <AlertIcon boxSize="40px" mr={0}/>
-                                <AlertTitle mt={4} mb={1} fontSize="lg">
-                                    Coming Soon!
-                                </AlertTitle>
-                            </Alert> */}
+                                    <ChartData chart={chart}/>
+                                    <ChartLine chart={chart}/>
+
                                 </Box>
                             </Box>
                         </div>
