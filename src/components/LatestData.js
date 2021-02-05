@@ -1,6 +1,6 @@
 import React from 'react'
 import {useColorMode, Box, Text} from '@chakra-ui/react'
-import {lightFormat, format} from 'date-fns';
+import {format} from 'date-fns';
 
 export default function LatestData(data) {
     const {colorMode} = useColorMode();

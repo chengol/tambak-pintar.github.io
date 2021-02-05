@@ -5,8 +5,6 @@ import {
     Heading,
     Stat,
     Box,
-    Alert,
-    AlertIcon,
     Text,
     Divider,
     Icon,
@@ -21,15 +19,7 @@ import {
     DrawerHeader,
     DrawerBody,
     DrawerContent,
-    Button,
     useDisclosure,
-
-    Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
     Spinner,
     Center
 } from '@chakra-ui/react';
@@ -37,12 +27,10 @@ import {ArrowBackIcon} from '@chakra-ui/icons'
 
 import _ from 'lodash';
 
-import {motion} from "framer-motion"
-
 import {DiseaseContext} from '../pages/app'
-import ChartData from '../components/ChartData'
-import format from 'date-fns/format'
+// import format from 'date-fns/format'
 import PositiveTable from '../components/PositiveTable'
+import SampleTable from '../components/SampleTable'
 import ChartLine from '../components/Chart'
 
 export default function DiseaseTracker({statistics, region, chart, disease, persebaran}) {
@@ -195,7 +183,7 @@ export default function DiseaseTracker({statistics, region, chart, disease, pers
                                             <Text fontSize="md" color="gray.500">AHPND
                                                 <a
                                                     href="https://app.jala.tech/diseases/acute-hepatopancreatic-necrosis-disease"
-                                                    target="_blank">
+                                                    target="_blank" rel="noreferrer">
                                                     {` `}<Icon focusable="true" name="question" size="14px" color="blue.400"/></a>
                                             </Text>
                                             <HStack>
@@ -228,7 +216,7 @@ export default function DiseaseTracker({statistics, region, chart, disease, pers
                                             <Text fontSize="md" color="gray.500">EHP
                                                 <a
                                                     href="https://app.jala.tech/diseases/hepatopancreatic%20-microsporidiosis"
-                                                    target="_blank">
+                                                    target="_blank" rel="noreferrer">
                                                     {` `}<Icon focusable="true" name="question" size="16px" color="blue.400"/></a>
                                             </Text>
                                             <HStack>
@@ -262,7 +250,7 @@ export default function DiseaseTracker({statistics, region, chart, disease, pers
                                             <Text fontSize="md" color="gray.500">IMNV/Myo
                                                 <a
                                                     href="https://app.jala.tech/diseases/infectious-myonecrosis-virus"
-                                                    target="_blank">
+                                                    target="_blank" rel="noreferrer">
                                                     {` `}<Icon focusable="true" name="question" size="16px" color="blue.400"/></a>
                                             </Text>
                                             <HStack>
@@ -293,7 +281,7 @@ export default function DiseaseTracker({statistics, region, chart, disease, pers
                                     <Box>
                                         <Stat pr={1}>
                                             <Text fontSize="md" color="gray.500">WSSV/Bintik Putih
-                                                <a href="https://app.jala.tech/diseases/white-spot-syndrome" target="_blank">
+                                                <a href="https://app.jala.tech/diseases/white-spot-syndrome" target="_blank" rel="noreferrer">
                                                     {` `}<Icon focusable="true" name="question" size="16px" color="blue.400"/></a>
                                             </Text>
                                             <HStack>
@@ -323,7 +311,6 @@ export default function DiseaseTracker({statistics, region, chart, disease, pers
                                     </Box>
                                 </SimpleGrid>
                                 <Box
-                                    bg="gray.100"
                                     h="40px"
                                     mr={0}
                                     ml={0}
@@ -373,24 +360,6 @@ export default function DiseaseTracker({statistics, region, chart, disease, pers
                             size="xl"/>
 
                     </Center>}
-                {/* {!region || !stats && <Box mt={3}>
-                    <Alert
-                        status="error"
-                        variant="subtle"
-                        flexDirection="column"
-                        justifyContent="center"
-                        textAlign="center">
-                        <AlertIcon/>
-                        Tidak ada data penyakit {disease === "Semua Positif"
-                            ? " "
-                            : disease}
-                        di {district === "Semua"
-                            ? "semua daerah"
-                            : district}
-                        😞
-                    </Alert>
-                </Box>
-} */}
             </SimpleGrid>
 
             {drawerData === "positif"
@@ -465,7 +434,7 @@ export default function DiseaseTracker({statistics, region, chart, disease, pers
                                             </Box>
                                         </SimpleGrid>
                                     </Box>
-                                    <SampleTable chart={chart} statistics={statistics} disease={disease} />
+                                    <SampleTable chart={chart} statistics={statistics} disease={disease} persebaran={persebaran} />
                             </DrawerBody>
                         </DrawerContent>
                     </DrawerOverlay> 
@@ -475,74 +444,4 @@ export default function DiseaseTracker({statistics, region, chart, disease, pers
     );
 }
 
-// function PositiveTable(data) {
-//     const chartData = data.chart;
-//     const diseasesData = data.disease;
-//     // console.log('chart data', chartData);
-//     // console.log('disease data', diseasesData);
 
-//     return (
-//         <Box mt="2" mb="2">
-//             <Table size="sm">
-//                 <Thead>
-//                     <Tr>
-//                         <Th>Lokasi</Th>
-//                         <Th isNumeric>Total Positif</Th>
-//                         <Th isNumeric>AHPND</Th>
-//                         <Th isNumeric>EHP</Th>
-//                         <Th isNumeric>Myo</Th>
-//                         <Th isNumeric>Berak Putih</Th>
-//                     </Tr>
-//                 </Thead>
-//                 <Tbody>
-//                     {diseasesData
-//                         .map(d => {
-//                             return (
-//                                 <Tr key={d.region_id}>
-//                                     <Td>{d.region.district_name? _.startCase(d.region.district_name.toLowerCase()) : ''}{d.region.regency_name ? ` `+_.startCase(d.region.regency_name.toLowerCase()):''}{d.region.province_name ? `, `+_.startCase(d.region.province_name.toLowerCase()) : ''}</Td>
-//                                     <Td isNumeric>{d.total_positive}</Td>
-//                                     <Td isNumeric>{d.total_disease_id_1_positive}</Td>
-//                                     <Td isNumeric>{d.total_disease_id_6_positive}</Td>
-//                                     <Td isNumeric>{d.total_disease_id_8_positive}</Td>
-//                                     <Td isNumeric>{d.total_disease_id_11_positive}</Td>
-//                                 </Tr>
-//                             )
-//                         })}
-//                 </Tbody>
-//             </Table>
-//         </Box>
-//     )
-// }
-
-function SampleTable(data) {
-    // const chartData = data.chart;
-    const sampleData = data.disease;
-    console.log('sampel data', sampleData);
-
-    return (
-        <Box mt="2" mb="2">
-            <Table size="sm">
-                <Thead>
-                    <Tr>
-                        <Th>Lokasi</Th>
-                        <Th>Sampel</Th>
-                        <Th>Kolam</Th>
-                    </Tr>
-                </Thead>
-                <Tbody>
-                {sampleData
-                        .map(d => {
-                            return (
-                                <Tr key={d.region_id}>
-                                    <Td>{d.region.district_name? _.startCase(d.region.district_name.toLowerCase()) : ''}{d.region.regency_name ? `, `+_.startCase(d.region.regency_name.toLowerCase()):''}{d.region.province_name ? `, `+_.startCase(d.region.province_name.toLowerCase()) : ''}</Td>
-                                    {/* <Td>{d.region.full_name}</Td> */}
-                                    <Td isNumeric>{d.total}</Td>
-                                    <Td isNumeric>{d.total_ponds}</Td>
-                                </Tr>
-                            )
-                        })}
-                </Tbody>
-            </Table>
-        </Box>
-    )
-}

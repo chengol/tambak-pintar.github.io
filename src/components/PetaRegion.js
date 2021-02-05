@@ -1,31 +1,24 @@
 import React, {useRef, useState, useContext} from 'react';
 import ReactMapGL, {
-    Layer,
-    Source,
     NavigationControl,
     FlyToInterpolator,
     Marker,
     Popup
 } from 'react-map-gl';
-import useSWR, {SWRConfig} from "swr";
-import {isAfter, isBefore, formatISO} from 'date-fns';
+// import useSWR, {SWRConfig} from "swr";
+// import {isAfter, isBefore, formatISO} from 'date-fns';
 import {
-    SimpleGrid,
     Box,
-    Select,
     Heading,
     Flex,
     Text,
-    Grid,
     useColorMode,
-    Input,
     IconButton,
     Divider,
-    Spacer,
-    ColorModeProvider
+    Spacer
 } from '@chakra-ui/react';
 import {SunIcon, MoonIcon} from '@chakra-ui/icons';
-import useSupercluster from "use-supercluster";
+// import useSupercluster from "use-supercluster";
 import '../styles/app.css';
 import {graphql, useStaticQuery} from 'gatsby';
 import {DiseaseContext} from '../pages/app';
@@ -45,6 +38,8 @@ export default function PetaRegion({regions,  disease}) {
         siteMetadata {
           mapboxApi
           airtableApi
+          jalaMapDua
+          jalaMapSatu
         }
       }
   logo: file(relativePath: {eq: "assets/tp-logo-landscape.png"}) {
@@ -83,12 +78,7 @@ export default function PetaRegion({regions,  disease}) {
     });
 
     const {
-        setDistrict,
         setRegionId,
-        regionId,
-        startDate,
-        endDate,
-        diseaseId
     } = useContext(DiseaseContext);
 
     const sourceRef = useRef();
@@ -130,7 +120,7 @@ export default function PetaRegion({regions,  disease}) {
     };
 
     function _getZoomPoint(point) {
-        console.log(point);
+        // console.log(point);
         _onViewportChange({
             ...viewport,
             latitude: parseFloat(point.region.latitude),
@@ -159,16 +149,17 @@ export default function PetaRegion({regions,  disease}) {
     }
 
     //get map bounds
-    const bounds = sourceRef.current
-        ? sourceRef
-            .current
-            .getMap()
-            .getBounds()
-            .toArray()
-            .flat()
-        : null;
+    // const bounds = sourceRef.current
+    //     ? sourceRef
+    //         .current
+    //         .getMap()
+    //         .getBounds()
+    //         .toArray()
+    //         .flat()
+    //     : null;
 
     // console.log('klaster',clusters);
+    // console.log('map', query.site.siteMetadata.jalaMapDua);
 
     const {colorMode, toggleColorMode} = useColorMode();
 
@@ -204,6 +195,7 @@ export default function PetaRegion({regions,  disease}) {
                     maxZoom={20}
                     width="100%"
                     height="100%"
+                    mapStyle={query.site.siteMetadata.jalaMapDua}
                     mapboxApiAccessToken={query.site.siteMetadata.mapboxApi}
                     onViewportChange={(viewport) => {
                     setViewport(viewport)

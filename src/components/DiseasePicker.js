@@ -16,10 +16,6 @@ import _ from "lodash"
 
 export default function DiseasePicker({onViewportChange, regions}) {
     const {
-        disease,
-        setDisease,
-        district,
-        setDistrict,
         startDate,
         setStartDate,
         endDate,
@@ -62,18 +58,6 @@ export default function DiseasePicker({onViewportChange, regions}) {
                     bg={colorMode === 'dark'
                     ? 'gray.800'
                     : 'white'}>
-                    {/* <Box mb={2} w="200px" mr={4}>
-                        <Heading as="h4" size="xs" fontWeight={500} mb={2}>Pilih Daerah</Heading>
-                        <Select
-                            size="md"
-                            value={district}
-                            onChange={(e) => {
-                            setDistrict(e.target.value)
-                            onViewportChange(kecamatan.find(kec => e.target.value === kec.Kecamatan))}}>
-                            <option value='Semua'>Semua Daerah</option>
-                            {kecamatan.map(d => <option value={d.Kecamatan} key={d.Kecamatan}>{d.Kecamatan}</option>)}
-                        </Select>
-                    </Box> */}
                     <Box mb={2} w="200px" mr={4}>
                         <Heading as="h4" size="xs" fontWeight={500} mb={2}>Pilih Daerah</Heading>
                         <Select
@@ -87,20 +71,6 @@ export default function DiseasePicker({onViewportChange, regions}) {
                             {regions.map(d => <option value={d.id} key={d.id}>{d.province_name ? _.startCase(d.province_name.toLowerCase()) : ''}{d.regency_name ? `, `+_.startCase(d.regency_name.toLowerCase()):''}{d.district_name?  `, `+_.startCase(d.district_name.toLowerCase()) : ''}</option>)}
                         </Select>
                     </Box>
-                    {/* <Box mb={2} w="200px" mr={4}>
-                        <Heading as="h4" size="xs" fontWeight={500} mb={2}>Pilih Penyakit</Heading>
-                        <Select
-                            size="md"
-                            value={disease}
-                            onChange={(e) => {
-                            setDisease(e.target.value)}}>
-                            <option value='Semua Positif'>Semua Positif</option>
-                            <option value='AHPND'>AHPND</option>
-                            <option value='EHP'>EHP</option>
-                            <option value='IMNV'>IMNV/Myo</option>
-                            <option value='WSSV'>WSSV/Bintik Putih</option>
-                        </Select>
-                    </Box> */}
                     <Box mb={2} w="200px" mr={4}>
                         <Heading as="h4" size="xs" fontWeight={500} mb={2}>Pilih Penyakit</Heading>
                         <Select

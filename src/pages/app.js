@@ -6,16 +6,13 @@ import {
     useToast,
     Flex,
     Spinner,
-    Text,
-    useColorMode,
     ChakraProvider
     // Heading
 } from '@chakra-ui/react';
 import '../styles/app.css';
-import {isAfter, isBefore, formatISO} from 'date-fns';
+import {formatISO} from 'date-fns';
 import Sidepanel from '../components/Sidepanel';
 import {graphql, useStaticQuery} from 'gatsby';
-import PetaPin from '../components/PetaPin';
 import PetaRegion from '../components/PetaRegion';
 import LatestData from '../components/LatestData';
 // import Peta2 from '../components/Peta2';

@@ -3,11 +3,9 @@ import {
     Box,
     Flex,
     Heading,
-    Icon,
     Text,
     useColorMode, Spacer
 } from '@chakra-ui/react'
-import {FaCircle} from 'react-icons/fa'
 
 export default function Legends() {
     const {colorMode} = useColorMode();

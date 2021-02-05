@@ -1,13 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Line} from '@reactchartjs/react-chart.js'
 import format from 'date-fns/format'
-import _ from 'lodash'
-import {HStack, Box, Text, Heading} from '@chakra-ui/react'
+// import _ from 'lodash'
+import {Box} from '@chakra-ui/react'
 import '../styles/chart.css'
+import 'chartjs-plugin-annotation'
+
+
 
 export default function ChartLine(chart) {
 
+    
+
     const chartData = chart;
+
+    const [xPos, setXPos] = useState(null);
+
+
 
     const stateData = {
         labels: chartData
@@ -24,6 +33,9 @@ export default function ChartLine(chart) {
                 lineTension: 0.1,
                 backgroundColor: '#4CB244',
                 borderColor: '#4CB244',
+                pointHoverRadius: 6,
+                pointBorderColor: '#4CB244',
+                pointHoverBackgroundColor: `#FFFFFF`,
                 data: chartData
                     .chart
                     .map((data = []) => {
@@ -60,6 +72,9 @@ export default function ChartLine(chart) {
                 lineTension: 0.1,
                 backgroundColor: '#FF9D0B',
                 borderColor: '#FF9D0B',
+                pointHoverRadius: 6,
+                pointBorderColor: '#FF9D0B',
+                pointHoverBackgroundColor: `#FFFFFF`,
                 data: chartData
                     .chart
                     .map((data = []) => {
@@ -75,7 +90,7 @@ export default function ChartLine(chart) {
 
     return (
         <div>
-            <Box w="100%" mb={2} >
+            <Box w="100%" pr={2} pb={6} >
             <Line height="220px"
                 data={stateData}
                 options={{
@@ -91,8 +106,10 @@ export default function ChartLine(chart) {
                   enabled: false,
                   callbacks: {
                     title: function (t, d){
-                      
+                        // console.log('t',t,'d',d);
+                        // console.log(`posisi x:`, xPos);
                       var judul = `<div class="tooltip-title">`+format(new Date(t[0].xLabel), 'MMM yy')+`</div>`;
+                      setXPos(t[0].xLabel);
                       return judul;
                     },
                     label: function(ts, data) {
@@ -141,7 +158,7 @@ export default function ChartLine(chart) {
                         var titleLines = tooltipModel.title || [];
                         var bodyLines = tooltipModel.body.map(getBody);
     
-                        var innerHtml = '';
+                        // var innerHtml = '';
     
                         titleLines.forEach(function(title) {
                             innerHtml += '<div style="display: block; padding-left: 8px; padding-top: 8px; padding-bottom: 5px;">' + title + '</div>';
@@ -153,7 +170,7 @@ export default function ChartLine(chart) {
                             style += '; border-color:' + colors.borderColor;
                             style += '; border-width: 3px';
                             style += ';'
-                            if (i == (bodyLines.length -1)){
+                            if (i === (bodyLines.length -1)){
                                 style += ' border-bottom-right-radius: 5px;';
                                 // leftStyle += 'border-bottom-left-radius: 5px;';
                             }
@@ -173,6 +190,13 @@ export default function ChartLine(chart) {
                     tooltipEl.style.position = 'absolute';
                     tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
                     tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - bodyPartHeight + 'px';
+
+                    let tooltipXPosition =position.left + window.pageXOffset + tooltipModel.caretX+tooltipWidth;
+    if (tooltipXPosition > position.right){
+        tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipWidth + 'px';
+    }
+
+
                     tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
                     tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
                     tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
@@ -204,6 +228,7 @@ export default function ChartLine(chart) {
                 scales: {
                     xAxes: [
                         {
+                            id: 'xAxis',
                             type: 'time',
                             position: 'bottom',
                             time: {
@@ -216,6 +241,7 @@ export default function ChartLine(chart) {
                     ],
                     yAxes: [
                         {
+                            id: 'yAxis',
                             type: 'linear',
                             ticks: {
                                 min: 0,
@@ -229,11 +255,38 @@ export default function ChartLine(chart) {
                             }
                         }
                     ]
-                }
+                },
+                onHover :
+                    function (e){
+                        // console.log('e', e);
+                        if(e.type === 'mouseout'){
+                            this.options.annotation.annotations = [];
+                            let tooltipEl = document.body.querySelector('#chartjs-tooltip');
+                            if(tooltipEl){
+                            tooltipEl.style.opacity = 0;
+                            }
+                            // 
+                            this.update();
+                        }else{
+                            this.options.annotation.annotations = [{
+                                drawTime: 'afterDraw', // overrides annotation.drawTime if set
+                            display: true,
+                            type: 'line',
+                            scaleID: 'xAxis',
+                            value: xPos,
+                            borderColor: '#000000',
+                            borderWidth: 2,
+                            }]
+                            this.update();
+                        }
+                    }
+                ,
+                    annotation: {
+                        drawTime: 'afterDatasetsDraw', // (default)
+                        annotations: []
+                    }
             }}/>
             </Box>
         </div>
     )
 }
-
-
