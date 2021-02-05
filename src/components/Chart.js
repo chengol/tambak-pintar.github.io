@@ -129,7 +129,7 @@ export default function ChartLine(chart) {
                     if (!tooltipEl) {
                         tooltipEl = document.createElement('div');
                         tooltipEl.id = 'chartjs-tooltip';
-                        tooltipEl.innerHTML = '<div id="inner-tooltip" class="ibox-content" style="box-shadow: 1px 1px 3px 3px #65686B80; border:0; margin: 0; max-width: '+tooltipWidth+'px; border-radius: 5px; z-index: 10;"></div>';
+                        tooltipEl.innerHTML = '<div id="inner-tooltip" class="ibox-content" style="box-shadow: 1px 1px 3px 3px #65686B80; border:0; margin: 0; min-width: '+tooltipWidth+'px; border-radius: 5px; z-index: 10;"></div>';
                         document.body.appendChild(tooltipEl);
                     }
     
@@ -185,22 +185,24 @@ export default function ChartLine(chart) {
 
                     // console.log('device width', window.screen.width);
                     // console.log('device height', window.screen.height);
-                    // console.log('top', position.top , 'right', position.right, 'bottom', position.bottom, 'left',position.left);
-                    // console.log('x offset', window.pageXOffset, 'y offset', window.pageYOffset);
-                    // console.log('caret x', tooltipModel.caretX, 'caret y', tooltipModel.caretY);
+                    console.log('top', position.top , 'right', position.right, 'bottom', position.bottom, 'left',position.left);
+                    console.log('x offset', window.pageXOffset, 'y offset', window.pageYOffset);
+                    console.log('caret x', tooltipModel.caretX, 'caret y', tooltipModel.caretY);
 
     
                     // Display, position, and set styles for font
                     tooltipEl.style.opacity = 1;
-                    tooltipEl.style.position = 'relative';
+                    tooltipEl.style.position = 'absolute';
                     // tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
                     tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 5 + 'px';
-                    tooltipEl.style.bottom = 230 + 'px';
+                    tooltipEl.style.bottom = 80 +  'px';
                     // let tooltipTop
 
                     let tooltipXPosition =position.left + window.pageXOffset + tooltipModel.caretX+ tooltipWidth;
 
                     // console.log('tooltipXposition', tooltipXPosition)
+
+                    if(tooltipEl.style)
 
                     if (tooltipXPosition > position.right){
                             tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipWidth - 15 + 'px';
@@ -213,7 +215,7 @@ export default function ChartLine(chart) {
                     tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
                     tooltipEl.style.pointerEvents = 'none';
 
-                    // console.log('tool top', tooltipEl.style.top , 'tool right', tooltipEl.style.right, 'tool bottom', tooltipEl.style.bottom, 'tool left', tooltipEl.style.left);
+                    console.log('tool top', tooltipEl.style.top , 'tool right', tooltipEl.style.right, 'tool bottom', tooltipEl.style.bottom, 'tool left', tooltipEl.style.left);
                 }
                 },
                 elements: {
