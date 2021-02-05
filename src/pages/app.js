@@ -330,7 +330,7 @@ function FilterData(data) {
             <Box id="headbottom"
             display={{ sm: "block", md: "block", lg: "none", xl: "none" }}
             >
-                <Bottompanel chart={data.chartData} statistics={data.statisticData} disease={data.diseaseData} region={data.regionDetailData} display={{ sm: "block", md: "block", lg: "block", xl: "none" }}/></Box>
+                <Bottompanel chart={data.chartData} statistics={data.statisticData} disease={data.diseaseData} persebaran={data.persebaranData} region={data.regionDetailData} display={{ sm: "block", md: "block", lg: "block", xl: "none" }}/></Box>
 
         </div>
     )

@@ -21,7 +21,7 @@ export default function ChartLine(chart) {
     const stateData = {
         labels: chartData
             .chart
-            .reverse()
+            // .reverse()
             .map((data = []) => {
                 // return (format(new Date(data.last_logged_at), 'MMM yy'))
                 return (data.last_logged_at)
@@ -33,9 +33,9 @@ export default function ChartLine(chart) {
                 lineTension: 0.1,
                 backgroundColor: '#4CB244',
                 borderColor: '#4CB244',
-                pointHoverRadius: 6,
-                pointBorderColor: '#4CB244',
-                pointHoverBackgroundColor: `#FFFFFF`,
+                // pointHoverRadius: 6,
+                // pointBorderColor: '#4CB244',
+                // pointHoverBackgroundColor: `#FFFFFF`,
                 data: chartData
                     .chart
                     .map((data = []) => {
@@ -87,20 +87,18 @@ export default function ChartLine(chart) {
 
     // console.log('state', stateData);
     // console.log('chart', chartData);
+    
 
     return (
         <div>
-            <Box w="100%" pr={2} pb={6} >
+            <Box w="100%" pr={2} pb={2} >
             <Line height="220px"
                 data={stateData}
                 options={{
-                    maintainAspectRatio: false,
+                    maintainAspectRatio: true,
                 responsive: true,
-                animation: {
-                  duration : 1000,
-                  easing : 'easeInOutQuad'
-              },
                 tooltips: {
+                    position: 'average',
                     mode: 'index',
                     intersect: false,
                   enabled: false,
@@ -131,7 +129,7 @@ export default function ChartLine(chart) {
                     if (!tooltipEl) {
                         tooltipEl = document.createElement('div');
                         tooltipEl.id = 'chartjs-tooltip';
-                        tooltipEl.innerHTML = '<div id="inner-tooltip" class="ibox-content" style="box-shadow: 1px 1px 3px 3px #65686B80; border:0; margin: 0; min-width: '+tooltipWidth+'px; border-radius: 5px; z-index: 10;"></div>';
+                        tooltipEl.innerHTML = '<div id="inner-tooltip" class="ibox-content" style="box-shadow: 1px 1px 3px 3px #65686B80; border:0; margin: 0; max-width: '+tooltipWidth+'px; border-radius: 5px; z-index: 10;"></div>';
                         document.body.appendChild(tooltipEl);
                     }
     
@@ -184,17 +182,29 @@ export default function ChartLine(chart) {
     
                     // `this` will be the overall tooltip
                     var position = this._chart.canvas.getBoundingClientRect();
+
+                    // console.log('device width', window.screen.width);
+                    // console.log('device height', window.screen.height);
+                    // console.log('top', position.top , 'right', position.right, 'bottom', position.bottom, 'left',position.left);
+                    // console.log('x offset', window.pageXOffset, 'y offset', window.pageYOffset);
+                    // console.log('caret x', tooltipModel.caretX, 'caret y', tooltipModel.caretY);
+
     
                     // Display, position, and set styles for font
                     tooltipEl.style.opacity = 1;
-                    tooltipEl.style.position = 'absolute';
-                    tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-                    tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - bodyPartHeight + 'px';
+                    tooltipEl.style.position = 'relative';
+                    // tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                    tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 5 + 'px';
+                    tooltipEl.style.bottom = 230 + 'px';
+                    // let tooltipTop
 
-                    let tooltipXPosition =position.left + window.pageXOffset + tooltipModel.caretX+tooltipWidth;
-    if (tooltipXPosition > position.right){
-        tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipWidth + 'px';
-    }
+                    let tooltipXPosition =position.left + window.pageXOffset + tooltipModel.caretX+ tooltipWidth;
+
+                    // console.log('tooltipXposition', tooltipXPosition)
+
+                    if (tooltipXPosition > position.right){
+                            tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX - tooltipWidth - 15 + 'px';
+                        }
 
 
                     tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
@@ -202,6 +212,8 @@ export default function ChartLine(chart) {
                     tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
                     tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
                     tooltipEl.style.pointerEvents = 'none';
+
+                    // console.log('tool top', tooltipEl.style.top , 'tool right', tooltipEl.style.right, 'tool bottom', tooltipEl.style.bottom, 'tool left', tooltipEl.style.left);
                 }
                 },
                 elements: {
